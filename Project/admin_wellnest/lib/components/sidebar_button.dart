@@ -17,7 +17,7 @@ class SideButton extends StatelessWidget {
             ),
             Text(label,
                 style: TextStyle(
-                    color: Color(0xFF543A14), fontSize: 15, letterSpacing: 2)),
+                    color: Color.fromARGB(255, 24, 56, 111), fontSize: 15, letterSpacing: 2)),
           ],
         ));
   }
