@@ -8,12 +8,14 @@ import 'package:admin_wellnest/screens/manage_feedback.dart';
 import 'package:admin_wellnest/screens/manage_resident.dart';
 import 'package:admin_wellnest/screens/manage_room.dart';
 import 'package:flutter/material.dart';
+
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
 
   @override
   State<Homepage> createState() => _HomepageState();
 }
+
 class _HomepageState extends State<Homepage> {
   List<Map<String, dynamic>> pages = [
     {'icon': Icons.home, 'label': 'Home', 'page': Dashboard()},
@@ -28,7 +30,7 @@ class _HomepageState extends State<Homepage> {
       'page': ManageCaretaker()
     },
     {
-      'icon': Icons.wallet_membership,
+      'icon': Icons.person_pin,
       'label': 'Family Member',
       'page': FamilyMember()
     },
@@ -39,7 +41,7 @@ class _HomepageState extends State<Homepage> {
     },
     {'icon': Icons.feedback, 'label': 'Feedback', 'page': ManageFeedback()},
     {
-      'icon': Icons.feedback_sharp,
+      'icon': Icons.report_problem,
       'label': 'Complaints',
       'page': ManageComplaints()
     },
@@ -52,6 +54,7 @@ class _HomepageState extends State<Homepage> {
       MaterialPageRoute(builder: (context) => LoginScreen()),
     );
   }
+
   bool isHovered = false;
   @override
   Widget build(BuildContext context) {
@@ -188,7 +191,14 @@ class _HomepageState extends State<Homepage> {
                       offset: Offset(-2, 2))
                 ],
               ),
-              child: currentPage,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: ListView(
+                  children: [
+                    currentPage,
+                  ],
+                ),
+              ),
             ),
           ),
         ],
