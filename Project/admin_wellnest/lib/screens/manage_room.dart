@@ -1,5 +1,3 @@
-// ignore_for_file: non_constant_identifier_names, avoid_print
-
 import 'package:admin_wellnest/main.dart';
 import 'package:flutter/material.dart';
 
@@ -31,7 +29,7 @@ class _ManageRoomState extends State<ManageRoom> {
       final response = await supabase.from('tbl_room').select();
       print("Fetched data: $response");
       setState(() {
-        rooms = List<Map<String, dynamic>>.from(response);
+        rooms = response;
         isLoading = false;
       });
     } catch (e) {
@@ -63,6 +61,30 @@ class _ManageRoomState extends State<ManageRoom> {
       setState(() {
         isLoading = false;
       });
+    }
+  }
+
+  // Function to delete a room
+  Future<void> deleteRoom(int id) async {
+    try {
+      await supabase.from('tbl_room').delete().eq('room_id', id);
+      print("Delete Successful");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Room deleted successfully!'),
+          backgroundColor: const Color.fromARGB(255, 0, 61, 2),
+        ),
+      );
+      print("Deleted room with id: $id");
+      await fetchData(); // Refresh data after delete
+    } catch (e) {
+      print("Error deleting room: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to delete room. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -117,7 +139,7 @@ class _ManageRoomState extends State<ManageRoom> {
                   isLoading
                       ? CircularProgressIndicator()
                       : SizedBox(
-                          height: 300, // Set a fixed height for ListView
+                          height: 300,
                           child: ListView.builder(
                             itemCount: rooms.length,
                             itemBuilder: (context, index) {
@@ -127,7 +149,20 @@ class _ManageRoomState extends State<ManageRoom> {
                                 child: ListTile(
                                   title: Text(data['name']),
                                   subtitle: Text('Count: ${data['count']}'),
-                                  trailing: Text('Price: \$${data['price']}'),
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text('Price: \$${data['price']}'),
+                                      IconButton(
+                                        icon: Icon(Icons.delete,
+                                            color: const Color.fromARGB(
+                                                255, 67, 4, 0)),
+                                        onPressed: () {
+                                          deleteRoom(data['room_id']);
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             },
@@ -141,7 +176,6 @@ class _ManageRoomState extends State<ManageRoom> {
       ),
     );
   }
-
   Widget _buildTextField(TextEditingController controller, String label,
       String hint, IconData icon) {
     return Padding(
