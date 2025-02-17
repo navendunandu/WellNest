@@ -5,6 +5,7 @@ import 'package:admin_wellnest/screens/login_screen.dart';
 import 'package:admin_wellnest/screens/manage_caretaker.dart';
 import 'package:admin_wellnest/screens/manage_complaints.dart';
 import 'package:admin_wellnest/screens/manage_feedback.dart';
+import 'package:admin_wellnest/screens/manage_relation.dart';
 import 'package:admin_wellnest/screens/manage_resident.dart';
 import 'package:admin_wellnest/screens/manage_room.dart';
 import 'package:flutter/material.dart';
@@ -35,10 +36,16 @@ class _HomepageState extends State<Homepage> {
       'page': FamilyMember()
     },
     {
+      'icon': Icons.fiber_manual_record,
+      'label': 'Relationship',
+      'page': ManageRelation()
+    },
+    {
       'icon': Icons.person_outlined,
       'label': 'Resident',
       'page': ManageResident()
     },
+
     {'icon': Icons.feedback, 'label': 'Feedback', 'page': ManageFeedback()},
     {
       'icon': Icons.report_problem,
