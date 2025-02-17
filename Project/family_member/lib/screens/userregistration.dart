@@ -121,17 +121,17 @@ class _UserregistrationState extends State<Userregistration> {
                           ),
 
                     const Divider(),
-                    const Text(
+                    /*const Text(
                       "Resident Information",
                       style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 24, 56, 111)),
                       textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 10),
+                    ),*/
+                    /*const SizedBox(height: 10),
                     _buildTextField(_residentNameController, 'Resident Name', Icons.person, FormValidation.validateName),
                     _buildTextField(_residentEmailController, 'Resident Email', Icons.email, FormValidation.validateEmail),
                     _buildTextField(_residentPhoneController, 'Resident Phone', Icons.phone, FormValidation.validateContact),
                     _buildTextField(_residentEmergencyContactController, 'Emergency Contact', Icons.phone_forwarded, FormValidation.validateContact),
-                    _buildTextField(_relationController, 'Relation', Icons.family_restroom, FormValidation.validateName),
+                    _buildTextField(_relationController, 'Relation', Icons.family_restroom, FormValidation.validateName),*/
 
                     const SizedBox(height: 24),
                     ElevatedButton(

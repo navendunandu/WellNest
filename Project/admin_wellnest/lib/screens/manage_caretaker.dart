@@ -16,35 +16,95 @@ class _ManageCaretakerState extends State<ManageCaretaker> {
   final phoneController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  bool isLoading = true;
+  List<Map<String, dynamic>> caretaker = [];
 
-  Future<void> submit() async {
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    setState(() {
+      isLoading = true;
+    });
     try {
-      await supabase.from('tbl_caretaker').insert({
-        'name': nameController.text,
-        'email': emailController.text,
-        'password': passwordController.text,
-        'contact': phoneController.text,
+      final response = await supabase.from('tbl_caretaker').select();
+      print("Fetched data: $response");
+      setState(() {
+        caretaker = List<Map<String, dynamic>>.from(response);
+        isLoading = false;
       });
-
-      print("Insert Successful");
-
-      // Clear fields after successful submission
-      nameController.clear();
-      emailController.clear();
-      passwordController.clear();
-      confirmPasswordController.clear();
-      phoneController.clear();
-      formKey.currentState!.reset();
     } catch (e) {
-      print("Error: $e");
+      print("Error fetching data: $e");
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
+  Future<void> submit() async {
+    if (formKey.currentState!.validate()) {
+      setState(() {
+        isLoading = true;
+      });
+      try {
+        await supabase.from('tbl_caretaker').insert({
+          'caretaker_name': nameController.text,
+          'caretaker_email': emailController.text,
+          'caretaker_password': passwordController.text,
+          'caretaker_contact': phoneController.text,
+        });
+
+        print("Insert Successful");
+
+        // Clear fields after successful submission
+        nameController.clear();
+        emailController.clear();
+        passwordController.clear();
+        confirmPasswordController.clear();
+        phoneController.clear();
+        formKey.currentState!.reset();
+
+        // Refresh data after insert
+        await fetchData();
+      } catch (e) {
+        print("Error: $e");
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+ Future<void> deleteRoom(int id) async {
+    try {
+      await supabase.from('tbl_caretaker').delete().eq('caretaker_id', id);
+      print("Delete Successful");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Details deleted successfully!'),
+          backgroundColor: const Color.fromARGB(255, 0, 61, 2),
+        ),
+      );
+      print("Deleted caretaker details with id: $id");
+      fetchData();
+    } catch (e) {
+      print("Error deleting caretaker: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to delete details. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color.fromARGB(255, 227, 242, 253), // Light Blue Background
-      padding: EdgeInsets.all(30), // Some padding for spacing
+      color: Color.fromARGB(255, 227, 242, 253), 
+      padding: EdgeInsets.all(30), 
       child: Center(
         child: SingleChildScrollView(
           child: Card(
@@ -52,7 +112,7 @@ class _ManageCaretakerState extends State<ManageCaretaker> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
             ),
-            color: Colors.white, // White card for contrast
+            color: Colors.white, 
             margin: EdgeInsets.symmetric(horizontal: 100, vertical: 30),
             child: Padding(
               padding: const EdgeInsets.all(30),
@@ -105,11 +165,7 @@ class _ManageCaretakerState extends State<ManageCaretaker> {
                         (value) => FormValidation.validateContact(value)),
                     SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: () {
-                        if (formKey.currentState!.validate()) {
-                          submit();
-                        }
-                      },
+                      onPressed: submit,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color.fromARGB(255, 24, 56, 111),
                         padding:
@@ -126,6 +182,52 @@ class _ManageCaretakerState extends State<ManageCaretaker> {
                             color: Colors.white),
                       ),
                     ),
+                    SizedBox(height: 30),
+                    Divider(),
+                    SizedBox(height: 20),
+                    Text(
+                      "Caretaker List",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 24, 56, 111),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    isLoading
+                        ? CircularProgressIndicator()
+                        : caretaker.isEmpty
+                            ? Text("No caretakers found.")
+                            : ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: caretaker.length,
+                                itemBuilder: (context, index) {
+                                  final data = caretaker[index];
+                                  return Card(
+                                    margin: EdgeInsets.symmetric(vertical: 10),
+                                    child: ListTile(
+                                      title: Text(data['name']),
+                                      subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text("Email: ${data['email']}"),
+                                          Text("Contact: ${data['contact']}"),
+                                          IconButton(
+                                        icon: Icon(Icons.delete,
+                                            color: const Color.fromARGB(
+                                                255, 67, 4, 0)),
+                                        onPressed: () {
+                                          deleteRoom(data['caretaker_id']);
+                                        },
+                                      ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
                   ],
                 ),
               ),

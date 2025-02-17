@@ -55,7 +55,7 @@ class _ManageRoomState extends State<ManageRoom> {
       nameController.clear();
       countController.clear();
       priceController.clear();
-      await fetchData(); // Refresh data after insert
+      await fetchData();
     } catch (e) {
       print("Error: $e");
       setState(() {
@@ -64,7 +64,6 @@ class _ManageRoomState extends State<ManageRoom> {
     }
   }
 
-  // Function to delete a room
   Future<void> deleteRoom(int id) async {
     try {
       await supabase.from('tbl_room').delete().eq('room_id', id);
@@ -76,7 +75,7 @@ class _ManageRoomState extends State<ManageRoom> {
         ),
       );
       print("Deleted room with id: $id");
-      await fetchData(); // Refresh data after delete
+      fetchData();
     } catch (e) {
       print("Error deleting room: $e");
       ScaffoldMessenger.of(context).showSnackBar(
@@ -176,6 +175,7 @@ class _ManageRoomState extends State<ManageRoom> {
       ),
     );
   }
+
   Widget _buildTextField(TextEditingController controller, String label,
       String hint, IconData icon) {
     return Padding(
