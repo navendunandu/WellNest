@@ -151,7 +151,7 @@ class _ManageRoomState extends State<ManageRoom> {
                                   trailing: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Text('Price: \$${data['price']}'),
+                                      Text('Price: \₹${data['price']}'),
                                       IconButton(
                                         icon: Icon(Icons.delete,
                                             color: const Color.fromARGB(
