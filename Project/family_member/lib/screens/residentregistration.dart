@@ -112,6 +112,12 @@ class _ResidentregistrationState extends State<Residentregistration> {
             style: TextStyle(color: Color.fromARGB(230, 255, 252, 197)),
           ),
           backgroundColor: Color.fromARGB(255, 0, 38, 81),
+          leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Color.fromARGB(230, 255, 252, 197)),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         ),
         body: Expanded(
           child: SingleChildScrollView(
@@ -175,29 +181,29 @@ class _ResidentregistrationState extends State<Residentregistration> {
                                     obscureText: true,
                                   ),
                                   const SizedBox(height: 10),
-                                  DropdownButtonFormField(
-                                    decoration: InputDecoration(
-                                      labelText: "Select Relation",
-                                      border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(10)),
-                                      filled: true,
-                                      fillColor: Colors.white,
-                                    ),
-                                    value: selectedRelation,
-                                    items: relation.map(
-                                      (value) {
-                                        return DropdownMenuItem(
-                                          value: value['relation_id'],
-                                          child: Text(value['relation_name']),
-                                        );
-                                      },
-                                    ).toList(),
-                                    onChanged: (value) {
-                                      setState(() {
-                                        selectedRelation = value.toString();
-                                      });
-                                    },
-                                  ),
+                                  DropdownButtonFormField<String>(
+  decoration: InputDecoration(
+    labelText: "Select Relation",
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+    ),
+    filled: true,
+    fillColor: Colors.white,
+  ),
+  value: selectedRelation, // Ensure this matches one of the values in the list
+  hint: Text("Select an option"), // Hint text when no value is selected
+  items: relation.map((value) {
+    return DropdownMenuItem<String>(
+      value: value['relation_id'].toString(), // Ensure this is unique
+      child: Text(value['relation_name']),
+    );
+  }).toList(),
+  onChanged: (value) {
+    setState(() {
+      selectedRelation = value; // Update the selected value
+    });
+  },
+),
                                   const SizedBox(height: 10),
                                   const Text("Upload Proof (ID or Document)",
                                       style: TextStyle(
