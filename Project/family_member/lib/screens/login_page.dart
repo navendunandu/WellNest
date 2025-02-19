@@ -1,3 +1,4 @@
+import 'package:family_member/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,6 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
   bool _isLoading = false; // To handle loading state during login
+  final AuthService _authService = AuthService();
 
   // Function to handle login
   Future<void> _login() async {
@@ -27,6 +29,8 @@ class _LoginPageState extends State<LoginPage> {
       });
 
       try {
+        await _authService.storeCredentials(
+          _emailController.text, _passwordController.text);
         // Sign in with Supabase
         final response = await Supabase.instance.client.auth.signInWithPassword(
           email: _emailController.text.trim(),
@@ -44,12 +48,14 @@ class _LoginPageState extends State<LoginPage> {
           );
         }
       } on AuthException catch (error) {
+        print('Error is:$error');
         // Handle authentication errors
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Login failed: ${error.message}')),
         );
       } catch (e) {
+        print('Error is:$e');
         // Handle other errors
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
@@ -69,7 +75,8 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color.fromARGB(255, 24, 56, 111)),
+          icon: const Icon(Icons.arrow_back,
+              color: Color.fromARGB(255, 24, 56, 111)),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -145,7 +152,8 @@ class _LoginPageState extends State<LoginPage> {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your email';
                         }
-                        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                            .hasMatch(value)) {
                           return 'Please enter a valid email';
                         }
                         return null;
@@ -184,7 +192,9 @@ class _LoginPageState extends State<LoginPage> {
                             });
                           },
                           icon: Icon(
-                            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
                             color: const Color.fromARGB(255, 24, 56, 111),
                           ),
                         ),
@@ -242,7 +252,8 @@ class _LoginPageState extends State<LoginPage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const Userregistration(),
+                                      builder: (context) =>
+                                          const Userregistration(),
                                     ),
                                   );
                                 },
