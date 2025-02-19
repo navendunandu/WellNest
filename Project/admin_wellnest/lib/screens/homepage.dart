@@ -1,6 +1,6 @@
 // import 'package:admin_wellnest/components/sidebar_button.dart';
 import 'package:admin_wellnest/screens/dashboard.dart';
-import 'package:admin_wellnest/screens/family_member.dart';
+// import 'package:admin_wellnest/screens/family_member.dart';
 import 'package:admin_wellnest/screens/login_screen.dart';
 import 'package:admin_wellnest/screens/manage_caretaker.dart';
 import 'package:admin_wellnest/screens/manage_complaints.dart';
@@ -8,6 +8,7 @@ import 'package:admin_wellnest/screens/manage_feedback.dart';
 import 'package:admin_wellnest/screens/manage_relation.dart';
 import 'package:admin_wellnest/screens/manage_resident.dart';
 import 'package:admin_wellnest/screens/manage_room.dart';
+import 'package:admin_wellnest/screens/new_admission.dart';
 import 'package:flutter/material.dart';
 
 class Homepage extends StatefulWidget {
@@ -31,15 +32,16 @@ class _HomepageState extends State<Homepage> {
       'page': ManageCaretaker()
     },
     {
-      'icon': Icons.person_pin,
-      'label': 'Family Member',
-      'page': FamilyMember()
-    },
-    {
       'icon': Icons.fiber_manual_record,
       'label': 'Relationship',
       'page': ManageRelation()
     },
+    {
+      'icon': Icons.fiber_new_outlined,
+      'label': 'New admission',
+      'page': NewAdmission()
+    },
+    
     {
       'icon': Icons.person_outlined,
       'label': 'Resident',
