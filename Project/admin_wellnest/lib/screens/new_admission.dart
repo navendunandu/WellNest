@@ -29,6 +29,24 @@ class _NewAdmissionState extends State<NewAdmission> {
     }
   }
 
+  Future<void> updateResidentStatus(String residentId, int status) async {
+    try {
+      await supabase.from('tbl_resident').update(
+          {'resident_status': status}).match({'resident_id': residentId});
+      fetchFiletype();
+    } catch (e) {
+      print("ERROR UPDATING RESIDENT STATUS: $e");
+    }
+  }
+
+  void accept(String residentId) {
+    updateResidentStatus(residentId, 1);
+  }
+
+  void reject(String residentId) {
+    updateResidentStatus(residentId, 2);
+  }
+
   @override
   Widget build(BuildContext context) {
     return DataTable(
@@ -54,11 +72,15 @@ class _NewAdmissionState extends State<NewAdmission> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.check),
-                  onPressed: () {},
+                  onPressed: () {
+                    accept(entry.value['resident_id'].toString());
+                  },
                 ),
                 IconButton(
                   icon: const Icon(Icons.highlight_remove_outlined),
-                  onPressed: () {},
+                  onPressed: () {
+                    reject(entry.value['resident_id'].toString());
+                  },
                 ),
               ],
             )),
