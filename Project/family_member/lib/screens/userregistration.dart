@@ -1,6 +1,7 @@
 import 'package:family_member/main.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import 'package:family_member/components/form_validation.dart';
 // import 'package:supabase_flutter/supabase_flutter.dart';
@@ -24,7 +25,6 @@ class _UserregistrationState extends State<Userregistration> {
   final TextEditingController _phoneController = TextEditingController();
   bool isLoading = true;
 
-
   File? _photo;
   File? _proof;
 
@@ -38,11 +38,19 @@ class _UserregistrationState extends State<Userregistration> {
       setState(() {
         if (isPhoto) {
           _photo = File(pickedFile.path);
-        } else {
-          _proof = File(pickedFile.path);
         }
       });
     }
+  }
+
+  File? selectedFile;
+
+  Future<void> _pickFile() async {
+    final result = await FilePicker.platform.pickFiles();
+    File? file = File(result!.files.single.path!);
+    setState(() {
+      selectedFile = file;
+    });
   }
 
   Future<void> register() async {
@@ -67,7 +75,11 @@ class _UserregistrationState extends State<Userregistration> {
         'familymember_contact': _phoneController.text,
         'familymember_address': _addressController.text,
       });
-
+      String? proofUrl = await uploadFile(uid);
+      String? photoUrl = await _uploadImage(uid);
+      if (photoUrl != null && proofUrl != null) {
+        update(photoUrl, proofUrl, uid);
+      }
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Registration Successful"),
@@ -81,6 +93,45 @@ class _UserregistrationState extends State<Userregistration> {
       setState(() {
         isLoading = false;
       });
+    }
+  }
+
+  Future<void> update(String image, String proof, String uid) async {
+    try {
+      await supabase.from('tbl_familymember').update({
+        'familymember_photo': image,
+        'familymember_proof': proof,
+      }).eq('familymember_id', uid);
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  Future<String?> uploadFile(String userId) async {
+    final fileName = 'userproof_$userId';
+
+    try {
+      await supabase.storage.from('fm_files').upload(fileName, selectedFile!);
+      final fileUrl = supabase.storage.from('fm_files').getPublicUrl(fileName);
+      return fileUrl;
+    } catch (e) {
+      print("Upload failed: $e");
+    }
+    return null;
+  }
+
+  Future<String?> _uploadImage(String userId) async {
+    try {
+      final fileName = 'userphoto_$userId';
+
+      await supabase.storage.from('fm_files').upload(fileName, _photo!);
+
+      // Get public URL of the uploaded image
+      final imageUrl = supabase.storage.from('fm_files').getPublicUrl(fileName);
+      return imageUrl;
+    } catch (e) {
+      print('Image upload failed: $e');
+      return null;
     }
   }
 
@@ -157,7 +208,7 @@ class _UserregistrationState extends State<Userregistration> {
                         : ElevatedButton.icon(
                             icon: const Icon(Icons.upload_file),
                             label: const Text("Upload Proof"),
-                            onPressed: () => _pickImage(false),
+                            onPressed: () => _pickFile(),
                           ),
                     // Upload Photo
                     const SizedBox(height: 10),
