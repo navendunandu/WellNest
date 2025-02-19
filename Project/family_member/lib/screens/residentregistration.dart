@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:family_member/services/auth_service.dart';
+import 'package:file_picker/file_picker.dart';
 
 import 'package:family_member/components/form_validation.dart';
 import 'package:family_member/main.dart';
@@ -25,6 +27,7 @@ class _ResidentregistrationState extends State<Residentregistration> {
   File? _photo;
   File? _proof;
   final ImagePicker _picker = ImagePicker();
+  final AuthService _authService = AuthService();
 
   List<Map<String, dynamic>> relation = [];
   void initState() {
@@ -47,18 +50,24 @@ class _ResidentregistrationState extends State<Residentregistration> {
   String? selectedRelation;
 
   // Pick Image Function
-  Future<void> _pickImage(bool isPhoto) async {
+  Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
-        if (isPhoto) {
-          _photo = File(pickedFile.path);
-        } else {
-          _proof = File(pickedFile.path);
-        }
+        _photo = File(pickedFile.path);
       });
     }
+  }
+
+  File? selectedFile;
+
+  Future<void> _pickFile() async {
+    final result = await FilePicker.platform.pickFiles();
+    File? file = File(result!.files.single.path!);
+    setState(() {
+      selectedFile = file;
+    });
   }
 
   Future<void> register() async {
@@ -67,6 +76,7 @@ class _ResidentregistrationState extends State<Residentregistration> {
           password: _passwordController.text, email: _emailController.text);
       String uid = auth.user!.id;
       submit(uid);
+      await _authService.relogin();
     } catch (e) {
       print('Error: $e');
     }
@@ -77,14 +87,24 @@ class _ResidentregistrationState extends State<Residentregistration> {
       isLoading = true;
     });
     try {
-      await supabase.from('tbl_familymember').insert({
+      String fmid = supabase.auth.currentUser!.id;
+      await supabase.from('tbl_resident').insert({
         'resident_id': uid,
         'resident_name': _nameController.text,
         'resident_email': _emailController.text,
         'resident_password': _passwordController.text,
         'resident_contact': _phoneController.text,
         'resident_address': _addressController.text,
+        'familymember_id': fmid,
+        'relation_id': selectedRelation,
       });
+
+      String? proofUrl = await uploadFile(uid);
+      String? photoUrl = await _uploadImage(uid);
+
+      if (proofUrl != null && photoUrl != null) {
+        update(photoUrl, proofUrl, uid);
+      }
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -102,6 +122,49 @@ class _ResidentregistrationState extends State<Residentregistration> {
     }
   }
 
+  Future<void> update(String image, String proof, String uid) async {
+    try {
+      await supabase.from('tbl_resident').update({
+        'resident_photo': image,
+        'resident_proof': proof,
+      }).eq('resident_id', uid);
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  Future<String?> uploadFile(String userId) async {
+    final fileName = 'userproof_$userId';
+
+    try {
+      await supabase.storage
+          .from('resident_files')
+          .upload(fileName, selectedFile!);
+      final fileUrl =
+          supabase.storage.from('resident_files').getPublicUrl(fileName);
+      return fileUrl;
+    } catch (e) {
+      print("Upload failed: $e");
+    }
+    return null;
+  }
+
+  Future<String?> _uploadImage(String userId) async {
+    try {
+      final fileName = 'userphoto_$userId';
+
+      await supabase.storage.from('resident_files').upload(fileName, _photo!);
+
+      // Get public URL of the uploaded image
+      final imageUrl =
+          supabase.storage.from('resident_files').getPublicUrl(fileName);
+      return imageUrl;
+    } catch (e) {
+      print('Image upload failed: $e');
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,11 +176,12 @@ class _ResidentregistrationState extends State<Residentregistration> {
           ),
           backgroundColor: Color.fromARGB(255, 0, 38, 81),
           leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color.fromARGB(230, 255, 252, 197)),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+            icon: const Icon(Icons.arrow_back,
+                color: Color.fromARGB(230, 255, 252, 197)),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
         ),
         body: Expanded(
           child: SingleChildScrollView(
@@ -182,28 +246,28 @@ class _ResidentregistrationState extends State<Residentregistration> {
                                   ),
                                   const SizedBox(height: 10),
                                   DropdownButtonFormField<String>(
-  decoration: InputDecoration(
-    labelText: "Select Relation",
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10),
-    ),
-    filled: true,
-    fillColor: Colors.white,
-  ),
-  value: selectedRelation, // Ensure this matches one of the values in the list
-  hint: Text("Select an option"), // Hint text when no value is selected
-  items: relation.map((value) {
-    return DropdownMenuItem<String>(
-      value: value['relation_id'].toString(), // Ensure this is unique
-      child: Text(value['relation_name']),
-    );
-  }).toList(),
-  onChanged: (value) {
-    setState(() {
-      selectedRelation = value; // Update the selected value
-    });
-  },
-),
+                                    decoration: InputDecoration(
+                                      labelText: "Select Relation",
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                    ),
+                                    value: selectedRelation,
+                                    hint: Text("Select an option"),
+                                    items: relation.map((value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value['relation_id'].toString(),
+                                        child: Text(value['relation_name']),
+                                      );
+                                    }).toList(),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        selectedRelation = value;
+                                      });
+                                    },
+                                  ),
                                   const SizedBox(height: 10),
                                   const Text("Upload Proof (ID or Document)",
                                       style: TextStyle(
@@ -214,7 +278,7 @@ class _ResidentregistrationState extends State<Residentregistration> {
                                       : ElevatedButton.icon(
                                           icon: const Icon(Icons.upload_file),
                                           label: const Text("Upload Proof"),
-                                          onPressed: () => _pickImage(false),
+                                          onPressed: () => _pickFile(),
                                         ),
                                   // Upload Photo
                                   const SizedBox(height: 10),
@@ -227,7 +291,7 @@ class _ResidentregistrationState extends State<Residentregistration> {
                                       : ElevatedButton.icon(
                                           icon: const Icon(Icons.camera_alt),
                                           label: const Text("Upload Photo"),
-                                          onPressed: () => _pickImage(true),
+                                          onPressed: () => _pickImage(),
                                         ),
                                   const SizedBox(height: 20),
 
