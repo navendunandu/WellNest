@@ -114,28 +114,33 @@ class _HomepageState extends State<Homepage> {
               ),
               itemCount: 5,
               itemBuilder: (context, index) {
-                return Card(
-                  elevation: 4,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'asset/parentlandingpage.png',
-                          height: 60,
-                          width: 60,
-                          fit: BoxFit.cover,
-                        ),
-                        const SizedBox(height: 16),
-                        Text("Resident ID - ${index + 1}",
-                            style:
-                                const TextStyle(fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 8),
-                        const Text("Resident Name"),
-                        const SizedBox(height: 8),
-                        Text("Age: ${45 + index * 5}"),
-                      ],
+                return GestureDetector(
+                  onTap: () {
+                    
+                  },
+                  child: Card(
+                    elevation: 4,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'asset/parentlandingpage.png',
+                            height: 60,
+                            width: 60,
+                            fit: BoxFit.cover,
+                          ),
+                          const SizedBox(height: 16),
+                          Text("Resident ID - ${index + 1}",
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold)),
+                          const SizedBox(height: 8),
+                          const Text("Resident Name"),
+                          const SizedBox(height: 8),
+                          Text("Age: ${45 + index * 5}"),
+                        ],
+                      ),
                     ),
                   ),
                 );
