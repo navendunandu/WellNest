@@ -23,7 +23,10 @@ class _UserregistrationState extends State<Userregistration> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+
   bool isLoading = true;
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   File? _photo;
   File? _proof;
@@ -59,7 +62,9 @@ class _UserregistrationState extends State<Userregistration> {
           password: _passwordController.text, email: _emailController.text);
       String uid = auth.user!.id;
       submit(uid);
-    } catch (e) {}
+    } catch (e) {
+      print("Error: $e");
+    }
   }
 
   Future<void> submit(String uid) async {
@@ -126,7 +131,6 @@ class _UserregistrationState extends State<Userregistration> {
 
       await supabase.storage.from('fm_files').upload(fileName, _photo!);
 
-      // Get public URL of the uploaded image
       final imageUrl = supabase.storage.from('fm_files').getPublicUrl(fileName);
       return imageUrl;
     } catch (e) {
@@ -184,68 +188,36 @@ class _UserregistrationState extends State<Userregistration> {
                         FormValidation.validateAddress),
                     _buildTextField(_emailController, 'Email', Icons.email,
                         FormValidation.validateEmail),
-                    _buildTextField(_passwordController, 'Password', Icons.lock,
-                        FormValidation.validatePassword,
-                        obscureText: true),
+                    _buildTextField(
+                      _passwordController,
+                      'Password',
+                      Icons.lock,
+                      FormValidation.validatePassword,
+                      obscureText: !_isPasswordVisible,
+                      isPasswordField: true,
+                      toggleVisibility: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
+                    ),
                     _buildTextField(
                       _confirmPasswordController,
                       'Confirm Password',
                       Icons.lock_outline,
                       (value) => FormValidation.validateConfirmPassword(
                           value, _passwordController.text),
-                      obscureText: true,
+                      obscureText: !_isConfirmPasswordVisible,
+                      isPasswordField: true,
+                      toggleVisibility: () {
+                        setState(() {
+                          _isConfirmPasswordVisible =
+                              !_isConfirmPasswordVisible;
+                        });
+                      },
                     ),
                     _buildTextField(_phoneController, 'Phone Number',
                         Icons.phone, FormValidation.validateContact),
-
-                    // Upload Proof
-                    const SizedBox(height: 10),
-                    const Text("Upload Proof (ID or Document)",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 5),
-                    _proof != null
-                        ? Image.file(_proof!, height: 100)
-                        : ElevatedButton.icon(
-                            icon: const Icon(Icons.upload_file),
-                            label: const Text("Upload Proof"),
-                            onPressed: () => _pickFile(),
-                          ),
-                    // Upload Photo
-                    const SizedBox(height: 10),
-                    const Text("Upload Photo",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 5),
-                    _photo != null
-                        ? Image.file(_photo!, height: 100)
-                        : ElevatedButton.icon(
-                            icon: const Icon(Icons.camera_alt),
-                            label: const Text("Upload Photo"),
-                            onPressed: () => _pickImage(true),
-                          ),
-
-                    const Divider(),
-
-                    const SizedBox(height: 24),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromARGB(255, 24, 56, 111),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                      ),
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          register();
-                        }
-                      },
-                      child: const Text(
-                        'Register',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Color.fromARGB(230, 255, 252, 197)),
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -258,7 +230,9 @@ class _UserregistrationState extends State<Userregistration> {
 
   Widget _buildTextField(TextEditingController controller, String label,
       IconData icon, String? Function(String?)? validator,
-      {bool obscureText = false}) {
+      {bool obscureText = false,
+      bool isPasswordField = false,
+      VoidCallback? toggleVisibility}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: TextFormField(
@@ -269,6 +243,15 @@ class _UserregistrationState extends State<Userregistration> {
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
           filled: true,
           fillColor: Colors.white,
+          suffixIcon: isPasswordField
+              ? IconButton(
+                  icon: Icon(
+                    obscureText ? Icons.visibility_off : Icons.visibility,
+                    color: Colors.blueGrey,
+                  ),
+                  onPressed: toggleVisibility,
+                )
+              : null,
         ),
         obscureText: obscureText,
         validator: validator,
