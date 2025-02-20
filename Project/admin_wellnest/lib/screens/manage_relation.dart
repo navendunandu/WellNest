@@ -84,7 +84,7 @@ class _ManageRelationState extends State<ManageRelation> {
 
   Widget build(BuildContext context) {
     return Container(
-      color: Color.fromARGB(255, 227, 242, 253),
+      color: Color.fromARGB(255, 227, 242, 253), 
       padding: EdgeInsets.all(30),
       child: Center(
         child: Card(
