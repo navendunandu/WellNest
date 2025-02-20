@@ -20,7 +20,7 @@ class _NewAdmissionState extends State<NewAdmission> {
 
   Future<void> fetchFiletype() async {
     try {
-      final response = await supabase.from('tbl_resident').select();
+      final response = await supabase.from('tbl_resident').select().eq('resident_status', 0);
       setState(() {
         _filetypeList = response;
       });
