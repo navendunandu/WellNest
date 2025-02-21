@@ -1,5 +1,7 @@
-import 'package:caretaker_wellnest/components/form_validation.dart';
+
+import 'package:caretaker_wellnest/main.dart';
 import 'package:flutter/material.dart';
+
 
 class UpdateRoutine extends StatefulWidget {
   const UpdateRoutine({super.key});
@@ -35,7 +37,7 @@ class _UpdateRoutineState extends State<UpdateRoutine> {
         'routine_exercisetime': _exercisetime.text,
         'routine_calltime': _calltime.text,
       });
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Updation Successful"),
@@ -51,6 +53,7 @@ class _UpdateRoutineState extends State<UpdateRoutine> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,35 +117,30 @@ class _UpdateRoutineState extends State<UpdateRoutine> {
                     ),
                     _buildTextField(
                         _dinnertime, 'Dinner Time', Icons.dinner_dining),
-                        _buildTextField(_sleeptime, 'Bed Time', Icons.single_bed_sharp),
-                        const Divider(),
-                                  const SizedBox(height: 20),
-
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          Color.fromARGB(255, 24, 56, 111),
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 14),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                    ),
-                                    onPressed: () {
-                                       {
-                                        submit();
-                                      }
-                                    },
-                                    child: const Text(
-                                      'Add Routine',
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                          color: Color.fromARGB(
-                                              230, 255, 252, 197)),
-                                    ),
-                                  ),
-
+                    _buildTextField(
+                        _sleeptime, 'Bed Time', Icons.single_bed_sharp),
+                    const Divider(),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(255, 24, 56, 111),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                      ),
+                      onPressed: () {
+                        {
+                          submit();
+                        }
+                      },
+                      child: const Text(
+                        'Add Routine',
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(230, 255, 252, 197)),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -154,19 +152,19 @@ class _UpdateRoutineState extends State<UpdateRoutine> {
   }
 
   Widget _buildTextField(
-    TextEditingController controller, String label, IconData icon) {
-  return Padding(
-    padding: const EdgeInsets.only(bottom: 16),
-    child: TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon, color: Colors.blueGrey),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        filled: true,
-        fillColor: Colors.white,
+      TextEditingController controller, String label, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: Icon(icon, color: Colors.blueGrey),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          filled: true,
+          fillColor: Colors.white,
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 }
