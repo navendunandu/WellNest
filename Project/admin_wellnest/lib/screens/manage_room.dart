@@ -46,9 +46,9 @@ class _ManageRoomState extends State<ManageRoom> {
     });
     try {
       await supabase.from('tbl_room').insert({
-        'name': nameController.text,
-        'count': countController.text,
-        'price': priceController.text,
+        'room_name': nameController.text,
+        'room_count': countController.text,
+        'room_price': priceController.text,
       });
 
       print("Insert Successful");
@@ -146,12 +146,12 @@ class _ManageRoomState extends State<ManageRoom> {
                               return Card(
                                 margin: EdgeInsets.symmetric(vertical: 10),
                                 child: ListTile(
-                                  title: Text(data['name']),
-                                  subtitle: Text('Count: ${data['count']}'),
+                                  title: Text(data['room_name']),
+                                  subtitle: Text('Count: ${data['room_count']}'),
                                   trailing: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Text('Price: \₹${data['price']}'),
+                                      Text('Price: \₹${data['room_price']}'),
                                       IconButton(
                                         icon: Icon(Icons.delete,
                                             color: const Color.fromARGB(
