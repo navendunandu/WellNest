@@ -28,19 +28,33 @@ class _ResidentregistrationState extends State<Residentregistration> {
   File? _proof;
   final ImagePicker _picker = ImagePicker();
   final AuthService _authService = AuthService();
+  List<Map<String, dynamic>> rooms = [];
 
   List<Map<String, dynamic>> relation = [];
+  @override
   void initState() {
     super.initState();
     fetchData();
+    fetchRoomData();
   }
 
   Future<void> fetchData() async {
     try {
       final response = await supabase.from('tbl_relation').select();
-      print("Fetched data: $response");
       setState(() {
         relation = response;
+      });
+    } catch (e) {
+      print("Error fetching data: $e");
+    }
+  }
+
+  Future<void> fetchRoomData() async {
+    try {
+      final response = await supabase.from('tbl_room').select();
+      print("Fetched data: $response");
+      setState(() {
+        rooms = response;
       });
     } catch (e) {
       print("Error fetching data: $e");
@@ -165,6 +179,8 @@ class _ResidentregistrationState extends State<Residentregistration> {
     }
   }
 
+  String? selectedRoom;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -267,6 +283,28 @@ class _ResidentregistrationState extends State<Residentregistration> {
                                         selectedRelation = value;
                                       });
                                     },
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  ListView(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    children: rooms.map((room) {
+                                      return RadioListTile<String>(
+                                        title: Text(
+                                            "${room['room_name']} = Rs. ${room['room_price'].toString()}"), // Display room name
+                                        value: room[
+                                            'room_id'].toString(),
+                                        groupValue:
+                                            selectedRoom, // Compare with selected value
+                                        onChanged: (String? value) {
+                                          setState(() {
+                                            selectedRoom = value;
+                                          });
+                                        },
+                                      );
+                                    }).toList(),
                                   ),
                                   const SizedBox(height: 10),
                                   const Text("Upload Proof (ID or Document)",
