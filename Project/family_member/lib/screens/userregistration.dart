@@ -244,32 +244,28 @@ class _UserregistrationState extends State<Userregistration> {
                     const SizedBox(height: 20),
 
                     const Divider(),
-                                  const SizedBox(height: 20),
+                    const SizedBox(height: 20),
 
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          Color.fromARGB(255, 24, 56, 111),
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 14),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                    ),
-                                    onPressed: () {
-                                      if (_formKey.currentState!.validate()) {
-                                        register();
-                                      }
-                                    },
-                                    child: const Text(
-                                      'Register',
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                          color: Color.fromARGB(
-                                              230, 255, 252, 197)),
-                                    ),
-                                  ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(255, 24, 56, 111),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                      ),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          register();
+                        }
+                      },
+                      child: const Text(
+                        'Register',
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(230, 255, 252, 197)),
+                      ),
+                    ),
                   ],
                 ),
               ),
