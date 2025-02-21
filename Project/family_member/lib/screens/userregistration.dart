@@ -218,6 +218,58 @@ class _UserregistrationState extends State<Userregistration> {
                     ),
                     _buildTextField(_phoneController, 'Phone Number',
                         Icons.phone, FormValidation.validateContact),
+                    const SizedBox(height: 10),
+                    const Text("Upload Proof (ID or Document)",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 5),
+                    _proof != null
+                        ? Image.file(_proof!, height: 100)
+                        : ElevatedButton.icon(
+                            icon: const Icon(Icons.upload_file),
+                            label: const Text("Upload Proof"),
+                            onPressed: () => _pickFile(),
+                          ),
+                    // Upload Photo
+                    const SizedBox(height: 10),
+                    const Text("Upload Photo",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 5),
+                    _photo != null
+                        ? Image.file(_photo!, height: 100)
+                        : ElevatedButton.icon(
+                            icon: const Icon(Icons.camera_alt),
+                            label: const Text("Upload Photo"),
+                            onPressed: () => _pickImage(true),
+                          ),
+                    const SizedBox(height: 20),
+
+                    const Divider(),
+                                  const SizedBox(height: 20),
+
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                          Color.fromARGB(255, 24, 56, 111),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 14),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                    ),
+                                    onPressed: () {
+                                      if (_formKey.currentState!.validate()) {
+                                        register();
+                                      }
+                                    },
+                                    child: const Text(
+                                      'Register',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color.fromARGB(
+                                              230, 255, 252, 197)),
+                                    ),
+                                  ),
                   ],
                 ),
               ),
