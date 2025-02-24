@@ -1,3 +1,4 @@
+import 'package:caretaker_wellnest/main.dart';
 import 'package:flutter/material.dart';
 import 'login_page.dart'; // Import the LoginPage
 
@@ -12,6 +13,31 @@ class _HomepageState extends State<Homepage> {
   bool isSidebarExpanded = true;
   final double sidebarWidth = 200.0;
   final double collapsedSidebarWidth = 60.0;
+  bool isLoading = true;
+  List<Map<String, dynamic>> caretaker = [];
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final response = await supabase.from('tbl_caretaker').select();
+      print("Fetched data: $response");
+      setState(() {
+        caretaker = List<Map<String, dynamic>>.from(response);
+        isLoading = false;
+      });
+    } catch (e) {
+      print("Error fetching data: $e");
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
