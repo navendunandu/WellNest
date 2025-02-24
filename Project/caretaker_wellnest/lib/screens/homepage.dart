@@ -25,7 +25,7 @@ class _HomepageState extends State<Homepage> {
       isLoading = true;
     });
     try {
-      final response = await supabase.from('tbl_caretaker').select();
+      final response = await supabase.from('tbl_resident').select();
       print("Fetched data: $response");
       setState(() {
         caretaker = List<Map<String, dynamic>>.from(response);
