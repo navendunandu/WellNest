@@ -2,7 +2,8 @@ import 'package:admin_wellnest/main.dart';
 import 'package:flutter/material.dart';
 
 class AssignCaretaker extends StatefulWidget {
-  const AssignCaretaker({super.key});
+  final String id;
+  const AssignCaretaker({super.key, required this.id});
 
   @override
   State<AssignCaretaker> createState() => _AssignCaretakerState();
@@ -35,11 +36,16 @@ class _AssignCaretakerState extends State<AssignCaretaker> {
     }
   }
 
+  void assign()
+  {
+    
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Assign Caretaker",
+        title: Text("Assign Caretaker ${(widget.id)}",
             style: TextStyle(color: Colors.white)),
         centerTitle: true,
         elevation: 4,
