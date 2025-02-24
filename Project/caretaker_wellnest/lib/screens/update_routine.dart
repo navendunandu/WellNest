@@ -1,7 +1,6 @@
-
 import 'package:caretaker_wellnest/main.dart';
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart'; // Import the intl package for time formatting
 
 class UpdateRoutine extends StatefulWidget {
   const UpdateRoutine({super.key});
@@ -134,7 +133,7 @@ class _UpdateRoutineState extends State<UpdateRoutine> {
                         }
                       },
                       child: const Text(
-                        'Add Routine',
+                        'Update Routine',
                         style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -164,6 +163,21 @@ class _UpdateRoutineState extends State<UpdateRoutine> {
           filled: true,
           fillColor: Colors.white,
         ),
+        onTap: () async {
+          // Show time picker when the text field is tapped
+          TimeOfDay? pickedTime = await showTimePicker(
+            context: context,
+            initialTime: TimeOfDay.now(),
+          );
+
+          if (pickedTime != null) {
+            // Format the selected time and set it to the text field
+            final formattedTime = DateFormat('HH:mm').format(
+              DateTime(2023, 1, 1, pickedTime.hour, pickedTime.minute),
+            );
+            controller.text = formattedTime;
+          }
+        },
       ),
     );
   }
