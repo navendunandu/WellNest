@@ -1,6 +1,7 @@
 import 'package:caretaker_wellnest/components/form_validation.dart';
+import 'package:caretaker_wellnest/main.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter/gestures.dart';
+import 'homepage.dart'; 
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -18,11 +19,39 @@ class _LoginPageState extends State<LoginPage> {
   String email = '';
   String password = '';
 
-  void submit() {
-    setState(() {
-      email = emailController.text;
-      password = passwordController.text;
-    });
+  Future<void> submit() async {
+    if (formKey.currentState!.validate()) {
+      setState(() {
+        email = emailController.text;
+        password = passwordController.text;
+      });
+
+      try {
+        // Sign in with email and password
+        final response = await supabase.auth.signInWithPassword(
+          email: email,
+          password: password,
+        );
+
+        if (response.user != null) {
+          // Navigate to Homepage on successful login
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => Homepage()),
+          );
+        } else {
+          // Handle invalid credentials
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Invalid email or password')),
+          );
+        }
+      } catch (e) {
+        // Handle other errors
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
   }
 
   @override
@@ -48,8 +77,7 @@ class _LoginPageState extends State<LoginPage> {
         elevation: 0,
       ),
       body: Container(
-        color: const Color.fromARGB(
-            230, 255, 252, 197), 
+        color: const Color.fromARGB(230, 255, 252, 197),
         child: Center(
           child: SingleChildScrollView(
             child: Form(
@@ -64,8 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                       "Welcome",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color:
-                            Color.fromARGB(255, 24, 56, 111),
+                        color: Color.fromARGB(255, 24, 56, 111),
                         fontSize: 40,
                         fontWeight: FontWeight.bold,
                       ),
@@ -149,12 +176,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 30),
                     ElevatedButton(
-                      onPressed: () {
-                        if (formKey.currentState!.validate()) {
-                          print("Validated");
-                          submit();
-                        }
-                      },
+                      onPressed: submit,
                       style: ElevatedButton.styleFrom(
                         shape: const ContinuousRectangleBorder(),
                         backgroundColor: const Color.fromARGB(255, 24, 56, 111),
