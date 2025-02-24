@@ -55,7 +55,6 @@ class _AssignCaretakerState extends State<AssignCaretaker> {
             colors: [
               Color.fromARGB(255, 24, 56, 111),
               const Color.fromARGB(255, 255, 252, 197),
-             
             ],
           ),
         ),
@@ -84,14 +83,39 @@ class _AssignCaretakerState extends State<AssignCaretaker> {
                         itemBuilder: (context, index) {
                           final data = caretaker[index];
                           return Card(
-                            
                             margin: EdgeInsets.symmetric(vertical: 10),
                             child: ListTile(
                               title: Text(data['caretaker_name']),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("Email: ${data['caretaker_email']}"),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text("Email: ${data['caretaker_email']}"),
+                                      ElevatedButton(
+                                        onPressed: () {},
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              Color.fromARGB(255, 24, 56, 111),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 17, vertical: 8),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          "Assign",
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                   Text("Contact: ${data['caretaker_contact']}"),
                                 ],
                               ),
