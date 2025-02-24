@@ -41,10 +41,6 @@ class _ManageResidentState extends State<ManageResident> {
 void paymentVerify(String residentId) {
     updateResidentStatus(residentId, 3);
   }
-  void assign() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => (AssignCaretaker())));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +56,8 @@ void paymentVerify(String residentId) {
         ],
         rows: _filetypeList.asMap().entries.map((entry) {
           print(entry.value);
-          return DataRow(cells: [
+          return DataRow(
+            cells: [
             DataCell(Text((entry.key + 1).toString())),
             DataCell(Text(entry.value['resident_name'].toString())),
             DataCell(Text(entry.value['room_id'].toString())),
@@ -82,7 +79,7 @@ void paymentVerify(String residentId) {
                     )
                   : ElevatedButton(
                       onPressed: () {
-                        assign();
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => AssignCaretaker(id: entry.value['resident_id']),));
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color.fromARGB(255, 24, 56, 111),
