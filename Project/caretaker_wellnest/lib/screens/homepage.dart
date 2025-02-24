@@ -58,7 +58,9 @@ class _HomepageState extends State<Homepage> {
                   color: Color.fromARGB(255, 24, 56, 111)),
               title: const Text('Home',
                   style: TextStyle(color: Color.fromARGB(255, 24, 56, 111))),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const Homepage()));
+              },
             ),
             ListTile(
               leading: const Icon(Icons.person,
