@@ -14,7 +14,9 @@ class _HomepageState extends State<Homepage> {
   final double sidebarWidth = 200.0;
   final double collapsedSidebarWidth = 60.0;
   bool isLoading = true;
-  List<Map<String, dynamic>> caretaker = [];
+  List<Map<String, dynamic>> residentList = [];
+
+  @override
   void initState() {
     super.initState();
     fetchData();
@@ -28,7 +30,7 @@ class _HomepageState extends State<Homepage> {
       final response = await supabase.from('tbl_resident').select();
       print("Fetched data: $response");
       setState(() {
-        caretaker = List<Map<String, dynamic>>.from(response);
+        residentList = (response);
         isLoading = false;
       });
     } catch (e) {
