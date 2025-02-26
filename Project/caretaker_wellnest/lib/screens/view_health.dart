@@ -31,7 +31,7 @@ class _ViewHealthState extends State<ViewHealth> {
                   MaterialPageRoute(builder: (context) => const UpdateHealth()),
                 );
               },
-              child: const Text('Manage Record'),
+              child: const Text('Update Health'),
             ),
           
         ],
