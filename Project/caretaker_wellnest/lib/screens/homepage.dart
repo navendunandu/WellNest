@@ -1,5 +1,6 @@
 import 'package:caretaker_wellnest/main.dart';
 import 'package:caretaker_wellnest/screens/apply_leave.dart';
+import 'package:caretaker_wellnest/screens/manage_leave.dart';
 import 'package:flutter/material.dart';
 import 'login_page.dart'; // Import the LoginPage
 
@@ -77,9 +78,11 @@ class _HomepageState extends State<Homepage> {
             ListTile(
               leading: const Icon(Icons.settings,
                   color: Color.fromARGB(255, 24, 56, 111)),
-              title: const Text('Settings',
+              title: const Text('Leave Management',
                   style: TextStyle(color: Color.fromARGB(255, 24, 56, 111))),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageLeave()));
+              },
             ),
             const Divider(),
             ListTile(
