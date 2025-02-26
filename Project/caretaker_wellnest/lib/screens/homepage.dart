@@ -63,7 +63,8 @@ class _HomepageState extends State<Homepage> {
               title: const Text('Home',
                   style: TextStyle(color: Color.fromARGB(255, 24, 56, 111))),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const Homepage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const Homepage()));
               },
             ),
             ListTile(
@@ -72,7 +73,10 @@ class _HomepageState extends State<Homepage> {
               title: const Text('Apply Leave',
                   style: TextStyle(color: Color.fromARGB(255, 24, 56, 111))),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const ApplyLeave()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ApplyLeave()));
               },
             ),
             ListTile(
@@ -81,7 +85,10 @@ class _HomepageState extends State<Homepage> {
               title: const Text('Leave Management',
                   style: TextStyle(color: Color.fromARGB(255, 24, 56, 111))),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageLeave()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ManageLeave()));
               },
             ),
             const Divider(),
@@ -148,12 +155,11 @@ class _HomepageState extends State<Homepage> {
                 mainAxisSpacing: 16,
                 childAspectRatio: 0.8,
               ),
-              itemCount: 5,
+              itemCount: residentList.length,
               itemBuilder: (context, index) {
+                final resident = residentList[index];
                 return GestureDetector(
-                  onTap: () {
-                    
-                  },
+                  onTap: () {},
                   child: Card(
                     elevation: 4,
                     child: Padding(
@@ -161,20 +167,20 @@ class _HomepageState extends State<Homepage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset(
-                            'asset/parentlandingpage.png',
+                          Image.network(
+                            resident['resident_photo'],
                             height: 60,
                             width: 60,
                             fit: BoxFit.cover,
                           ),
                           const SizedBox(height: 16),
-                          Text("Resident ID - ${index + 1}",
+                          Text("Resident - ${index + 1}",
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold)),
                           const SizedBox(height: 8),
-                          const Text("Resident Name"),
+                          Text(resident['resident_name']),
                           const SizedBox(height: 8),
-                          Text("Age: ${45 + index * 5}"),
+                  
                         ],
                       ),
                     ),
