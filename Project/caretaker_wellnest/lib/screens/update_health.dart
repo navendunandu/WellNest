@@ -21,7 +21,6 @@ final _formKey = GlobalKey<FormState>();
   final TextEditingController _lp = TextEditingController();
   final TextEditingController _thyroid = TextEditingController();
   final TextEditingController _liverfunction = TextEditingController();
-  final TextEditingController _date = TextEditingController();
 
   bool isLoading = true;
 
