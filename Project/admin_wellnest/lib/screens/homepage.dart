@@ -1,5 +1,6 @@
 // import 'package:admin_wellnest/components/sidebar_button.dart';
 import 'package:admin_wellnest/screens/dashboard.dart';
+import 'package:admin_wellnest/screens/leave_appl.dart';
 // import 'package:admin_wellnest/screens/family_member.dart';
 import 'package:admin_wellnest/screens/login_screen.dart';
 import 'package:admin_wellnest/screens/manage_caretaker.dart';
@@ -46,6 +47,11 @@ class _HomepageState extends State<Homepage> {
       'icon': Icons.person_outlined,
       'label': 'Resident',
       'page': ManageResident()
+    },
+    {
+      'icon': Icons.person_outlined,
+      'label': 'Manage Leaves',
+      'page': LeaveApplication()
     },
 
     {'icon': Icons.feedback, 'label': 'Feedback', 'page': ManageFeedback()},
