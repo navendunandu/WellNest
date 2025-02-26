@@ -90,7 +90,7 @@ class _ApplyLeaveState extends State<ApplyLeave> {
         title: const Text('Leave Application'),
         backgroundColor: Color.fromARGB(255, 255, 252, 197), // AppBar color
         elevation: 0,
-        centerTitle: true,
+      
       ),
       body: Container(
         decoration: BoxDecoration(
