@@ -62,7 +62,7 @@ final _formKey = GlobalKey<FormState>();
       backgroundColor: const Color.fromARGB(230, 255, 252, 197),
       appBar: AppBar(
         title: const Text(
-          "Create Account",
+          "Update Health",
           style: TextStyle(
               fontWeight: FontWeight.bold,
               color: Color.fromARGB(230, 255, 252, 197)),
@@ -91,7 +91,7 @@ final _formKey = GlobalKey<FormState>();
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const Text(
-                      "Set Routine",
+                      "Update Health Record",
                       style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -110,7 +110,7 @@ final _formKey = GlobalKey<FormState>();
                       'Diabetes',
                       Icons.lunch_dining,
                     ),
-                    _buildTextField(_bd, 'Blood Pressure',
+                    _buildTextField(_bp, 'Blood Pressure',
                         Icons.sports_gymnastics),
                     _buildTextField(
                       _bd,
