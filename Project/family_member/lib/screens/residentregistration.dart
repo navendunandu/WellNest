@@ -34,11 +34,15 @@ class _ResidentregistrationState extends State<Residentregistration> {
   DateTime? selectedDate;
 
   Future<void> _pickDate(BuildContext context) async {
+    final DateTime now = DateTime.now();
+    final DateTime maxDate = DateTime(now.year - 25, now.month, now.day);
+    final DateTime minDate = DateTime(now.year - 90, now.month, now.day);
+
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
+      initialDate: maxDate,
+      firstDate: minDate,
+      lastDate: maxDate,
     );
 
     if (picked != null) {
