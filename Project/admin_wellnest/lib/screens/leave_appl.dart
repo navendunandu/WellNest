@@ -62,7 +62,7 @@ void leaveVerify(String leaveId) {
             DataCell(Text(entry.value['leave_todate'].toString())),
             DataCell(Text(entry.value['leave_date'].toString())),
             DataCell(
-              entry.value['leave_status'] == 1
+              entry.value['leave_status'] == 0
                   ? Row(
                       children: [
                         Text("Leave application pending.."),
