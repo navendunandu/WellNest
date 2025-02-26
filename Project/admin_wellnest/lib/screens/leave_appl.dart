@@ -19,8 +19,11 @@ class _LeaveApplicationState extends State<LeaveApplication> {
 
   Future<void> fetchFiletype() async {
     try {
-      final response =
-          await supabase.from('tbl_leave').select().gt('leave_status', 0).neq('leave_status', 2);
+      final response = await supabase
+          .from('tbl_leave')
+          .select()
+          .gt('leave_status', 0)
+          .neq('leave_status', 2);
       setState(() {
         _filetypeList = response;
       });
@@ -31,16 +34,19 @@ class _LeaveApplicationState extends State<LeaveApplication> {
 
   Future<void> updateLeaveStatus(String leaveId, int status) async {
     try {
-      await supabase.from('tbl_leave').update(
-          {'leave_status': status}).match({'leave_id': leaveId});
+      await supabase
+          .from('tbl_leave')
+          .update({'leave_status': status}).match({'leave_id': leaveId});
       fetchFiletype();
     } catch (e) {
-      print("ERROR UPDATING RESIDENT STATUS: $e");
+      print("ERROR UPDATING LEAVE STATUS: $e");
     }
   }
-void leaveVerify(String leaveId) {
+
+  void leaveVerify(String leaveId) {
     updateLeaveStatus(leaveId, 3);
   }
+
   @override
   Widget build(BuildContext context) {
     return DataTable(
@@ -54,29 +60,26 @@ void leaveVerify(String leaveId) {
         ],
         rows: _filetypeList.asMap().entries.map((entry) {
           print(entry.value);
-          return DataRow(
-            cells: [
+          return DataRow(cells: [
             DataCell(Text((entry.key + 1).toString())),
             DataCell(Text(entry.value['leave_reason'].toString())),
             DataCell(Text(entry.value['leave_fromdate'].toString())),
             DataCell(Text(entry.value['leave_todate'].toString())),
             DataCell(Text(entry.value['leave_date'].toString())),
-            DataCell(
-              entry.value['leave_status'] == 0
-                  ? Row(
-                      children: [
-                        Text("Leave application pending.."),
-                        IconButton(
-                          icon: Icon(Icons.verified),
-                          onPressed: () {
-                            leaveVerify(entry.value['leave_id'].toString());
-                          },
-                        ),
-                      ],
-                    )
-                  : Text('Done')
-            ),
+            DataCell(entry.value['leave_status'] == 0
+                ? Row(
+                    children: [
+                      Text("Leave application pending.."),
+                      IconButton(
+                        icon: Icon(Icons.verified),
+                        onPressed: () {
+                          leaveVerify(entry.value['leave_id'].toString());
+                        },
+                      ),
+                    ],
+                  )
+                : Text('Done')),
           ]);
         }).toList());
-         }
+  }
 }
