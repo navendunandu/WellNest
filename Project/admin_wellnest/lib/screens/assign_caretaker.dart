@@ -36,9 +36,18 @@ class _AssignCaretakerState extends State<AssignCaretaker> {
     }
   }
 
-  void assign()
-  {
-    
+  Future<void> assign(String id)
+  async {
+    try {
+      await supabase.from('tbl_assign').insert({
+        'resident_id':widget.id,
+        'caretaker_id':id,
+      }) ;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Assigned")));
+      Navigator.pop(context);
+    } catch (e) {
+      print("Error:$e");
+    }
   }
   
   @override
@@ -101,7 +110,9 @@ class _AssignCaretakerState extends State<AssignCaretaker> {
                                     children: [
                                       Text("Email: ${data['caretaker_email']}"),
                                       ElevatedButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          assign(data['caretaker_id']);
+                                        },
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor:
                                               Color.fromARGB(255, 24, 56, 111),
