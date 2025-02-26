@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // For formatting date and time
+import 'package:caretaker_wellnest/main.dart';
 
 class UpdateMedappointments extends StatefulWidget {
   const UpdateMedappointments({super.key});
@@ -8,8 +10,181 @@ class UpdateMedappointments extends StatefulWidget {
 }
 
 class _UpdateMedappointmentsState extends State<UpdateMedappointments> {
+  final _formKey = GlobalKey<FormState>();
+
+  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _timeController = TextEditingController();
+  final TextEditingController _docNameController = TextEditingController();
+
+  bool isLoading = false;
+
+  Future<void> _selectDate() async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        _dateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+      });
+    }
+  }
+
+  Future<void> _selectTime() async {
+    TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (pickedTime != null) {
+      setState(() {
+        _timeController.text = pickedTime.format(context);
+      });
+    }
+  }
+
+  Future<void> submit() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      await supabase.from('tbl_appointment').insert({
+        'appointment_date': _dateController.text,
+        'appointment_time': _timeController.text,
+        'doctor_name': _docNameController.text,
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Updation Successful"),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Error: $e"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(230, 255, 252, 197),
+      appBar: AppBar(
+        title: const Text(
+          "Update Medication",
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Color.fromARGB(230, 255, 252, 197)),
+        ),
+        backgroundColor: const Color.fromARGB(255, 24, 56, 111),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back,
+              color: Color.fromARGB(230, 255, 252, 197)),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Card(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            elevation: 5,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Text(
+                      "Set Doctor Appointment",
+                      style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 24, 56, 111)),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: _dateController,
+                      decoration: InputDecoration(
+                        labelText: "Appointment Date",
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.calendar_today),
+                          onPressed: _selectDate,
+                        ),
+                        border: OutlineInputBorder(),
+                      ),
+                      readOnly: true,
+                      validator: (value) =>
+                          value!.isEmpty ? "Please select a date" : null,
+                    ),
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      controller: _timeController,
+                      decoration: InputDecoration(
+                        labelText: "Appointment Time",
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.access_time),
+                          onPressed: _selectTime,
+                        ),
+                        border: OutlineInputBorder(),
+                      ),
+                      readOnly: true,
+                      validator: (value) =>
+                          value!.isEmpty ? "Please select a time" : null,
+                    ),
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      controller: _docNameController,
+                      decoration: const InputDecoration(
+                        labelText: "Doctor's Name",
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) =>
+                          value!.isEmpty ? "Please enter doctor's name" : null,
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: isLoading ? null : submit,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(255, 24, 56, 111),
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                      ),
+                      child: isLoading
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text(
+                              "Update Appointment",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16),
+                            ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
