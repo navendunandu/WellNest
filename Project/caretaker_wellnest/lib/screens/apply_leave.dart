@@ -126,7 +126,7 @@ class _ApplyLeaveState extends State<ApplyLeave> {
                             // labelText: 'Reason for Leave',
                             hintText: 'Enter your reason for leave',
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(10)
                             ),
                             filled: true,
                             fillColor: Colors.white,
