@@ -21,9 +21,7 @@ class _LeaveApplicationState extends State<LeaveApplication> {
     try {
       final response = await supabase
           .from('tbl_leave')
-          .select()
-          .gt('leave_status', 0)
-          .neq('leave_status', 2);
+          .select().eq('leave_status', 0);
       setState(() {
         _filetypeList = response;
       });
@@ -44,7 +42,12 @@ class _LeaveApplicationState extends State<LeaveApplication> {
   }
 
   void leaveVerify(String leaveId) {
-    updateLeaveStatus(leaveId, 3);
+    updateLeaveStatus(leaveId, 1);
+  }
+
+  void leavedeny(String leaveid)
+  {
+    updateLeaveStatus(leaveid, 2);
   }
 
   @override
@@ -66,19 +69,29 @@ class _LeaveApplicationState extends State<LeaveApplication> {
             DataCell(Text(entry.value['leave_fromdate'].toString())),
             DataCell(Text(entry.value['leave_todate'].toString())),
             DataCell(Text(entry.value['leave_date'].toString())),
-            DataCell(entry.value['leave_status'] == 0
-                ? Row(
+            DataCell(
+                Row(
                     children: [
                       Text("Leave application pending.."),
-                      IconButton(
-                        icon: Icon(Icons.verified),
-                        onPressed: () {
-                          leaveVerify(entry.value['leave_id'].toString());
-                        },
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.verified_outlined),
+                            onPressed: () {
+                              leaveVerify(entry.value['leave_id'].toString());
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.cancel_rounded),
+                            onPressed: () {
+                              leavedeny(entry.value['leave_id'].toString());
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   )
-                : Text('Done')),
+            )
           ]);
         }).toList());
   }
