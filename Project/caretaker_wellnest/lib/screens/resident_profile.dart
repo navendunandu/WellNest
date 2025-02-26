@@ -1,3 +1,4 @@
+import 'package:caretaker_wellnest/screens/view_medappointments.dart';
 import 'package:flutter/material.dart';
 import 'view_routine.dart';
 import 'view_medication.dart';
@@ -100,6 +101,22 @@ class _ResidentProfileState extends State<ResidentProfile> {
                 );
               },
               child: const Text('Manage Health Record'),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ViewMedappointments()),
+                );
+              },
+              child: const Text('Manage Appointments'),
             ),
           ],
         ),
