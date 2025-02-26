@@ -31,6 +31,23 @@ class _ResidentregistrationState extends State<Residentregistration> {
   List<Map<String, dynamic>> rooms = [];
 
   List<Map<String, dynamic>> relation = [];
+  DateTime? selectedDate;
+
+  Future<void> _pickDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (picked != null) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -100,6 +117,12 @@ class _ResidentregistrationState extends State<Residentregistration> {
     setState(() {
       isLoading = true;
     });
+    if (selectedDate == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Select a date of birth")),
+      );
+      return;
+    }
     try {
       String fmid = supabase.auth.currentUser!.id;
       await supabase.from('tbl_resident').insert({
@@ -111,6 +134,7 @@ class _ResidentregistrationState extends State<Residentregistration> {
         'resident_address': _addressController.text,
         'familymember_id': fmid,
         'relation_id': selectedRelation,
+        'resident_dob': selectedDate!.toIso8601String().split('T')[0]
       });
 
       String? proofUrl = await uploadFile(uid);
@@ -240,6 +264,29 @@ class _ResidentregistrationState extends State<Residentregistration> {
                                       'Phone',
                                       Icons.phone_android_outlined,
                                       FormValidation.validateContact),
+                                  TextField(
+                                    readOnly: true,
+                                    controller: TextEditingController(
+                                      text: selectedDate == null
+                                          ? ""
+                                          : "${selectedDate!.toLocal()}".split(
+                                              ' ')[0], // Display YYYY-MM-DD
+                                    ),
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      labelText: "Date of Birth",
+                                      suffixIcon: IconButton(
+                                        icon: Icon(Icons.calendar_today),
+                                        onPressed: () => _pickDate(context),
+                                      ),
+                                      border: OutlineInputBorder(),
+                                    ),
+                                    onTap: () => _pickDate(
+                                        context), // Open calendar when field is tapped
+                                  ),
+
+                                  SizedBox(height: 10),
                                   _buildTextField(
                                       _emailController,
                                       'Email',
@@ -294,8 +341,7 @@ class _ResidentregistrationState extends State<Residentregistration> {
                                       return RadioListTile<String>(
                                         title: Text(
                                             "${room['room_name']} = Rs. ${room['room_price'].toString()}"), // Display room name
-                                        value: room[
-                                            'room_id'].toString(),
+                                        value: room['room_id'].toString(),
                                         groupValue:
                                             selectedRoom, // Compare with selected value
                                         onChanged: (String? value) {
