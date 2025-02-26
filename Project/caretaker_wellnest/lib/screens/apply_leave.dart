@@ -13,7 +13,6 @@ class _ApplyLeaveState extends State<ApplyLeave> {
   final _reasonController = TextEditingController();
   DateTime? _startDate;
   DateTime? _endDate;
-  String? _leaveType;
   bool _isLoading = false;
 
   Future<void> _selectDate(BuildContext context, bool isStartDate) async {
@@ -99,8 +98,9 @@ class _ApplyLeaveState extends State<ApplyLeave> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color.fromARGB(255, 248, 245, 176), // Light yellow
-              const Color.fromARGB(245, 245, 204, 204), // White
+              Color.fromARGB(255, 248, 245, 176),
+              Color.fromARGB(245, 245, 204, 204),
+               Color.fromARGB(230, 240, 169, 169)
             ],
           ),
         ),
@@ -208,7 +208,7 @@ class _ApplyLeaveState extends State<ApplyLeave> {
                         onPressed: _submitForm,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color.fromARGB(
-                              255, 255, 252, 197), // Button color
+                              230, 230, 190, 197), // Button color
                           padding: const EdgeInsets.symmetric(
                               horizontal: 40, vertical: 15),
                           shape: RoundedRectangleBorder(
