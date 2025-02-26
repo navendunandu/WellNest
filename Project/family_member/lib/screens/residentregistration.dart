@@ -23,6 +23,7 @@ class _ResidentregistrationState extends State<Residentregistration> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
   bool isLoading = true;
   File? _photo;
   File? _proof;
@@ -48,6 +49,7 @@ class _ResidentregistrationState extends State<Residentregistration> {
     if (picked != null) {
       setState(() {
         selectedDate = picked;
+        _calculateAge(picked); 
       });
     }
   }
@@ -207,6 +209,16 @@ class _ResidentregistrationState extends State<Residentregistration> {
     }
   }
 
+  void _calculateAge(DateTime birthDate) {
+    DateTime today = DateTime.now();
+    int age = today.year - birthDate.year;
+    if (today.month < birthDate.month ||
+        (today.month == birthDate.month && today.day < birthDate.day)) {
+      age--;
+    }
+    ageController.text = age.toString(); // Update age field
+  }
+
   String? selectedRoom;
 
   @override
@@ -289,7 +301,17 @@ class _ResidentregistrationState extends State<Residentregistration> {
                                     onTap: () => _pickDate(
                                         context), // Open calendar when field is tapped
                                   ),
-
+                                  SizedBox(height: 10),
+                                  TextField(
+                                    readOnly: true,
+                                    controller: ageController,
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      labelText: "Age",
+                                      border: OutlineInputBorder(),
+                                    ),
+                                  ),
                                   SizedBox(height: 10),
                                   _buildTextField(
                                       _emailController,
