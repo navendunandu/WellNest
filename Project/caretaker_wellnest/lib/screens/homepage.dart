@@ -168,18 +168,19 @@ class _HomepageState extends State<Homepage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Image.network(
-                            resident['resident_photo'],
+                            resident['resident_photo'] ?? "",
                             height: 60,
                             width: 60,
                             fit: BoxFit.cover,
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 15),
                           Text("Resident - ${index + 1}",
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold)),
                           const SizedBox(height: 8),
                           Text(resident['resident_name']),
                           const SizedBox(height: 8),
+                          Text(resident['resident_dob'] ?? "")
                   
                         ],
                       ),
