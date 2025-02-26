@@ -9,13 +9,12 @@ class UpdateMedication extends StatefulWidget {
 }
 
 class _UpdateMedicationState extends State<UpdateMedication> {
-
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _foodtiming = TextEditingController();
   final TextEditingController _medicinecount = TextEditingController();
-  final TextEditingController _medicinetime = TextEditingController();
-  
+
+  String? _medicinetime = 'Before food';
 
   bool isLoading = true;
 
@@ -27,7 +26,7 @@ class _UpdateMedicationState extends State<UpdateMedication> {
       await supabase.from('tbl_medication').insert({
         'medication_timing': _foodtiming.text,
         'medication_count': _medicinecount.text,
-        'medication_time': _medicinetime.text,
+        'medication_time': _medicinetime, // Use the selected radio button value
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -52,7 +51,7 @@ class _UpdateMedicationState extends State<UpdateMedication> {
       backgroundColor: const Color.fromARGB(230, 255, 252, 197),
       appBar: AppBar(
         title: const Text(
-          "Create Account",
+          "Update Medication",
           style: TextStyle(
               fontWeight: FontWeight.bold,
               color: Color.fromARGB(230, 255, 252, 197)),
@@ -81,7 +80,7 @@ class _UpdateMedicationState extends State<UpdateMedication> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const Text(
-                      "Set Routine",
+                      "Set Medication",
                       style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -89,18 +88,97 @@ class _UpdateMedicationState extends State<UpdateMedication> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 20),
-                    _buildTextField(_foodtiming, 'Medicine timing', Icons.food_bank),
+                    
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: TextFormField(
+                        controller: _foodtiming,
+                        decoration: InputDecoration(
+                          labelText: 'Medicine timing',
+                          prefixIcon:
+                              Icon(Icons.food_bank, color: Colors.blueGrey),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          filled: true,
+                          fillColor: Colors.white,
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.access_time,
+                                color: Colors.blueGrey),
+                            onPressed: () async {
+                              // Open the time picker
+                              TimeOfDay? pickedTime = await showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay.now(),
+                              );
+
+                              // If a time is selected, update the text field
+                              if (pickedTime != null) {
+                                final time =
+                                    '${pickedTime.hour}:${pickedTime.minute}';
+                                _foodtiming.text = time;
+                              }
+                            },
+                          ),
+                        ),
+                        readOnly: true, 
+                        onTap: () async {
+                          
+                          TimeOfDay? pickedTime = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          );
+
+                          if (pickedTime != null) {
+                            final time =
+                                '${pickedTime.hour}:${pickedTime.minute}';
+                            _foodtiming.text = time;
+                          }
+                        },
+                      ),
+                    ),
                     _buildTextField(
                       _medicinecount,
                       'Total',
                       Icons.medication_rounded,
                     ),
-                    _buildTextField(
-                      _medicinetime,
-                      'Medicines time',
-                      Icons.av_timer,
+                    
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Medicines time",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Radio<String>(
+                              value: 'Before food',
+                              groupValue: _medicinetime,
+                              onChanged: (String? value) {
+                                setState(() {
+                                  _medicinetime = value;
+                                });
+                              },
+                            ),
+                            const Text('Before food'),
+                            const SizedBox(width: 20),
+                            Radio<String>(
+                              value: 'After food',
+                              groupValue: _medicinetime,
+                              onChanged: (String? value) {
+                                setState(() {
+                                  _medicinetime = value;
+                                });
+                              },
+                            ),
+                            const Text('After food'),
+                          ],
+                        ),
+                      ],
                     ),
-              
                     const Divider(),
                     const SizedBox(height: 20),
                     ElevatedButton(
@@ -111,9 +189,7 @@ class _UpdateMedicationState extends State<UpdateMedication> {
                             borderRadius: BorderRadius.circular(10)),
                       ),
                       onPressed: () {
-                        {
-                          submit();
-                        }
+                        submit();
                       },
                       child: const Text(
                         'Update Medication',
