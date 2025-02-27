@@ -1,28 +1,10 @@
+import 'package:family_member/main.dart';
 import 'package:family_member/screens/landingpage.dart';
 import 'package:flutter/material.dart';
-import 'residentregistration.dart'; // Import the ResidentRegistration class
-
-void main() {
-  runApp(const ManageProfile());
-}
+import 'residentregistration.dart'; 
 
 class ManageProfile extends StatelessWidget {
   const ManageProfile({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Manage Profiles',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyWidget(),
-    );
-  }
-}
-
-class MyWidget extends StatelessWidget {
-  const MyWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -52,14 +34,36 @@ class MyWidget extends StatelessWidget {
   }
 }
 
-class ProfileGrid extends StatelessWidget {
-  final List<Profile> profiles = [
-    Profile(name: 'User 1', imageUrl: 'https://via.placeholder.com/150'),
-    Profile(name: 'User 2', imageUrl: 'https://via.placeholder.com/150'),
-    // Add more profiles here
-  ];
+class ProfileGrid extends StatefulWidget {
 
-  ProfileGrid({super.key});
+  const ProfileGrid({super.key});
+
+  @override
+  State<ProfileGrid> createState() => _ProfileGridState();
+}
+
+class _ProfileGridState extends State<ProfileGrid> {
+
+  List<Map<String,dynamic>> residents = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchResident();
+  }
+
+  Future<void> fetchResident() async {
+    try {
+      final response = await supabase.from('tbl_resident').select().eq('familymember_id', supabase.auth.currentUser!.id);
+      print(response);
+      setState(() {
+        residents=response;
+      });
+    } catch (e) {
+     print("Error:$e"); 
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,10 +75,10 @@ class ProfileGrid extends StatelessWidget {
         mainAxisSpacing: 16.0,
         childAspectRatio: 0.8,
       ),
-      itemCount: profiles.length + 1, // +1 for the add profile card
+      itemCount: residents.length + 1, // +1 for the add profile card
       itemBuilder: (context, index) {
-        if (index < profiles.length) {
-          return ProfileCard(profile: profiles[index]);
+        if (index < residents.length) {
+          return ProfileCard(profile: residents[index]);
         } else {
           return const AddProfileCard();
         }
@@ -83,15 +87,8 @@ class ProfileGrid extends StatelessWidget {
   }
 }
 
-class Profile {
-  final String name;
-  final String imageUrl;
-
-  Profile({required this.name, required this.imageUrl});
-}
-
 class ProfileCard extends StatelessWidget {
-  final Profile profile;
+  final Map<String, dynamic> profile;
 
   const ProfileCard({super.key, required this.profile});
 
@@ -107,12 +104,12 @@ class ProfileCard extends StatelessWidget {
         child: Column(
           children: [
             CircleAvatar(
-              backgroundImage: NetworkImage(profile.imageUrl),
+              backgroundImage: NetworkImage(profile['resident_photo']),
               radius: 50,
             ),
             const SizedBox(height: 8.0),
             Text(
-              profile.name,
+              profile['resident_name'],
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
