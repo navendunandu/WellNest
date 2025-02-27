@@ -57,7 +57,7 @@ class _UpdateMedappointmentsState extends State<UpdateMedappointments> {
       await supabase.from('tbl_appointment').insert({
         'appointment_date': _dateController.text,
         'appointment_time': _timeController.text,
-        'doctor_name': _docNameController.text,
+        'appointment_name': _docNameController.text,
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -165,18 +165,22 @@ class _UpdateMedappointmentsState extends State<UpdateMedappointments> {
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: isLoading ? null : submit,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 24, 56, 111),
-                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        backgroundColor: Color.fromARGB(255, 24, 56, 111),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
                       ),
-                      child: isLoading
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text(
-                              "Update Appointment",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
-                            ),
+                      onPressed: () {
+                        submit();
+                      },
+                      child: const Text(
+                        'Update Appointment',
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(230, 255, 252, 197)),
+                      ),
                     ),
                   ],
                 ),
