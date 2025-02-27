@@ -219,7 +219,7 @@ class _ManageRoomState extends State<ManageRoom> {
                                 child: ListTile(
                                 
                                   title: Text(data['room_name']),
-                                  leading: Image.asset(data['room_photo']),
+                                  leading: Image.network(data['room_photo']),
                                   subtitle:
                                       Text('Count: ${data['room_count']}'),
                                   trailing: Row(
