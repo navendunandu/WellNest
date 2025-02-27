@@ -1,5 +1,9 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:admin_wellnest/main.dart';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 
 class ManageRoom extends StatefulWidget {
   const ManageRoom({super.key});
@@ -14,11 +18,23 @@ class _ManageRoomState extends State<ManageRoom> {
   final priceController = TextEditingController();
   bool isLoading = true;
   List<Map<String, dynamic>> rooms = [];
+  PlatformFile? pickedImage;
 
   @override
   void initState() {
     super.initState();
     fetchData();
+  }
+
+  Future<void> handleImagePick() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      allowMultiple: false, // Only single file upload
+    );
+    if (result != null) {
+      setState(() {
+        pickedImage = result.files.first;
+      });
+    }
   }
 
   Future<void> fetchData() async {
@@ -45,22 +61,47 @@ class _ManageRoomState extends State<ManageRoom> {
       isLoading = true;
     });
     try {
+      String? url = await photoUpload();
       await supabase.from('tbl_room').insert({
         'room_name': nameController.text,
         'room_count': countController.text,
         'room_price': priceController.text,
+        'room_photo': url,
       });
 
       print("Insert Successful");
       nameController.clear();
       countController.clear();
       priceController.clear();
+      
+      
       await fetchData();
     } catch (e) {
       print("Error: $e");
       setState(() {
         isLoading = false;
       });
+    }
+  }
+
+  Future<String?> photoUpload() async {
+    try {
+      final bucketName = 'room_files'; // Replace with your bucket name
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final fileExtension = pickedImage!.name.split('.').last; // Extract extension
+      final filePath = "${pickedImage!.name.split('.').first}_$timestamp.$fileExtension";
+      await supabase.storage.from(bucketName).uploadBinary(
+            filePath,
+            pickedImage!.bytes!, // Use file.bytes for Flutter Web
+          );
+      final publicUrl =
+          supabase.storage.from(bucketName).getPublicUrl(filePath);
+      // await updateImage(uid, publicUrl);
+      pickedImage = null;
+      return publicUrl;
+    } catch (e) {
+      print("Error photo upload: $e");
+      return null;
     }
   }
 
@@ -118,6 +159,36 @@ class _ManageRoomState extends State<ManageRoom> {
                   _buildTextField(priceController, "Price", "Enter Price",
                       Icons.price_check),
                   SizedBox(height: 15),
+                  SizedBox(
+                    height: 120,
+                    width: 120,
+                    child: pickedImage == null
+                        ? GestureDetector(
+                            onTap: handleImagePick,
+                            child: Icon(
+                              Icons.add_a_photo,
+                              color: Color(0xFF0277BD),
+                              size: 50,
+                            ),
+                          )
+                        : GestureDetector(
+                            onTap: handleImagePick,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: pickedImage!.bytes != null
+                                  ? Image.memory(
+                                      Uint8List.fromList(
+                                          pickedImage!.bytes!), // For web
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.file(
+                                      File(pickedImage!
+                                          .path!), // For mobile/desktop
+                                      fit: BoxFit.cover,
+                                    ),
+                            ),
+                          ),
+                  ),
                   ElevatedButton(
                     onPressed: submit,
                     style: ElevatedButton.styleFrom(
@@ -146,8 +217,11 @@ class _ManageRoomState extends State<ManageRoom> {
                               return Card(
                                 margin: EdgeInsets.symmetric(vertical: 10),
                                 child: ListTile(
+                                
                                   title: Text(data['room_name']),
-                                  subtitle: Text('Count: ${data['room_count']}'),
+                                  leading: Image.asset(data['room_photo']),
+                                  subtitle:
+                                      Text('Count: ${data['room_count']}'),
                                   trailing: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
