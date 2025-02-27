@@ -12,6 +12,7 @@ class ViewRoutine extends StatefulWidget {
 
 class _ViewRoutineState extends State<ViewRoutine> {
   final supabase = Supabase.instance.client;
+  Map<String, String> routineData = {}; // No default values
 
   @override
   void initState() {
@@ -21,34 +22,80 @@ class _ViewRoutineState extends State<ViewRoutine> {
   }
 
   Future<void> fetchAndScheduleRoutine() async {
-    final response = await supabase.from('tbl_routine').select().single();
-    
-    if (response != null) {
-      List<String> routineNames = [
-        'Wake Time', 'Breakfast Time', 'Lunch Time', 'Exercise Time',
-        'Call Time', 'Dinner Time', 'Sleep Time'
-      ];
+    try {
+      final response = await supabase.from('tbl_routine').select().single();
+      print("Fetched Routine Data: $response");
 
-      List<String> routineKeys = [
-        'routine_waketime', 'routine_bftime', 'routine_lunchtime',
-        'routine_exercisetime', 'routine_calltime', 'routine_dinnertime', 'routine_sleeptime'
-      ];
+      if (response != null) {
+        Map<String, String> tempData = {};
 
-      for (int i = 0; i < routineKeys.length; i++) {
-        if (response[routineKeys[i]] != null) {
-          DateTime routineTime = DateTime.parse("2025-02-27 ${response[routineKeys[i]]}");
-          NotificationService.scheduleNotification(i, routineNames[i], routineTime);
-        }
+        Map<String, String> routineMapping = {
+          'routine_waketime': 'Wake Time',
+          'routine_bftime': 'Breakfast Time',
+          'routine_lunchtime': 'Lunch Time',
+          'routine_exercisetime': 'Exercise Time',
+          'routine_calltime': 'Call Time',
+          'routine_dinnertime': 'Dinner Time',
+          'routine_sleeptime': 'Sleep Time'
+        };
+
+        response.forEach((key, value) {
+          if (routineMapping.containsKey(key) && value != null) {
+            tempData[routineMapping[key]!] = value;
+          }
+        });
+
+        setState(() {
+          routineData = tempData;
+        });
+
+        // Schedule notifications
+        routineData.forEach((name, time) {
+          try {
+            DateTime routineTime = DateTime.parse("2025-02-27 $time");
+            print("Scheduling notification for $name at $routineTime");
+            NotificationService.scheduleNotification(
+                routineData.keys.toList().indexOf(name), name, routineTime);
+          } catch (e) {
+            print("Error parsing time for $name: $e");
+          }
+        });
       }
+    } catch (e) {
+      print("Error fetching data from Supabase: $e");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('View Routine')),
+      appBar: AppBar(title: const Text('View Routine')),
       body: Column(
         children: [
+          const SizedBox(height: 16),
+          Expanded(
+            child: routineData.isEmpty
+                ? const Center(child: Text("No routine data available."))
+                : ListView.builder(
+                    itemCount: routineData.length,
+                    itemBuilder: (context, index) {
+                      String routineName = routineData.keys.elementAt(index);
+                      String routineTime = routineData.values.elementAt(index);
+                      return Card(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        child: ListTile(
+                          title: Text(routineName,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold)),
+                          subtitle: Text(routineTime),
+                          leading:
+                              const Icon(Icons.access_time, color: Colors.blue),
+                        ),
+                      );
+                    },
+                  ),
+          ),
           const SizedBox(height: 24),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -65,6 +112,7 @@ class _ViewRoutineState extends State<ViewRoutine> {
             },
             child: const Text('Update Routine'),
           ),
+          const SizedBox(height: 16),
         ],
       ),
     );
