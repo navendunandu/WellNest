@@ -9,9 +9,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  supabase_flutter: ^2.8.3
+  supabase_flutter: ^2.8.4
   intl: ^0.17.0
   flutter_holo_date_picker: ^2.0.0
+  flutter_local_notifications: ^18.0.1
+  timezone: ^0.10.0
 
 dev_dependencies:
   flutter_test:
