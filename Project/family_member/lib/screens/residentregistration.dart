@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:family_member/screens/manage_profile.dart';
 import 'package:family_member/services/auth_service.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -49,7 +50,7 @@ class _ResidentregistrationState extends State<Residentregistration> {
     if (picked != null) {
       setState(() {
         selectedDate = picked;
-        _calculateAge(picked); 
+        _calculateAge(picked);
       });
     }
   }
@@ -58,6 +59,7 @@ class _ResidentregistrationState extends State<Residentregistration> {
   void initState() {
     super.initState();
     fetchData();
+    checkResident();
     fetchRoomData();
   }
 
@@ -109,11 +111,12 @@ class _ResidentregistrationState extends State<Residentregistration> {
 
   Future<void> register() async {
     try {
+      print("User1: ${supabase.auth.currentUser!.id}");
       final auth = await supabase.auth.signUp(
           password: _passwordController.text, email: _emailController.text);
       String uid = auth.user!.id;
-      submit(uid);
       await _authService.relogin();
+      await submit(uid);
     } catch (e) {
       print('Error: $e');
     }
@@ -156,7 +159,7 @@ class _ResidentregistrationState extends State<Residentregistration> {
           backgroundColor: Color.fromARGB(255, 86, 1, 1),
         ),
       );
-      Navigator.pop(context);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ManageProfile(),));
     } catch (e) {
       print("Error: $e");
     } finally {
@@ -171,6 +174,7 @@ class _ResidentregistrationState extends State<Residentregistration> {
       await supabase.from('tbl_resident').update({
         'resident_photo': image,
         'resident_proof': proof,
+        'room_id': selectedRoom,
       }).eq('resident_id', uid);
     } catch (e) {
       print("Error: $e");
@@ -217,6 +221,26 @@ class _ResidentregistrationState extends State<Residentregistration> {
       age--;
     }
     ageController.text = age.toString(); // Update age field
+  }
+
+  bool isMember = false;
+  String? roomId;
+
+  Future<void> checkResident() async {
+    try {
+      final response = await supabase.from('tbl_resident').select().eq('familymember_id', supabase.auth.currentUser!.id).eq('resident_status', 1);
+      print("Checking data: $response");
+      print("Checking room: ${response[0]['room_id']}");
+      if(response.length==1){
+        print("Happening");
+        setState(() {
+          isMember = true;
+          roomId = response[0]['room_id'].toString();
+        });
+      }
+    } catch (e) {
+      print("Error checking: $e");
+    }
   }
 
   String? selectedRoom;
@@ -360,21 +384,56 @@ class _ResidentregistrationState extends State<Residentregistration> {
                                   SizedBox(
                                     height: 10,
                                   ),
+
                                   ListView(
                                     shrinkWrap: true,
                                     physics: NeverScrollableScrollPhysics(),
                                     children: rooms.map((room) {
-                                      return RadioListTile<String>(
-                                        title: Text(
-                                            "${room['room_name']} = Rs. ${room['room_price'].toString()}"), // Display room name
-                                        value: room['room_id'].toString(),
-                                        groupValue:
-                                            selectedRoom, // Compare with selected value
-                                        onChanged: (String? value) {
-                                          setState(() {
-                                            selectedRoom = value;
-                                          });
-                                        },
+                                      int? roomAmt;
+                                      if(isMember && roomId==room['room_id'].toString()){
+                                        roomAmt=0;
+                                      }
+                                      else{
+                                        roomAmt=room['room_price'];
+                                      }
+                                      print("Debugging phase 1");
+                                      print("Room ${room['room_id']} : price: $roomAmt");
+                                      print(isMember);
+                                      print("Checked room is $roomId");
+                                      return Row(
+                                        children: [
+                                          Expanded(
+                                            child: RadioListTile<String>(
+                                              title: Text(
+                                                  "${room['room_name']} = Rs. ${roomAmt.toString()}"), // Display room name
+                                              value: room['room_id'].toString(),
+                                              groupValue:
+                                                  selectedRoom, // Compare with selected value
+                                              onChanged: (String? value) {
+                                                setState(() {
+                                                  selectedRoom = value;
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                          TextButton(
+                                              onPressed: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return Dialog(
+                                                      child: SizedBox(
+                                                          height: 500,
+                                                          width: 500,
+                                                          child: Image.network(
+                                                              room[
+                                                                  'room_photo'])),
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                              child: Text('View Photo'))
+                                        ],
                                       );
                                     }).toList(),
                                   ),
@@ -404,10 +463,8 @@ class _ResidentregistrationState extends State<Residentregistration> {
                                           onPressed: () => _pickImage(),
                                         ),
                                   const SizedBox(height: 20),
-
                                   const Divider(),
                                   const SizedBox(height: 20),
-
                                   ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor:
