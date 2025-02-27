@@ -1,8 +1,8 @@
-import 'package:caretaker_wellnest/screens/view_medappointments.dart';
 import 'package:flutter/material.dart';
 import 'view_routine.dart';
 import 'view_medication.dart';
 import 'view_health.dart';
+import 'view_medappointments.dart';
 
 class ResidentProfile extends StatefulWidget {
   const ResidentProfile({super.key});
@@ -15,110 +15,118 @@ class _ResidentProfileState extends State<ResidentProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:
+          const Color.fromARGB(230, 255, 252, 197), // Background color
       appBar: AppBar(
-        title: const Text('Resident Profile'),
+        title: Text('Resident Profile', style: TextStyle(color: Color.fromARGB(230, 255, 252, 197)), ),
+        backgroundColor: const Color.fromARGB(255, 6, 28, 65),
+        elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: CircleAvatar(
-                radius: 50,
-                backgroundImage: AssetImage('assets/profile_picture.png'), // Add your profile picture asset here
-              ),
-            ),
-            const SizedBox(height: 16),
-            Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Resident Name',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Center(
+                child: CircleAvatar(
+                  radius: 60,
+                  backgroundColor: Colors.white,
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/profile_picture.png', // Ensure the asset exists
+                      fit: BoxFit.cover,
+                      width: 120,
+                      height: 120,
                     ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Resident Age',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+              const SizedBox(height: 16),
+              Card(
+                elevation: 6,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    gradient: LinearGradient(
+                      colors: [const Color.fromARGB(255, 160, 180, 231), const Color.fromARGB(255, 5, 33, 75)],
+                    ),
+                  ),
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'John Doe', // Placeholder name
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Age: 75',
+                        style: TextStyle(fontSize: 18, color: Colors.white70),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              onPressed: () {
+              const SizedBox(height: 24),
+              _buildOptionButton('Manage Routine', Color.fromARGB(255, 87, 113, 157), () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const ViewRoutine()),
                 );
-              },
-              child: const Text('Manage Routine'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onPressed: () {
+              }),
+              _buildOptionButton('Manage Medication', const Color.fromARGB(255, 44, 71, 118), () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => const ViewMedication()),
                 );
-              },
-              child: const Text('Manage Medication'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onPressed: () {
+              }),
+              _buildOptionButton('Manage Health Record', const Color.fromARGB(255, 24, 54, 105),
+                  () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const ViewHealth()),
                 );
-              },
-              child: const Text('Manage Health Record'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onPressed: () {
+              }),
+              _buildOptionButton('Manage Appointments', const Color.fromARGB(255, 6, 28, 65),
+                  () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ViewMedappointments()),
+                  MaterialPageRoute(
+                      builder: (context) => const ViewMedappointments()),
                 );
-              },
-              child: const Text('Manage Appointments'),
-            ),
-          ],
+              }),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOptionButton(String text, Color color, VoidCallback onPressed) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+          backgroundColor: color,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        onPressed: onPressed,
+        child: Text(
+          text,
+          style: const TextStyle(fontSize: 18, color: Color.fromARGB(230, 255, 252, 197)),
         ),
       ),
     );
