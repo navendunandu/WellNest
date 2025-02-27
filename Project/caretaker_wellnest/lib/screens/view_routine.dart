@@ -26,7 +26,7 @@ class _ViewRoutineState extends State<ViewRoutine> {
       final response = await supabase.from('tbl_routine').select().single();
       print("Fetched Routine Data: $response");
 
-      if (response != null) {
+      {
         Map<String, String> tempData = {};
 
         Map<String, String> routineMapping = {
