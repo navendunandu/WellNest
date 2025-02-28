@@ -25,7 +25,8 @@ class _ViewHealthState extends State<ViewHealth> {
     try {
       final response = await supabase
           .from('tbl_healthrecord')
-          .select().eq('resident_id', widget.resident_id)
+          .select()
+          .eq('resident_id', widget.resident_id)
           .order('health_date', ascending: false)
           .limit(1)
           .single();
@@ -47,12 +48,12 @@ class _ViewHealthState extends State<ViewHealth> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(230, 255, 252, 197),
       appBar: AppBar(
-        
         title: const Text(
           'View Health',
-          style: TextStyle(color: Color.fromARGB(255, 255, 255, 255),
-          fontSize: 23,
-          fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: Color.fromARGB(255, 255, 255, 255),
+              fontSize: 23,
+              fontWeight: FontWeight.bold),
         ),
         backgroundColor: Color.fromARGB(255, 0, 36, 94),
       ),
@@ -81,8 +82,8 @@ class _ViewHealthState extends State<ViewHealth> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => UpdateHealth(
-                                resident_id: widget.resident_id,
-                              )),
+                                    resident_id: widget.resident_id,
+                                  )),
                         );
                       },
                       child: const Text(
@@ -128,21 +129,19 @@ class _ViewHealthState extends State<ViewHealth> {
                         const SizedBox(height: 20),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 28, vertical: 14),
-                            backgroundColor: Color.fromARGB(255, 0, 36, 94),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            elevation: 5
-                          ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 28, vertical: 14),
+                              backgroundColor: Color.fromARGB(255, 0, 36, 94),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 5),
                           onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>UpdateHealth(
-                                    resident_id:widget.resident_id
-                                  )),
+                                  builder: (context) => UpdateHealth(
+                                      resident_id: widget.resident_id)),
                             );
                           },
                           child: const Text(
