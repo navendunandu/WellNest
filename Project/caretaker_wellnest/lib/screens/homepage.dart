@@ -18,8 +18,8 @@ class _HomepageState extends State<Homepage> {
   final double collapsedSidebarWidth = 60.0;
   bool isLoading = true;
   List<Map<String, dynamic>> residentList = [];
-  String caretaker_name="";
-  String caretaker_photo="";
+  String caretaker_name = "";
+  String caretaker_photo = "";
 
   @override
   void initState() {
@@ -28,17 +28,21 @@ class _HomepageState extends State<Homepage> {
     fetchcaretaker();
   }
 
-Future<void> fetchcaretaker() async {
+  Future<void> fetchcaretaker() async {
     setState(() {
       isLoading = true;
     });
     try {
-      final caretaker=await supabase.auth.currentUser!.id;
-      final response = await supabase.from('tbl_caretaker').select().eq('caretaker_id', caretaker).single();
+      final caretaker = await supabase.auth.currentUser!.id;
+      final response = await supabase
+          .from('tbl_caretaker')
+          .select()
+          .eq('caretaker_id', caretaker)
+          .single();
       print("Fetched data: $response");
       setState(() {
-        caretaker_name=response['caretaker_name'];
-        caretaker_photo=response['caretaker_photo'];
+        caretaker_name = response['caretaker_name'];
+        caretaker_photo = response['caretaker_photo'];
         isLoading = false;
       });
     } catch (e) {
@@ -151,14 +155,12 @@ Future<void> fetchcaretaker() async {
                 backgroundImage: NetworkImage(caretaker_photo),
               ),
               const SizedBox(width: 16),
-              
-               Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(caretaker_name,
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold)),
-                  
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ],
               ),
               const Spacer(),
@@ -182,9 +184,13 @@ Future<void> fetchcaretaker() async {
                 final resident = residentList[index];
                 return GestureDetector(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => ResidentProfile(
-                      resident: resident['resident_id'],
-                    ),));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ResidentProfile(
+                            resident: resident['resident_id'],
+                          ),
+                        ));
                   },
                   child: Card(
                     elevation: 4,
@@ -207,7 +213,6 @@ Future<void> fetchcaretaker() async {
                           Text(resident['resident_name']),
                           const SizedBox(height: 8),
                           Text(resident['resident_dob'] ?? "")
-                  
                         ],
                       ),
                     ),
