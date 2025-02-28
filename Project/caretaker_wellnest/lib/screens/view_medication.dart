@@ -6,7 +6,8 @@ import 'package:intl/intl.dart';
 import 'update_medication.dart';
 
 class ViewMedication extends StatefulWidget {
-  const ViewMedication({super.key});
+  String resident_id;
+  ViewMedication({super.key, required this.resident_id});
 
   @override
   State<ViewMedication> createState() => _ViewMedicationState();
@@ -24,7 +25,7 @@ class _ViewMedicationState extends State<ViewMedication> {
 
   Future<void> fetchMedications() async {
     try {
-      final response = await supabase.from('tbl_medication').select();
+      final response = await supabase.from('tbl_medication').select().eq('resident_id', widget.resident_id);
 
       print("Supabase Response: $response"); // Debugging Output
 
@@ -114,11 +115,19 @@ class _ViewMedicationState extends State<ViewMedication> {
                 ),
                 elevation: 5,
               ),
-              onPressed: () {
-                Navigator.push(
+              onPressed: () async {
+                bool? updated = await Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => UpdateMedication()),
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        UpdateMedication(resident_id: widget.resident_id),
+                  ),
                 );
+
+                // Check if update was successful and refresh the data
+                if (updated == true) {
+                  fetchMedications(); // Refresh the medication list
+                }
               },
               child: const Text(
                 'Update Medication',
