@@ -38,7 +38,6 @@ class _ViewMedappointmentsState extends State<ViewMedappointments> {
     String doctorName = appointment['appointment_name'];
     String date = appointment['appointment_date']; // Format: YYYY-MM-DD
     String time = appointment['appointment_time']; // Format: HH:mm:ss
-    appointment['resident_id'] = widget.resident_id;
     DateTime appointmentDateTime = DateTime.parse("$date $time");
 
     // Schedule a notification 30 minutes before appointment
