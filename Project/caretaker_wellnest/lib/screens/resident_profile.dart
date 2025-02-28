@@ -18,20 +18,47 @@ class _ResidentProfileState extends State<ResidentProfile> {
   String name="";
   String dob="";
   String photo="";
+  String resident_age="";
+  String resident_id="";
 
-Future<void> fetchresident() async
-{
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchresident();
+  }
+
+Future<void> fetchresident() async {
   try {
-    final response=await supabase.from('tbl_resident').select().eq('resident_id', widget.resident).single();
+    final response = await supabase
+        .from('tbl_resident')
+        .select()
+        .eq('resident_id', widget.resident)
+        .single();
+
     setState(() {
-      name=response['resident_name'];
-      photo=response['resident_photo'];
-      dob=response['resident_dob'];
+      name = response['resident_name'];
+      photo = response['resident_photo'];
+      dob = response['resident_dob']; // Assuming this is a string in 'YYYY-MM-DD' format
+      resident_age = _calculateAge(DateTime.parse(dob)).toString(); // Convert to DateTime & get age
+      resident_id=response['resident_id'];
     });
   } catch (e) {
     print('Error is: $e');
   }
 }
+
+int _calculateAge(DateTime birthDate) {
+  DateTime today = DateTime.now();
+  int age = today.year - birthDate.year;
+  if (today.month < birthDate.month ||
+      (today.month == birthDate.month && today.day < birthDate.day)) {
+    age--; // Adjust if birthday hasn't occurred this year
+  }
+  return age;
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -89,8 +116,8 @@ Future<void> fetchresident() async
                         ),
                       ),
                       const SizedBox(height: 8),
-                      const Text(
-                        'Age: 75',
+                       Text(
+                        resident_age,
                         style: TextStyle(fontSize: 18, color: Colors.white70),
                       ),
                     ],
@@ -101,21 +128,25 @@ Future<void> fetchresident() async
               _buildOptionButton('Manage Routine', Color.fromARGB(255, 87, 113, 157), () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ViewRoutine()),
+                  MaterialPageRoute(builder: (context) =>  ViewRoutine(
+                    resident_id: resident_id,
+                  )),
                 );
               }),
               _buildOptionButton('Manage Medication', const Color.fromARGB(255, 44, 71, 118), () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const ViewMedication()),
+                      builder: (context) =>  ViewMedication(resident_id: resident_id,)),
                 );
               }),
               _buildOptionButton('Manage Health Record', const Color.fromARGB(255, 24, 54, 105),
                   () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ViewHealth()),
+                  MaterialPageRoute(builder: (context) => ViewHealth(
+                    resident_id: resident_id,
+                  )),
                 );
               }),
               _buildOptionButton('Manage Appointments', const Color.fromARGB(255, 6, 28, 65),
@@ -123,7 +154,9 @@ Future<void> fetchresident() async
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const ViewMedappointments()),
+                      builder: (context) =>  ViewMedappointments(
+                        resident_id: resident_id,
+                      )),
                 );
               }),
             ],
