@@ -24,7 +24,7 @@ class _ViewRoutineState extends State<ViewRoutine> {
 
   Future<void> fetchAndScheduleRoutine() async {
     try {
-      final response = await supabase.from('tbl_routine').select().single();
+      final response = await supabase.from('tbl_routine').select().eq('resident_id', widget.resident_id).single();
       print("Fetched Routine Data: $response");
 
       {
@@ -38,7 +38,7 @@ class _ViewRoutineState extends State<ViewRoutine> {
           'routine_calltime': 'Call Time',
           'routine_dinnertime': 'Dinner Time',
           'routine_sleeptime': 'Sleep Time',
-          'resident_id':widget.resident_id
+          
         };
 
         response.forEach((key, value) {
@@ -114,7 +114,9 @@ class _ViewRoutineState extends State<ViewRoutine> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const UpdateRoutine()),
+                MaterialPageRoute(builder: (context) => UpdateRoutine(
+                  resident_id:widget.resident_id
+                )),
               );
             },
             child: const Text('Update Routine'),
