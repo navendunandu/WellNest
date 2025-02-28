@@ -23,7 +23,10 @@ class _ViewMedappointmentsState extends State<ViewMedappointments> {
   }
 
   Future<void> fetchAppointments() async {
-    final response = await supabase.from('tbl_appointment').select().eq('resident_id', widget.resident_id);
+    final response = await supabase
+        .from('tbl_appointment')
+        .select()
+        .eq('resident_id', widget.resident_id);
     setState(() {
       appointments = response;
     });
@@ -60,13 +63,17 @@ class _ViewMedappointmentsState extends State<ViewMedappointments> {
       appBar: AppBar(
         title: const Text(
           'View Appointments',
-          style: TextStyle(color: Color.fromARGB(230, 255, 252, 197)),
+          style: TextStyle(
+              color: Color.fromARGB(255, 255, 255, 255),
+              fontWeight: FontWeight.bold,
+              fontSize: 23),
         ),
         backgroundColor: Color.fromARGB(255, 0, 36, 94),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             appointments.isEmpty
                 ? const Center(child: Text("No Appointments Available"))
@@ -112,7 +119,7 @@ class _ViewMedappointmentsState extends State<ViewMedappointments> {
               },
               child: const Text(
                 'Update Appointments',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
           ],
