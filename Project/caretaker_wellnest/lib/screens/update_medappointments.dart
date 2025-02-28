@@ -68,7 +68,7 @@ class _UpdateMedappointmentsState extends State<UpdateMedappointments> {
           backgroundColor: Colors.green,
         ),
       );
-      Navigator.pop(context);
+      Navigator.pop(context,true);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
