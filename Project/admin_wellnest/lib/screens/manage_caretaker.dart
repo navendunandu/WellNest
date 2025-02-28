@@ -137,7 +137,7 @@ class _ManageCaretakerState extends State<ManageCaretaker> {
     }
   }
 
-  Future<void> deletecaretaker(int id) async {
+  Future<void> deletecaretaker(String id) async {
     try {
       await supabase.from('tbl_caretaker').delete().eq('caretaker_id', id);
       print("Delete Successful");
@@ -355,8 +355,7 @@ class _ManageCaretakerState extends State<ManageCaretaker> {
                                                           const Color.fromARGB(
                                                               255, 67, 4, 0)),
                                                   onPressed: () {
-                                                    deletecaretaker(
-                                                        data['caretaker_id']);
+                                                   deletecaretaker(data['caretaker_id'].toString());
                                                   },
                                                 ),
                                               ),
