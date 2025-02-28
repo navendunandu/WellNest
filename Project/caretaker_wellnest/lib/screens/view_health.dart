@@ -46,18 +46,48 @@ class _ViewHealthState extends State<ViewHealth> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(230, 255, 252, 197),
       appBar: AppBar(
-        title: const Text('View Health',style: TextStyle(color: Color.fromARGB(230, 255, 252, 197)),),
+        title: const Text(
+          'View Health',
+          style: TextStyle(color: Color.fromARGB(230, 255, 252, 197)),
+        ),
         backgroundColor: Color.fromARGB(255, 24, 56, 111),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : healthData == null
-              ? const Center(
-                  child: Text(
-                    "No health records found.",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                )
+              ? Center(
+                  child: Column(
+                  children: [
+                    Text(
+                      "No health records found.",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 14),
+                        backgroundColor: Color.fromARGB(255, 24, 56, 111),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const UpdateHealth()),
+                        );
+                      },
+                      child: const Text(
+                        'Update Health',
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: Color.fromARGB(230, 255, 252, 197)),
+                      ),
+                    ),
+                  ],
+                ))
               : SingleChildScrollView(
                   physics: AlwaysScrollableScrollPhysics(),
                   child: Padding(
@@ -90,7 +120,8 @@ class _ViewHealthState extends State<ViewHealth> {
                         const SizedBox(height: 20),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 14),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 14),
                             backgroundColor: Color.fromARGB(255, 24, 56, 111),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -105,7 +136,9 @@ class _ViewHealthState extends State<ViewHealth> {
                           },
                           child: const Text(
                             'Update Health',
-                            style: TextStyle(fontSize: 18, color: Color.fromARGB(230, 255, 252, 197)),
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: Color.fromARGB(230, 255, 252, 197)),
                           ),
                         ),
                       ],
