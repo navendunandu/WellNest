@@ -23,9 +23,9 @@ class _ViewMedappointmentsState extends State<ViewMedappointments> {
   }
 
   Future<void> fetchAppointments() async {
-    final response = await supabase.from('tbl_appointment').select();
+    final response = await supabase.from('tbl_appointment').select().eq('resident_id', widget.resident_id);
     setState(() {
-      appointments = List<Map<String, dynamic>>.from(response);
+      appointments = response;
     });
 
     // Schedule notifications for all fetched appointments
@@ -107,7 +107,8 @@ class _ViewMedappointmentsState extends State<ViewMedappointments> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => UpdateMedappointments()),
+                      builder: (context) => UpdateMedappointments(
+                          resident_id: widget.resident_id)),
                 );
               },
               child: const Text(
