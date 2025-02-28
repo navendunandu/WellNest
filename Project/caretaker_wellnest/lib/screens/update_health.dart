@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class UpdateHealth extends StatefulWidget {
-  const UpdateHealth({super.key});
+  String resident_id;
+  UpdateHealth({super.key, required this.resident_id});
 
   @override
   State<UpdateHealth> createState() => _UpdateHealthState();
@@ -37,7 +38,8 @@ final _formKey = GlobalKey<FormState>();
         'health_bd': _bd.text,
         'health_lp': _lp.text,
         'health_thyroid': _thyroid.text,
-        'health_liver': _liverfunction.text
+        'health_liver': _liverfunction.text,
+        'resident_id':widget.resident_id
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -46,7 +48,7 @@ final _formKey = GlobalKey<FormState>();
           backgroundColor: Color.fromARGB(255, 86, 1, 1),
         ),
       );
-      Navigator.pop(context);
+      Navigator.pop(context, true);
     } catch (e) {
       print("Error: $e");
     } finally {
