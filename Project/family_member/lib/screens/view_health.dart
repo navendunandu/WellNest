@@ -1,5 +1,6 @@
 import 'package:family_member/main.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ViewHealth extends StatefulWidget {
   const ViewHealth({super.key});
@@ -9,6 +10,7 @@ class ViewHealth extends StatefulWidget {
 }
 
 class _ViewHealthState extends State<ViewHealth> {
+  final SupabaseClient supabase = Supabase.instance.client;
   Map<String, dynamic>? healthData;
   bool isLoading = true;
 
