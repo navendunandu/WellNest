@@ -22,7 +22,7 @@ class _ResidentProfileState extends State<ResidentProfile> {
 Future<void> fetchresident() async
 {
   try {
-    final response=await supabase.from("tbl_resident").select().eq('resident_id', widget.resident).single();
+    final response=await supabase.from('tbl_resident').select().eq('resident_id', widget.resident).single();
     setState(() {
       name=response['resident_name'];
       photo=response['resident_photo'];
