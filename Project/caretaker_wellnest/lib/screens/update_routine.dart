@@ -45,7 +45,7 @@ class _UpdateRoutineState extends State<UpdateRoutine> {
           backgroundColor: Color.fromARGB(255, 86, 1, 1),
         ),
       );
-      Navigator.pop(context);
+      Navigator.pop(context,true);
     } catch (e) {
       print("Error: $e");
     } finally {
