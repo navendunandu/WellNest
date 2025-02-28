@@ -69,7 +69,9 @@ class _ViewRoutineState extends State<ViewRoutine> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('View Routine')),
+      appBar: AppBar(
+        backgroundColor: Color.fromARGB(230, 255, 252, 197),
+        title: const Text('View Routine')),
       body: Column(
         children: [
           const SizedBox(height: 16),
