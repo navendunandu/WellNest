@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ViewRoutine extends StatefulWidget {
-  const ViewRoutine({super.key});
+  String resident_id;
+   ViewRoutine({super.key, required  this.resident_id});
 
   @override
   State<ViewRoutine> createState() => _ViewRoutineState();
@@ -36,7 +37,8 @@ class _ViewRoutineState extends State<ViewRoutine> {
           'routine_exercisetime': 'Exercise Time',
           'routine_calltime': 'Call Time',
           'routine_dinnertime': 'Dinner Time',
-          'routine_sleeptime': 'Sleep Time'
+          'routine_sleeptime': 'Sleep Time',
+          'resident_id':widget.resident_id
         };
 
         response.forEach((key, value) {
@@ -70,8 +72,8 @@ class _ViewRoutineState extends State<ViewRoutine> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(230, 255, 252, 197),
-        title: const Text('View Routine')),
+        backgroundColor: Color.fromARGB(230, 0, 36, 81),
+        title: const Text('View Routine',style: TextStyle(color: Color.fromARGB(255, 243, 232, 171)),)),
       body: Column(
         children: [
           const SizedBox(height: 16),
@@ -100,11 +102,14 @@ class _ViewRoutineState extends State<ViewRoutine> {
           ),
           const SizedBox(height: 24),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 0, 36, 94),
+                foregroundColor: Colors.white,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 14, horizontal: 28),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
             ),
             onPressed: () {
               Navigator.push(
