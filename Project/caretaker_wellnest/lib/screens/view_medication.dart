@@ -25,7 +25,10 @@ class _ViewMedicationState extends State<ViewMedication> {
 
   Future<void> fetchMedications() async {
     try {
-      final response = await supabase.from('tbl_medication').select().eq('resident_id', widget.resident_id);
+      final response = await supabase
+          .from('tbl_medication')
+          .select()
+          .eq('resident_id', widget.resident_id);
 
       print("Supabase Response: $response"); // Debugging Output
 
@@ -50,7 +53,7 @@ class _ViewMedicationState extends State<ViewMedication> {
 
   void scheduleNotification(Map<String, dynamic> medication) {
     String time = medication['medication_timing']; // Format: HH:mm:ss
-    int count = medication['medication_count'];
+    // int count = medication['medication_count'];
     String name = medication['medication_time']; // Medication Name
 
     DateTime now = DateTime.now();
@@ -76,7 +79,11 @@ class _ViewMedicationState extends State<ViewMedication> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('View Medication')),
+      backgroundColor: const Color.fromARGB(230, 255, 252, 197),
+      appBar: AppBar(title: const Text('View Medication', style: TextStyle(
+        fontSize: 23, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 255, 255)
+      ),), 
+      backgroundColor: Color.fromARGB(255  , 0, 36, 94),),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -131,7 +138,7 @@ class _ViewMedicationState extends State<ViewMedication> {
               },
               child: const Text(
                 'Update Medication',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
           ],
