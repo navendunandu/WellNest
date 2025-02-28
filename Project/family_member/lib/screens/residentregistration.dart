@@ -159,7 +159,11 @@ class _ResidentregistrationState extends State<Residentregistration> {
           backgroundColor: Color.fromARGB(255, 86, 1, 1),
         ),
       );
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ManageProfile(),));
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ManageProfile(),
+          ));
     } catch (e) {
       print("Error: $e");
     } finally {
@@ -228,10 +232,14 @@ class _ResidentregistrationState extends State<Residentregistration> {
 
   Future<void> checkResident() async {
     try {
-      final response = await supabase.from('tbl_resident').select().eq('familymember_id', supabase.auth.currentUser!.id).eq('resident_status', 1);
+      final response = await supabase
+          .from('tbl_resident')
+          .select()
+          .eq('familymember_id', supabase.auth.currentUser!.id)
+          .eq('resident_status', 1);
       print("Checking data: $response");
       print("Checking room: ${response[0]['room_id']}");
-      if(response.length==1){
+      if (response.length == 1) {
         print("Happening");
         setState(() {
           isMember = true;
@@ -390,14 +398,16 @@ class _ResidentregistrationState extends State<Residentregistration> {
                                     physics: NeverScrollableScrollPhysics(),
                                     children: rooms.map((room) {
                                       int? roomAmt;
-                                      if(isMember && roomId==room['room_id'].toString()){
-                                        roomAmt=0;
-                                      }
-                                      else{
-                                        roomAmt=room['room_price'];
+                                      if (isMember &&
+                                          roomId ==
+                                              room['room_id'].toString()) {
+                                        roomAmt = 0;
+                                      } else {
+                                        roomAmt = room['room_price'];
                                       }
                                       print("Debugging phase 1");
-                                      print("Room ${room['room_id']} : price: $roomAmt");
+                                      print(
+                                          "Room ${room['room_id']} : price: $roomAmt");
                                       print(isMember);
                                       print("Checked room is $roomId");
                                       return Row(
