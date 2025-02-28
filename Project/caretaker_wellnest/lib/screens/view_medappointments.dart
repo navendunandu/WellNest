@@ -5,7 +5,8 @@ import 'update_medappointments.dart';
 import 'package:caretaker_wellnest/components/notification_service.dart';
 
 class ViewMedappointments extends StatefulWidget {
-  const ViewMedappointments({super.key});
+  String resident_id;
+  ViewMedappointments({super.key, required this.resident_id});
 
   @override
   State<ViewMedappointments> createState() => _ViewMedappointmentsState();
@@ -37,7 +38,7 @@ class _ViewMedappointmentsState extends State<ViewMedappointments> {
     String doctorName = appointment['appointment_name'];
     String date = appointment['appointment_date']; // Format: YYYY-MM-DD
     String time = appointment['appointment_time']; // Format: HH:mm:ss
-
+    appointment['resident_id'] = widget.resident_id;
     DateTime appointmentDateTime = DateTime.parse("$date $time");
 
     // Schedule a notification 30 minutes before appointment
