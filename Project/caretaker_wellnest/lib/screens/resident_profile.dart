@@ -1,3 +1,4 @@
+import 'package:caretaker_wellnest/main.dart';
 import 'package:flutter/material.dart';
 import 'view_routine.dart';
 import 'view_medication.dart';
@@ -5,13 +6,33 @@ import 'view_health.dart';
 import 'view_medappointments.dart';
 
 class ResidentProfile extends StatefulWidget {
-  const ResidentProfile({super.key});
+  String resident;
+   ResidentProfile({super.key, required  this.resident});
 
   @override
   State<ResidentProfile> createState() => _ResidentProfileState();
 }
 
 class _ResidentProfileState extends State<ResidentProfile> {
+
+  String name="";
+  String dob="";
+  String photo="";
+
+Future<void> fetchresident() async
+{
+  try {
+    final response=await supabase.from("tbl_resident").select().eq('resident_id', widget.resident).single();
+    setState(() {
+      name=response['resident_name'];
+      photo=response['resident_photo'];
+      dob=response['resident_dob'];
+    });
+  } catch (e) {
+    print('Error is: $e');
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,8 +54,8 @@ class _ResidentProfileState extends State<ResidentProfile> {
                   radius: 60,
                   backgroundColor: Colors.white,
                   child: ClipOval(
-                    child: Image.asset(
-                      'assets/profile_picture.png', // Ensure the asset exists
+                    child: Image.network(
+                      photo, 
                       fit: BoxFit.cover,
                       width: 120,
                       height: 120,
@@ -59,8 +80,8 @@ class _ResidentProfileState extends State<ResidentProfile> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Text(
-                        'John Doe', // Placeholder name
+                       Text(
+                        name, 
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
