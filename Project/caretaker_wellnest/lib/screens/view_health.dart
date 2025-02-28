@@ -3,7 +3,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'update_health.dart';
 
 class ViewHealth extends StatefulWidget {
-  const ViewHealth({super.key, required String resident_id});
+  String resident_id;
+  ViewHealth({super.key, required this.resident_id});
 
   @override
   State<ViewHealth> createState() => _ViewHealthState();
@@ -24,7 +25,7 @@ class _ViewHealthState extends State<ViewHealth> {
     try {
       final response = await supabase
           .from('tbl_healthrecord')
-          .select()
+          .select().eq('resident_id', widget.resident_id)
           .order('health_date', ascending: false)
           .limit(1)
           .single();
@@ -46,11 +47,14 @@ class _ViewHealthState extends State<ViewHealth> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(230, 255, 252, 197),
       appBar: AppBar(
+        
         title: const Text(
           'View Health',
-          style: TextStyle(color: Color.fromARGB(230, 255, 252, 197)),
+          style: TextStyle(color: Color.fromARGB(255, 255, 255, 255),
+          fontSize: 23,
+          fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Color.fromARGB(255, 24, 56, 111),
+        backgroundColor: Color.fromARGB(255, 0, 36, 94),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -76,14 +80,17 @@ class _ViewHealthState extends State<ViewHealth> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const UpdateHealth()),
+                              builder: (context) => UpdateHealth(
+                                resident_id: widget.resident_id,
+                              )),
                         );
                       },
                       child: const Text(
                         'Update Health',
                         style: TextStyle(
                             fontSize: 18,
-                            color: Color.fromARGB(230, 255, 252, 197)),
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 255, 255, 255)),
                       ),
                     ),
                   ],
@@ -121,17 +128,20 @@ class _ViewHealthState extends State<ViewHealth> {
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 14),
-                            backgroundColor: Color.fromARGB(255, 24, 56, 111),
+                                horizontal: 28, vertical: 14),
+                            backgroundColor: Color.fromARGB(255, 0, 36, 94),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
+                            elevation: 5
                           ),
                           onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const UpdateHealth()),
+                                  builder: (context) =>UpdateHealth(
+                                    resident_id:widget.resident_id
+                                  )),
                             );
                           },
                           child: const Text(
