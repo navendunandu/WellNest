@@ -71,9 +71,12 @@ class _ViewRoutineState extends State<ViewRoutine> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(230, 255, 252, 197),
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(230, 0, 36, 81),
-        title: const Text('View Routine',style: TextStyle(color: Color.fromARGB(255, 243, 232, 171)),)),
+        backgroundColor: Color.fromARGB(255, 0, 36, 94),
+        title: const Text('View Routine',
+        style: TextStyle(color: Color.fromARGB(255, 255, 255, 255),
+        fontSize: 23, fontWeight: FontWeight.bold),)),
       body: Column(
         children: [
           const SizedBox(height: 16),
@@ -119,7 +122,9 @@ class _ViewRoutineState extends State<ViewRoutine> {
                 )),
               );
             },
-            child: const Text('Update Routine'),
+            child: const Text('Update Routine',style: TextStyle(
+              fontSize: 18, fontWeight: FontWeight.bold
+            ),),
           ),
           const SizedBox(height: 16),
         ],
