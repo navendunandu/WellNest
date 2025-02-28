@@ -1,6 +1,7 @@
 import 'package:caretaker_wellnest/main.dart';
 import 'package:caretaker_wellnest/screens/apply_leave.dart';
 import 'package:caretaker_wellnest/screens/manage_leave.dart';
+import 'package:caretaker_wellnest/screens/resident_profile.dart';
 import 'package:flutter/material.dart';
 import 'login_page.dart'; // Import the LoginPage
 
@@ -17,11 +18,35 @@ class _HomepageState extends State<Homepage> {
   final double collapsedSidebarWidth = 60.0;
   bool isLoading = true;
   List<Map<String, dynamic>> residentList = [];
+  String caretaker_name="";
+  String caretaker_photo="";
 
   @override
   void initState() {
     super.initState();
     fetchData();
+    fetchcaretaker();
+  }
+
+Future<void> fetchcaretaker() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final caretaker=await supabase.auth.currentUser!.id;
+      final response = await supabase.from('tbl_caretaker').select().eq('caretaker_id', caretaker).single();
+      print("Fetched data: $response");
+      setState(() {
+        caretaker_name=response['caretaker_name'];
+        caretaker_photo=response['caretaker_photo'];
+        isLoading = false;
+      });
+    } catch (e) {
+      print("Error fetching data: $e");
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   Future<void> fetchData() async {
@@ -119,32 +144,29 @@ class _HomepageState extends State<Homepage> {
                   }),
             ],
           ),
-          Container(
-            color: const Color.fromARGB(230, 255, 252, 197),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              children: [
-                const CircleAvatar(
-                  radius: 30,
-                  backgroundImage: AssetImage('asset/login.png'),
-                ),
-                const SizedBox(width: 16),
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Abin Sunny',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold)),
-                    Text('ID: 123456', style: TextStyle(fontSize: 14)),
-                  ],
-                ),
-                const Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.notifications, size: 30),
-                  onPressed: () {},
-                ),
-              ],
-            ),
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 30,
+                backgroundImage: NetworkImage(caretaker_photo),
+              ),
+              const SizedBox(width: 16),
+              
+               Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(caretaker_name,
+                      style: TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold)),
+                  
+                ],
+              ),
+              const Spacer(),
+              IconButton(
+                icon: const Icon(Icons.notifications, size: 30),
+                onPressed: () {},
+              ),
+            ],
           ),
           Expanded(
             child: GridView.builder(
@@ -159,7 +181,11 @@ class _HomepageState extends State<Homepage> {
               itemBuilder: (context, index) {
                 final resident = residentList[index];
                 return GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ResidentProfile(
+                      resident: resident['resident_id'],
+                    ),));
+                  },
                   child: Card(
                     elevation: 4,
                     child: Padding(
