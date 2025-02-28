@@ -3,7 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'update_health.dart';
 
 class ViewHealth extends StatefulWidget {
-  const ViewHealth({super.key});
+  const ViewHealth({super.key, required String resident_id});
 
   @override
   State<ViewHealth> createState() => _ViewHealthState();
