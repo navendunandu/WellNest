@@ -101,6 +101,7 @@ class _ViewHealthState extends State<ViewHealth> {
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           "Date: ${healthData!['health_date']}",
@@ -148,7 +149,8 @@ class _ViewHealthState extends State<ViewHealth> {
                             'Update Health',
                             style: TextStyle(
                                 fontSize: 18,
-                                color: Color.fromARGB(230, 255, 252, 197)),
+                                color: Color.fromARGB(255, 255, 255, 255),
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ],
