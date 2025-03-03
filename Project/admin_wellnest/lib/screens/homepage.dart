@@ -54,7 +54,7 @@ class _HomepageState extends State<Homepage> {
       'page': LeaveApplication()
     },
 
-    {'icon': Icons.feedback, 'label': 'Feedback', 'page': ManageFeedback()},
+    /*{'icon': Icons.feedback, 'label': 'Feedback', 'page': ManageFeedback()},*/
     {
       'icon': Icons.report_problem,
       'label': 'Complaints',
