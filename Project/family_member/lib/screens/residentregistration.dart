@@ -7,6 +7,7 @@ import 'package:family_member/components/form_validation.dart';
 import 'package:family_member/main.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Residentregistration extends StatefulWidget {
   const Residentregistration({super.key});
