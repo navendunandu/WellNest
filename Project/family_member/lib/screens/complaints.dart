@@ -1,3 +1,4 @@
+import 'package:family_member/main.dart';
 import 'package:flutter/material.dart';
 
 class Complaints extends StatefulWidget {
@@ -23,16 +24,25 @@ class _ComplaintsState extends State<Complaints> {
     "Others"
   ];
 
-  void _submitComplaint() {
-    String complaint = _descriptionController.text.trim();
+  void _submitComplaint() async {
+  String complaint = _descriptionController.text.trim();
 
-    if (complaint.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter a complaint description.")),
-      );
-      return;
-    }
+  if (complaint.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Please enter a complaint description.")),
+    );
+    return;
+  }
 
+  try {
+    // Insert data into Supabase table
+    await supabase.from('tbl_complaint').insert({
+      'complaint_title': _selectedComplaintType,
+      'complaint_content': complaint,
+      'complaint_priority': _selectedUrgency,
+    });
+
+    // Show success message
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -47,7 +57,14 @@ class _ComplaintsState extends State<Complaints> {
       _selectedComplaintType = "Room Cleaning";
       _selectedUrgency = "Low Priority";
     });
+  } catch (e) {
+    // Handle errors
+    print('Error: $e');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Error submitting complaint: $e")),
+    );
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +72,10 @@ class _ComplaintsState extends State<Complaints> {
       backgroundColor: const Color.fromARGB(230, 255, 252, 197),
       appBar: AppBar(
         title: const Text("Complaints",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 255, 255), fontSize: 23)),
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 255, 255, 255),
+                fontSize: 23)),
         backgroundColor: const Color.fromARGB(255, 0, 36, 94),
         elevation: 4,
         shadowColor: Colors.black45,
