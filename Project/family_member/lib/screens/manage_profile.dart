@@ -46,7 +46,6 @@ class _ProfileGridState extends State<ProfileGrid> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchResident();
   }
@@ -99,7 +98,7 @@ class ProfileCard extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
+          MaterialPageRoute(builder: (context) => HomePage(profile: profile)),
         );
       },
       child: Card(
