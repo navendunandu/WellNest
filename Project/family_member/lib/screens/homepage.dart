@@ -1,12 +1,13 @@
 import 'package:family_member/screens/complaints.dart';
 import 'package:family_member/screens/view_complaint.dart';
+import 'package:family_member/screens/view_profile.dart';
 import 'package:flutter/material.dart';
-import 'view_health.dart'; // Import ViewHealth
-import 'view_medappointments.dart'; // Import ViewMedappointments
-import 'payment.dart'; // Import PaymentPage
+import 'view_health.dart'; 
+import 'view_medappointments.dart';
+import 'payment.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, required , required Map<String, dynamic> profile});
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +33,11 @@ class HomePage extends StatelessWidget {
               icon: Icons.person,
               label: "View Profile",
               onPressed: () {
-                // TODO: Navigate to Profile Page (Placeholder)
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Profile Page Coming Soon!")),
-                );
+                Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) =>  ViewProfile(
+            profile:profile
+          ))) 
               },
             ),
             _buildMenuButton(
