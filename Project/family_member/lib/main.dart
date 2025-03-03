@@ -1,4 +1,6 @@
+import 'package:family_member/screens/homepage.dart';
 import 'package:family_member/screens/landingpage.dart';
+import 'package:family_member/screens/payment.dart';
 import 'package:family_member/screens/view_health.dart';
 import 'package:family_member/screens/view_medappointments.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +23,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: ViewMedappointments()
+      home: Landingpage()
     );
   }
 }
