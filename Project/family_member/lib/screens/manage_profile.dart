@@ -1,7 +1,8 @@
 import 'package:family_member/main.dart';
+import 'package:family_member/screens/homepage.dart';
 import 'package:family_member/screens/landingpage.dart';
 import 'package:flutter/material.dart';
-import 'residentregistration.dart'; 
+import 'residentregistration.dart';
 
 class ManageProfile extends StatelessWidget {
   const ManageProfile({super.key});
@@ -23,9 +24,8 @@ class ManageProfile extends StatelessWidget {
           icon: const Icon(Icons.logout_outlined,
               color: Color.fromARGB(230, 255, 252, 197)),
           onPressed: () {
-            Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(builder: (context) => Landingpage()));
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => Landingpage()));
           },
         ),
       ),
@@ -35,7 +35,6 @@ class ManageProfile extends StatelessWidget {
 }
 
 class ProfileGrid extends StatefulWidget {
-
   const ProfileGrid({super.key});
 
   @override
@@ -43,8 +42,7 @@ class ProfileGrid extends StatefulWidget {
 }
 
 class _ProfileGridState extends State<ProfileGrid> {
-
-  List<Map<String,dynamic>> residents = [];
+  List<Map<String, dynamic>> residents = [];
 
   @override
   void initState() {
@@ -55,13 +53,16 @@ class _ProfileGridState extends State<ProfileGrid> {
 
   Future<void> fetchResident() async {
     try {
-      final response = await supabase.from('tbl_resident').select().eq('familymember_id', supabase.auth.currentUser!.id);
+      final response = await supabase
+          .from('tbl_resident')
+          .select()
+          .eq('familymember_id', supabase.auth.currentUser!.id);
       print(response);
       setState(() {
-        residents=response;
+        residents = response;
       });
     } catch (e) {
-     print("Error:$e"); 
+      print("Error:$e");
     }
   }
 
@@ -94,29 +95,37 @@ class ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      elevation: 5,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            CircleAvatar(
-              backgroundImage: NetworkImage(profile['resident_photo']),
-              radius: 50,
-            ),
-            const SizedBox(height: 8.0),
-            Text(
-              profile['resident_name'],
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 24, 56, 111),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        elevation: 5,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              CircleAvatar(
+                backgroundImage: NetworkImage(profile['resident_photo']),
+                radius: 50,
               ),
-            ),
-          ],
+              const SizedBox(height: 8.0),
+              Text(
+                profile['resident_name'],
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 24, 56, 111),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
