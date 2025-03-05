@@ -1,20 +1,20 @@
-import 'package:family_member/screens/complaints.dart';
 import 'package:family_member/screens/view_complaint.dart';
 import 'package:family_member/screens/view_profile.dart';
 import 'package:flutter/material.dart';
-import 'view_health.dart'; 
-import 'view_medappointments.dart';
-import 'payment.dart';
+import 'view_health.dart'; // Import ViewHealth
+import 'view_medappointments.dart'; // Import ViewMedappointments
+import 'payment.dart'; // Import PaymentPage
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key, required , required Map<String, dynamic> profile});
+  String profile;
+   HomePage({super.key, required this.profile});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(230, 255, 252, 197),
       appBar: AppBar(
-        title: const Text("Family Member Home"),
+        title: const Text("Homepage"),
         backgroundColor: const Color.fromARGB(255, 0, 36, 94),
         foregroundColor: Colors.white,
       ),
@@ -33,11 +33,9 @@ class HomePage extends StatelessWidget {
               icon: Icons.person,
               label: "View Profile",
               onPressed: () {
-                Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) =>  ViewProfile(
-            profile:profile
-          ))) 
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ViewProfile(
+                  profile: profile,
+                ),));
               },
             ),
             _buildMenuButton(
@@ -47,7 +45,9 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ViewHealth()),
+                  MaterialPageRoute(builder: (context) => ViewHealth(
+                    profile: profile,
+                  )),
                 );
               },
             ),
@@ -59,18 +59,20 @@ class HomePage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const ViewMedappointments()),
+                      builder: (context) => ViewMedappointments(
+                        profile:profile,
+                      )),
                 );
               },
             ),
             _buildMenuButton(
               context,
               icon: Icons.payment,
-              label: "Payment",
+              label: "Pay Now",
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const PaymentPage()),
+                  MaterialPageRoute(builder: (context) => PaymentPage(residentId: profile)),
                 );
               },
             ),
@@ -81,25 +83,13 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ViewComplaint())
+                  MaterialPageRoute(builder: (context) => ViewComplaint(
+                  ))
                 );
               },
             ),
             const Spacer(),
-            // _buildMenuButton(
-            //   context,
-            //   icon: Icons.logout,
-            //   label: "Log Out",
-            //   color: Colors.red,
-            //   onPressed: () {
-            //     // TODO: Implement actual log out logic
-            //     ScaffoldMessenger.of(context).showSnackBar(
-            //       const SnackBar(content: Text("Logging Out...")),
-            //     );
-            //     // Navigate back to login (Assuming LoginScreen exists)
-            //     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ));
-            //   },
-            // ),
+           
           ],
         ),
       ),
@@ -113,29 +103,28 @@ class HomePage extends StatelessWidget {
     required VoidCallback onPressed,
     Color color = Colors.white,
   }) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color.fromARGB(255, 0, 36, 94),
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: color),
-            const SizedBox(width: 15),
-            Expanded(
-              child: Text(
-                label,
-                style: const TextStyle(fontSize: 18, color: Colors.white),
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color.fromARGB(255, 0, 36, 94),
+          borderRadius: BorderRadius.circular(12),),
+          
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        padding: EdgeInsets.all(10),
+          child: Row(
+            children: [
+              Icon(icon, color: color),
+              const SizedBox(width: 15),
+              Expanded(
+                child: Text(
+                  label,
+                  style: const TextStyle(fontSize: 18, color: Colors.white),
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+      
       ),
     );
   }

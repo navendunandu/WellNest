@@ -98,7 +98,7 @@ class ProfileCard extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => HomePage(profile: profile)),
+          MaterialPageRoute(builder: (context) => HomePage(profile: profile['resident_id'])),
         );
       },
       child: Card(

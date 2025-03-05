@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'complaints.dart'; // Import the Complaints page
 
 class ViewComplaint extends StatefulWidget {
-  const ViewComplaint({super.key});
+  
+  ViewComplaint({super.key});
 
   @override
   _ViewComplaintState createState() => _ViewComplaintState();
@@ -29,7 +30,7 @@ class _ViewComplaintState extends State<ViewComplaint> {
       // Fetch data from 'tbl_complaint'
       final response = await supabase
           .from('tbl_complaint')
-          .select('*')
+          .select().eq('familymember_id', supabase.auth.currentUser!.id)
           .order('complaint_date', ascending: false); // Order by latest first
 
       // Update the state with fetched data
@@ -51,6 +52,7 @@ class _ViewComplaintState extends State<ViewComplaint> {
 
   @override
   Widget build(BuildContext context) {
+  
     return Scaffold(
       backgroundColor: const Color.fromARGB(230, 255, 252, 197),
       appBar: AppBar(
@@ -112,7 +114,9 @@ class _ViewComplaintState extends State<ViewComplaint> {
                                           complaint['complaint_title'] ??
                                               "No Title"),
                                       subtitle: Text(
-                                         style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                                          style: TextStyle(
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0)),
                                           complaint['complaint_content'] ??
                                               "No Description"),
                                       /*trailing: const Icon(
@@ -129,13 +133,13 @@ class _ViewComplaintState extends State<ViewComplaint> {
           ),
         ),
       ),
-
-      // Floating "New" Button at Bottom
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const Complaints()),
+            MaterialPageRoute(
+                builder: (context) => const Complaints(
+                    )),
           );
         },
         backgroundColor: const Color.fromARGB(255, 0, 36, 94),

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ViewHealth extends StatefulWidget {
-  const ViewHealth({super.key});
+  String profile;
+  ViewHealth({super.key, required this.profile});
 
   @override
   State<ViewHealth> createState() => _ViewHealthState();
