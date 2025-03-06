@@ -1,4 +1,6 @@
 import 'package:admin_wellnest/components/form_validation.dart';
+import 'package:admin_wellnest/main.dart';
+import 'package:admin_wellnest/screens/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -16,12 +18,12 @@ class _LoginScreenState extends State<LoginScreen> {
   String p = '';
   final formKey = GlobalKey<FormState>();
   bool _isVisible = true;
-
-  void submit() {
-    setState(() {
-      n = email.text;
-      p = password.text;
-    });
+  Future<void> submit() async {
+    final auth = await supabase.auth
+        .signInWithPassword(password: password.text, email: email.text);
+    final admin =
+        await supabase.from('tbl_admin').count().eq('admin_id', auth.user!.id);
+    print(admin);
   }
 
   @override
@@ -145,6 +147,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: () {
                             if (formKey.currentState!.validate()) {
                               submit();
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Homepage()),
+                              );
                             }
                           },
                           child: Text("Log in"),
