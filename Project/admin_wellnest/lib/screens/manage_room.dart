@@ -259,7 +259,7 @@ class _ManageRoomState extends State<ManageRoom> {
         decoration: InputDecoration(
           labelText: label,
           hintText: hint,
-          prefixIcon: Icon(icon, color: Color.fromARGB(255, 24, 56, 111)),
+          prefixIcon: Icon(icon, color: Color.fromARGB(255, 0, 36, 94)),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         ),
       ),
