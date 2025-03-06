@@ -107,15 +107,17 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
 
-  void openCheckout() {
+  Future<void> openCheckout() async {
+    final user = await supabase.from('tbl_familymember').select().eq('familymember_id', supabase.auth.currentUser!.id).single();
+
     var options = {
       'key': 'rzp_test_565dkZaITtTfYu',
       'amount': 2750000, // in paise
       'name': 'WellNest',
       'description': 'Payment',
       'prefill': {
-        'contact': '9526740578',
-        'email': 'test@example.com',
+        'contact': user['familymember_contact'],
+        'email': user['familymember_email'],
       },
       'external': {
         'wallets': ['paytm']
