@@ -53,18 +53,32 @@ class _HomepageState extends State<Homepage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              residentName != null ? "Welcome, $residentName!" : "Welcome!",
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              "Welcome",
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 20),
-            CircleAvatar(
-              radius: 50,
-              backgroundImage: residentPhoto != null
-                  ? NetworkImage(residentPhoto!)
-                  : const AssetImage('assets/default_avatar.png')
-                      as ImageProvider,
+            Center(
+              child: CircleAvatar(
+                radius: 50,
+                backgroundImage: residentPhoto != null
+                    ? NetworkImage(residentPhoto!)
+                    : const AssetImage('assets/default_avatar.png')
+                        as ImageProvider,
+              ),
             ),
             const SizedBox(height: 20),
+            Center(
+                child: Text("$residentName",
+                    style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 0, 36, 94)))),
+            SizedBox(
+              height: 20,
+            ),
             _buildMenuButton(
               context,
               icon: Icons.person,
