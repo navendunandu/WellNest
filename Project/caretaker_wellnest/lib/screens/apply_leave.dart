@@ -16,18 +16,39 @@ class _ApplyLeaveState extends State<ApplyLeave> {
   bool _isLoading = false;
 
   Future<void> _selectDate(BuildContext context, bool isStartDate) async {
+    final DateTime now = DateTime.now();
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1990),
+      initialDate: isStartDate
+          ? ((_startDate != null && _startDate!.isAfter(now))
+              ? _startDate!
+              : now)
+          : ((_endDate != null && _endDate!.isAfter(now))
+              ? _endDate!
+              : (_startDate != null && _startDate!.isAfter(now)
+                  ? _startDate!
+                  : now)),
+      firstDate: now, // Restricts to current day and future
       lastDate: DateTime(2050),
     );
+
     if (picked != null) {
       setState(() {
         if (isStartDate) {
           _startDate = picked;
+          // If end date exists and is before the new start date, reset it
+          if (_endDate != null && _endDate!.isBefore(_startDate!)) {
+            _endDate = null;
+          }
         } else {
-          _endDate = picked;
+          // Ensure end date isn't before start date
+          if (_startDate != null && picked.isBefore(_startDate!)) {
+            // You could either show an error message or automatically set end date equal to start date
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('End date cannot be before start date')));
+          } else {
+            _endDate = picked;
+          }
         }
       });
     }
@@ -87,10 +108,9 @@ class _ApplyLeaveState extends State<ApplyLeave> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Leave Application'),
-        backgroundColor: Color.fromARGB(255, 255, 252, 197), // AppBar color
+        title: const Text('Leave Application',style: TextStyle(color:Colors.white),),
+        backgroundColor: Color.fromARGB(255, 0, 36, 90), // AppBar color
         elevation: 0,
-      
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -98,9 +118,9 @@ class _ApplyLeaveState extends State<ApplyLeave> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color.fromARGB(255, 248, 245, 176),
-              Color.fromARGB(245, 245, 204, 204),
-               Color.fromARGB(230, 240, 169, 169)
+              Color.fromARGB(230, 255, 252, 197),
+              Color.fromARGB(230, 255, 252, 197),
+              Color.fromARGB(230, 255, 252, 197)
             ],
           ),
         ),
@@ -111,7 +131,7 @@ class _ApplyLeaveState extends State<ApplyLeave> {
             child: Column(
               children: [
                 Card(
-                  color: Color.fromARGB(245, 245, 204, 204),
+                  color: Color.fromARGB(230, 172, 210, 253),
                   elevation: 4,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
@@ -126,8 +146,7 @@ class _ApplyLeaveState extends State<ApplyLeave> {
                             // labelText: 'Reason for Leave',
                             hintText: 'Enter your reason for leave',
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10)
-                            ),
+                                borderRadius: BorderRadius.circular(10)),
                             filled: true,
                             fillColor: Colors.white,
                           ),
@@ -207,8 +226,7 @@ class _ApplyLeaveState extends State<ApplyLeave> {
                     : ElevatedButton(
                         onPressed: _submitForm,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(
-                              230, 230, 190, 197), // Button color
+                          backgroundColor: Color.fromARGB(230, 172, 210, 253), // Button color
                           padding: const EdgeInsets.symmetric(
                               horizontal: 40, vertical: 15),
                           shape: RoundedRectangleBorder(
@@ -221,6 +239,7 @@ class _ApplyLeaveState extends State<ApplyLeave> {
                           style: TextStyle(
                             fontSize: 18,
                             color: Colors.black,
+                            fontWeight: FontWeight.bold
                           ),
                         ),
                       ),
