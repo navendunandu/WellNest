@@ -142,7 +142,7 @@ class _ManageComplaintsState extends State<ManageComplaints> {
                                 ));
                       },
                       child: const Text('Reply'),
-                    ):Text(complaint['complaint_reply'])
+                    ):Text('Reply: ${complaint['complaint_reply']}')
                   ],
                 ),
               ),
