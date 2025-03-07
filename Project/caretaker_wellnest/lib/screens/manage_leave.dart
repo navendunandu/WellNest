@@ -55,10 +55,10 @@ class _ManageLeaveState extends State<ManageLeave> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(backgroundColor: Color.fromARGB(230, 255, 252, 197),
         appBar: AppBar(
-          title: const Text('Leave Manager'),
-          backgroundColor: Color.fromARGB(255, 255, 252, 197),
+          title: const Text('Leave Manager',style: TextStyle(color: Colors.white),),
+          backgroundColor: Color.fromARGB(255, 0 , 36, 80),
           elevation: 0,
         ),
         body: leaveData.isEmpty
