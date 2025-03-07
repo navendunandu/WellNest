@@ -168,8 +168,8 @@ class _ManageCaretakerState extends State<ManageCaretaker> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color.fromARGB(255, 24, 56, 111),
-            Color.fromARGB(255, 251, 247, 179),
+            Color.fromARGB(255, 227, 242, 253),
+            Color.fromARGB(255, 227, 242, 253),
           ],
         ),
       ),
@@ -177,12 +177,12 @@ class _ManageCaretakerState extends State<ManageCaretaker> {
       child: Center(
         child: SingleChildScrollView(
           child: Card(
-            elevation: 10,
+            elevation: 5,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
             color: Colors.white,
-            margin: EdgeInsets.symmetric(horizontal: 100, vertical: 30),
+            // margin: EdgeInsets.symmetric(horizontal: 100, vertical: 30),
             child: Padding(
               padding: const EdgeInsets.all(30),
               child: Form(
