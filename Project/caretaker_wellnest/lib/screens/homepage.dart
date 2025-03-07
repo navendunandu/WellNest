@@ -136,92 +136,101 @@ class _HomepageState extends State<Homepage> {
           ],
         ),
       ),
-      body: Column(
-        children: [
-          AppBar(
-            title: const Text('CareTaker Wellnest'),
-            actions: [
-              IconButton(
-                  icon: const Icon(Icons.menu),
-                  onPressed: () {
-                    Scaffold.of(context).openDrawer();
-                  }),
-            ],
-          ),
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundImage: NetworkImage(caretaker_photo),
+      body: ColoredBox(
+        color: Color.fromARGB(230, 255, 252, 197),
+        child: Column(
+          children: [
+            AppBar(
+              backgroundColor: Color.fromARGB(255, 0, 36, 94),
+              title: const Text(
+                'CareTaker Wellnest',
+                style: TextStyle(color: Colors.white),
               ),
-              const SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(caretaker_name,
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                ],
-              ),
-              const Spacer(),
-              IconButton(
-                icon: const Icon(Icons.notifications, size: 30),
-                onPressed: () {},
-              ),
-            ],
-          ),
-          Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.all(16),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 0.8,
-              ),
-              itemCount: residentList.length,
-              itemBuilder: (context, index) {
-                final resident = residentList[index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ResidentProfile(
-                            resident: resident['resident_id'],
-                          ),
-                        ));
+              actions: [
+                IconButton(
+                    icon: const Icon(Icons.menu),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    }),
+              ],
+            ),
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 30,
+                  backgroundImage: NetworkImage(caretaker_photo),
+                  onBackgroundImageError: (exception, stackTrace) {
                   },
-                  child: Card(
-                    elevation: 4,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.network(
-                            resident['resident_photo'] ?? "",
-                            height: 60,
-                            width: 60,
-                            fit: BoxFit.cover,
-                          ),
-                          const SizedBox(height: 15),
-                          Text("Resident - ${index + 1}",
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold)),
-                          const SizedBox(height: 8),
-                          Text(resident['resident_name']),
-                          const SizedBox(height: 8),
-                          Text(resident['resident_dob'] ?? "")
-                        ],
+                ),
+                const SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      caretaker_name,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                );
-              },
+                  ],
+                ),
+              ],
             ),
-          ),
-        ],
+            Expanded(
+              child: GridView.builder(
+                padding: const EdgeInsets.all(16),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio: 0.8,
+                ),
+                itemCount: residentList.length,
+                itemBuilder: (context, index) {
+                  final resident = residentList[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ResidentProfile(
+                              resident: resident['resident_id'],
+                            ),
+                          ));
+                    },
+                    child: Card(
+                      elevation: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.network(
+                              resident['resident_photo'] ?? "",
+                              height: 60,
+                              width: 60,
+                              fit: BoxFit.cover,
+                            ),
+                            const SizedBox(height: 15),
+                            Text("Resident - ${index + 1}",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold)),
+                            const SizedBox(height: 8),
+                            Text(resident['resident_name']),
+                            const SizedBox(height: 8),
+                            Text(resident['resident_dob'] ?? "")
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
