@@ -54,7 +54,7 @@ class _AssignCaretakerState extends State<AssignCaretaker> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Assign Caretaker ${(widget.id)}",
+        title: Text("Assign Caretaker",
             style: TextStyle(color: Colors.white)),
         centerTitle: true,
         elevation: 4,
@@ -68,8 +68,8 @@ class _AssignCaretakerState extends State<AssignCaretaker> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color.fromARGB(255, 24, 56, 111),
-              const Color.fromARGB(255, 255, 252, 197),
+                  Color.fromARGB(255, 227, 242, 253),
+            Color.fromARGB(255, 227, 242, 253),
             ],
           ),
         ),
