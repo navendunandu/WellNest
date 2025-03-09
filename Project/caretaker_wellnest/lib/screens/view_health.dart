@@ -62,6 +62,7 @@ class _ViewHealthState extends State<ViewHealth> {
           : healthData == null
               ? Center(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       "No health records found.",
