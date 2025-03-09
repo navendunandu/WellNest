@@ -68,6 +68,21 @@ class _ViewProfileState extends State<ViewProfile> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Center(
+                            child: CircleAvatar(
+                              radius: 50,
+                              backgroundImage: residentData!['resident_photo'] == null
+                                  ? NetworkImage(residentData!['resident_photo'])
+                                  : const AssetImage(
+                                          'assets/default_avatar.png')
+                                      as ImageProvider,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          
+                          SizedBox(
+                            height: 20,
+                          ),
                           profileRow("Name", residentData!['resident_name']),
                           profileRow(
                               "Address", residentData!['resident_address']),
