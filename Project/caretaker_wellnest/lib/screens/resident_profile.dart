@@ -22,7 +22,6 @@ class _ResidentProfileState extends State<ResidentProfile> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchresident();
   }
@@ -38,10 +37,8 @@ class _ResidentProfileState extends State<ResidentProfile> {
       setState(() {
         name = response['resident_name'];
         photo = response['resident_photo'];
-        dob = response[
-            'resident_dob']; // Assuming this is a string in 'YYYY-MM-DD' format
-        resident_age = _calculateAge(DateTime.parse(dob))
-            .toString(); // Convert to DateTime & get age
+        dob = response['resident_dob'];
+        resident_age = _calculateAge(DateTime.parse(dob)).toString();
         resident_id = response['resident_id'];
       });
     } catch (e) {
@@ -54,7 +51,7 @@ class _ResidentProfileState extends State<ResidentProfile> {
     int age = today.year - birthDate.year;
     if (today.month < birthDate.month ||
         (today.month == birthDate.month && today.day < birthDate.day)) {
-      age--; // Adjust if birthday hasn't occurred this year
+      age--;
     }
     return age;
   }
@@ -62,139 +59,140 @@ class _ResidentProfileState extends State<ResidentProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          const Color.fromARGB(230, 255, 252, 197), // Background color
+      backgroundColor: const Color.fromARGB(230, 255, 252, 197),
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Resident Profile',
-          style: TextStyle(color: Color.fromARGB(230, 255, 252, 197)),
+          style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: const Color.fromARGB(255, 6, 28, 65),
-        elevation: 0,
+        backgroundColor: const Color.fromARGB(255, 0, 36, 94),
+        foregroundColor: Colors.white,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Center(
-                child: CircleAvatar(
-                  radius: 60,
-                  backgroundColor: Colors.white,
-                  child: ClipOval(
-                    child: Image.network(
-                      photo,
-                      fit: BoxFit.cover,
-                      width: 120,
-                      height: 120,
-                    ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: CircleAvatar(
+                radius: 60,
+                backgroundColor: Colors.white,
+                child: ClipOval(
+                  child: Image.network(
+                    photo,
+                    fit: BoxFit.cover,
+                    width: 120,
+                    height: 120,
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
-              Card(
-                elevation: 6,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    gradient: LinearGradient(
-                      colors: [
-                        const Color.fromARGB(255, 160, 180, 231),
-                        const Color.fromARGB(255, 5, 33, 75)
-                      ],
-                    ),
-                  ),
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        name,
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        resident_age,
-                        style: TextStyle(fontSize: 18, color: Colors.white70),
-                      ),
-                    ],
-                  ),
+            ),
+            const SizedBox(height: 16),
+            Center(
+              child: Text(
+                name,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 24),
-              _buildOptionButton(
-                  'Manage Routine', Color.fromARGB(255, 87, 113, 157), () {
+            ),
+            const SizedBox(height: 8),
+            Center(
+              child: Text(
+                'Age: $resident_age',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 18, color: Colors.black87),
+              ),
+            ),
+            const SizedBox(height: 24),
+            _buildMenuButton(
+              context,
+              icon: Icons.schedule,
+              label: 'Manage Routine',
+              onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ViewRoutine(
-                            resident_id: resident_id,
-                          )),
+                    builder: (context) => ViewRoutine(resident_id: resident_id),
+                  ),
                 );
-              }),
-              _buildOptionButton(
-                  'Manage Medication', const Color.fromARGB(255, 44, 71, 118),
-                  () {
+              },
+            ),
+            _buildMenuButton(
+              context,
+              icon: Icons.medical_services,
+              label: 'Manage Medication',
+              onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ViewMedication(
-                            resident_id: resident_id,
-                          )),
+                    builder: (context) =>
+                        ViewMedication(resident_id: resident_id),
+                  ),
                 );
-              }),
-              _buildOptionButton('Manage Health Record',
-                  const Color.fromARGB(255, 24, 54, 105), () {
+              },
+            ),
+            _buildMenuButton(
+              context,
+              icon: Icons.health_and_safety,
+              label: 'Manage Health Record',
+              onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ViewHealth(
-                            resident_id: resident_id,
-                          )),
+                    builder: (context) => ViewHealth(resident_id: resident_id),
+                  ),
                 );
-              }),
-              _buildOptionButton(
-                  'Manage Appointments', const Color.fromARGB(255, 6, 28, 65),
-                  () {
+              },
+            ),
+            _buildMenuButton(
+              context,
+              icon: Icons.calendar_today,
+              label: 'Manage Appointments',
+              onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ViewMedappointments(
-                            resident_id: resident_id,
-                          )),
+                    builder: (context) =>
+                        ViewMedappointments(resident_id: resident_id),
+                  ),
                 );
-              }),
-            ],
-          ),
+              },
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildOptionButton(String text, Color color, VoidCallback onPressed) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-          backgroundColor: color,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
+  Widget _buildMenuButton(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 0, 36, 94),
+          borderRadius: BorderRadius.circular(12),
         ),
-        onPressed: onPressed,
-        child: Text(
-          text,
-          style: const TextStyle(
-              fontSize: 18, color: Color.fromARGB(230, 255, 252, 197)),
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.all(10),
+        child: Row(
+          children: [
+            Icon(icon, color: Colors.white),
+            const SizedBox(width: 15),
+            Expanded(
+              child: Text(
+                label,
+                style: const TextStyle(fontSize: 18, color: Colors.white),
+              ),
+            ),
+          ],
         ),
       ),
     );
