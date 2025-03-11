@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:resident_wellnest/screens/view_health.dart';
+import 'package:resident_wellnest/screens/view_medappointment.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Homepage extends StatefulWidget {
@@ -101,13 +103,25 @@ class _HomepageState extends State<Homepage> {
               context,
               icon: Icons.payment,
               label: "Health Record",
-              onPressed: () {},
+              onPressed: () {
+                 Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ViewHealth(
+                  )),
+                );
+              },
             ),
             _buildMenuButton(
               context,
               icon: Icons.feedback,
               label: "Medical appointment",
-              onPressed: () {},
+              onPressed: () {
+                 Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ViewMedappointment(
+                  )),
+                );
+              },
             ),
             const Spacer(),
           ],
