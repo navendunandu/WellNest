@@ -1,3 +1,4 @@
+import 'package:family_member/screens/view_caretaker.dart';
 import 'package:family_member/screens/view_complaint.dart';
 import 'package:family_member/screens/view_profile.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,19 @@ class HomePage extends StatelessWidget {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => ViewProfile(
                   profile: profile,
                 ),));
+              },
+            ),
+            _buildMenuButton(
+              context,
+              icon: Icons.person_2_outlined,
+              label: "View Caretaker",
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ViewCaretaker(
+                    resId: profile,
+                  )),
+                );
               },
             ),
             _buildMenuButton(
