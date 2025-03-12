@@ -1,4 +1,5 @@
 import 'package:caretaker_wellnest/main.dart';
+import 'package:caretaker_wellnest/screens/family_member.dart';
 import 'package:flutter/material.dart';
 import 'view_routine.dart';
 import 'view_medication.dart';
@@ -107,6 +108,19 @@ class _ResidentProfileState extends State<ResidentProfile> {
               ),
             ),
             const SizedBox(height: 24),
+             _buildMenuButton(
+              context,
+              icon: Icons.schedule,
+              label: 'View Family',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => FamilyMember(residentId: resident_id),
+                  ),
+                );
+              },
+            ),
             _buildMenuButton(
               context,
               icon: Icons.schedule,
