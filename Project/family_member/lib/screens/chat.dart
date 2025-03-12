@@ -5,7 +5,8 @@ class Chat extends StatefulWidget {
   final String familyMemberId; // Family Member's ID
   final String caretakerId; // Caretaker's ID
 
-  const Chat({super.key, required this.familyMemberId, required this.caretakerId});
+  const Chat(
+      {super.key, required this.familyMemberId, required this.caretakerId});
 
   @override
   State<Chat> createState() => _ChatState();
@@ -39,33 +40,32 @@ class _ChatState extends State<Chat> {
   }
 
   void listenForMessages() {
-  // Listen for messages where the family member is the receiver
-  supabase
-      .from('messages')
-      .stream(primaryKey: ['message_id'])
-      .eq('receiver_id', widget.familyMemberId)
-      .listen((snapshot) {
-    if (mounted) {
-      setState(() {
-        messages.addAll(snapshot);
-      });
-    }
-  });
+    // Listen for messages where the family member is the receiver
+    supabase
+        .from('messages')
+        .stream(primaryKey: ['message_id'])
+        .eq('receiver_id', widget.familyMemberId)
+        .listen((snapshot) {
+          if (mounted) {
+            setState(() {
+              messages.addAll(snapshot);
+            });
+          }
+        });
 
-  // Listen for messages where the family member is the sender
-  supabase
-      .from('messages')
-      .stream(primaryKey: ['message_id'])
-      .eq('sender_id', widget.familyMemberId)
-      .listen((snapshot) {
-    if (mounted) {
-      setState(() {
-        messages.addAll(snapshot);
-      });
-    }
-  });
-}
-
+    // Listen for messages where the family member is the sender
+    supabase
+        .from('messages')
+        .stream(primaryKey: ['message_id'])
+        .eq('sender_id', widget.familyMemberId)
+        .listen((snapshot) {
+          if (mounted) {
+            setState(() {
+              messages.addAll(snapshot);
+            });
+          }
+        });
+  }
 
   /// Send a new message
   Future<void> sendMessage() async {
@@ -97,9 +97,11 @@ class _ChatState extends State<Chat> {
                 final isMe = message['sender_id'] == widget.familyMemberId;
 
                 return Align(
-                  alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                  alignment:
+                      isMe ? Alignment.centerRight : Alignment.centerLeft,
                   child: Container(
-                    margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: isMe ? Colors.blueAccent : Colors.grey[300],
@@ -107,7 +109,8 @@ class _ChatState extends State<Chat> {
                     ),
                     child: Text(
                       message['content'],
-                      style: TextStyle(color: isMe ? Colors.white : Colors.black),
+                      style:
+                          TextStyle(color: isMe ? Colors.white : Colors.black),
                     ),
                   ),
                 );
