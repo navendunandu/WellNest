@@ -5,7 +5,6 @@ import 'package:admin_wellnest/screens/leave_appl.dart';
 import 'package:admin_wellnest/screens/login_screen.dart';
 import 'package:admin_wellnest/screens/manage_caretaker.dart';
 import 'package:admin_wellnest/screens/manage_complaints.dart';
-import 'package:admin_wellnest/screens/manage_feedback.dart';
 import 'package:admin_wellnest/screens/manage_relation.dart';
 import 'package:admin_wellnest/screens/manage_resident.dart';
 import 'package:admin_wellnest/screens/manage_room.dart';
