@@ -1,3 +1,4 @@
+import 'package:family_member/screens/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -97,6 +98,31 @@ class _ViewCaretakerState extends State<ViewCaretaker> {
                           profileRow("Email", caretaker!['caretaker_email']),
                           profileRow("Contact",
                               caretaker!['caretaker_contact'].toString()),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: CircleBorder(),
+                              padding: EdgeInsets.all(12),
+                              backgroundColor:
+                                  Colors.blue, // Adjust color as needed
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Chat(
+                                    familyMemberId:
+                                        supabase.auth.currentUser!.id,
+                                    caretakerId: caretaker!['caretaker_id'],
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Icon(
+                              Icons.chat_bubble_outline,
+                              color: Colors.white,
+                              size: 28,
+                            ),
+                          )
                         ],
                       ),
                     ),
