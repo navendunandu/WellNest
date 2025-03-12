@@ -46,7 +46,6 @@ class _DashboardState extends State<Dashboard> {
       setState(() => isLoading = false);
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -58,11 +57,11 @@ class _DashboardState extends State<Dashboard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  _buildPieChart("Residents", residentCount, 70, Colors.blue),
-                  _buildPieChart("Rooms", roomCount, 35, Colors.green),
-                  _buildPieChart("Caretakers", caretakerCount, 14, Colors.orange),
-                  _buildPieChart("Complaints Addressed", addressedComplaints, addressedComplaints + notAddressedComplaints, Colors.red),
-                  _buildPieChart("Complaints Not Addressed", notAddressedComplaints, addressedComplaints + notAddressedComplaints, Colors.purple),
+                  _buildPieChart("Residents", residentCount, 70, Color.fromARGB(255, 33, 11, 55)),
+                  _buildPieChart("Rooms", roomCount, 35, Color.fromARGB(255, 8, 38, 9)),
+                  _buildPieChart("Caretakers", caretakerCount, 14, Color.fromARGB(255, 79, 0, 0)),
+                  _buildPieChart("Complaints", addressedComplaints, addressedComplaints + notAddressedComplaints, Color.fromARGB(255, 5, 37, 63)),
+                  
                 ],
               ),
             ),
@@ -100,7 +99,7 @@ class _DashboardState extends State<Dashboard> {
                     PieChartSectionData(
                       value: (maxValue - value).toDouble(),
                       title: '',
-                      color: Colors.grey[300],
+                      color: const Color.fromARGB(255, 255, 145, 145),
                     ),
                   ],
                 ),
