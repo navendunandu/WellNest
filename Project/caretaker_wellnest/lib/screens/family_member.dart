@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:caretaker_wellnest/screens/chat.dart'; // Import Chat Screen
 
 class FamilyMember extends StatefulWidget {
   final String residentId;
@@ -75,8 +76,32 @@ class _FamilyMemberState extends State<FamilyMember> {
                           style: TextStyle(fontSize: 18)),
                       Text('Email: ${familyMemberData!['familymember_email']}',
                           style: TextStyle(fontSize: 18)),
-                      Text('Phone: ${familyMemberData!['familymember_contact']}',
+                      Text(
+                          'Phone: ${familyMemberData!['familymember_contact']}',
                           style: TextStyle(fontSize: 18)),
+                      const SizedBox(height: 20),
+
+                      // ✅ Chat Button
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Chat(
+                                    caretakerId: supabase.auth.currentUser!.id,
+                                    familyMemberId:
+                                        familyMemberData!['familymember_id'])),
+                          );
+                        },
+                        icon: const Icon(Icons.chat),
+                        label: const Text('Chat with family member'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 20),
+                        ),
+                      ),
                     ],
                   ),
                 ),
