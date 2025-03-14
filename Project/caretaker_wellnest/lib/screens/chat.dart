@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Chat extends StatefulWidget {
-  final String caretakerId; // Caretaker's ID
-  final String familyMemberId; // Family Member's ID
+  final String caretakerId;
+  final String familyMemberId;
 
-  const Chat({super.key, required this.caretakerId, required this.familyMemberId});
+  const Chat(
+      {super.key, required this.caretakerId, required this.familyMemberId});
 
   @override
   State<Chat> createState() => _ChatState();
@@ -19,52 +20,52 @@ class _ChatState extends State<Chat> {
   @override
   void initState() {
     super.initState();
-    fetchMessages(); // Load chat history
-    listenForMessages(); // Listen for real-time messages
+    fetchMessages();
+    listenForMessages();
   }
 
-  /// Fetch chat history between the caretaker and family member
+  /// Fetch chat history between caretaker and family member
   Future<void> fetchMessages() async {
     final response = await supabase
-        .from('messages')
+        .from('tbl_chat')
         .select()
-        .or('sender_id.eq.${widget.caretakerId},receiver_id.eq.${widget.caretakerId}')
-        .order('timestamp', ascending: true);
+        .or('chat_fromcid.eq.${widget.caretakerId}, chat_fromfid.eq.${widget.familyMemberId}')
+        .or('chat_tocid.eq.${widget.caretakerId}, chat_tofid.eq.${widget.familyMemberId}')
+        .order('datetime', ascending: true);
 
     if (mounted) {
       setState(() {
-        messages = List<Map<String, dynamic>>.from(response);
+        messages =
+            response.map((msg) => Map<String, dynamic>.from(msg)).toList();
       });
     }
   }
 
   /// Listen for new messages in real time
   void listenForMessages() {
-    // Messages where the caretaker is the receiver
     supabase
-        .from('messages')
-        .stream(primaryKey: ['message_id'])
-        .eq('receiver_id', widget.caretakerId)
+        .from('tbl_chat')
+        .stream(primaryKey: ['chat_id'])
+        .order('datetime', ascending: true)
         .listen((snapshot) {
-      if (mounted) {
-        setState(() {
-          messages.addAll(snapshot);
-        });
-      }
-    });
+          print('🔄 New snapshot received: $snapshot'); // Debugging line
 
-    // Messages where the caretaker is the sender
-    supabase
-        .from('messages')
-        .stream(primaryKey: ['message_id'])
-        .eq('sender_id', widget.caretakerId)
-        .listen((snapshot) {
-      if (mounted) {
-        setState(() {
-          messages.addAll(snapshot);
+          if (mounted) {
+            setState(() {
+              for (var message in snapshot) {
+                if ((message['chat_tocid'] == widget.caretakerId &&
+                        message['chat_tofid'] == widget.familyMemberId) ||
+                    (message['chat_tocid'] == widget.familyMemberId &&
+                        message['chat_tofid'] == widget.caretakerId)) {
+                  if (!messages
+                      .any((msg) => msg['chat_id'] == message['chat_id'])) {
+                    messages.add(Map<String, dynamic>.from(message));
+                  }
+                }
+              }
+            });
+          }
         });
-      }
-    });
   }
 
   /// Send a new message
@@ -72,14 +73,16 @@ class _ChatState extends State<Chat> {
     final messageText = _messageController.text.trim();
     if (messageText.isEmpty) return;
 
-    await supabase.from('messages').insert({
-      'sender_id': widget.caretakerId,
-      'receiver_id': widget.familyMemberId,
-      'content': messageText,
-      'timestamp': DateTime.now().toIso8601String(),
+    await supabase.from('tbl_chat').insert({
+      'chat_fromcid': widget.caretakerId,
+      'chat_fromfid': null,
+      'chat_tocid': null,
+      'chat_tofid': widget.familyMemberId,
+      'chat_content': messageText,
+      'datetime': DateTime.now().toIso8601String(),
     });
 
-    _messageController.clear(); // Clear input field
+    _messageController.clear();
   }
 
   @override
@@ -94,20 +97,23 @@ class _ChatState extends State<Chat> {
               itemCount: messages.length,
               itemBuilder: (context, index) {
                 final message = messages[index];
-                final isMe = message['sender_id'] == widget.caretakerId;
+                final isMe = message['chat_fromcid'] == widget.caretakerId;
 
                 return Align(
-                  alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                  alignment:
+                      isMe ? Alignment.centerRight : Alignment.centerLeft,
                   child: Container(
-                    margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: isMe ? Colors.greenAccent : Colors.grey[300],
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
-                      message['content'],
-                      style: TextStyle(color: isMe ? Colors.white : Colors.black),
+                      message['chat_content'] ?? '',
+                      style:
+                          TextStyle(color: isMe ? Colors.white : Colors.black),
                     ),
                   ),
                 );
