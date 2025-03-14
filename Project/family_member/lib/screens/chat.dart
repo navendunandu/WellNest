@@ -44,11 +44,13 @@ class _ChatState extends State<Chat> {
     supabase
         .from('messages')
         .stream(primaryKey: ['message_id'])
-        .eq('receiver_id', widget.familyMemberId)
+        .eq('receiver_id', widget.caretakerId)
+        .order('timestamp', ascending: true) // Ensures proper order
         .listen((snapshot) {
           if (mounted) {
             setState(() {
-              messages.addAll(snapshot);
+              messages =
+                  snapshot; // Replaces the entire list, preventing duplication
             });
           }
         });
