@@ -37,6 +37,7 @@ class _ViewMedappointmentState extends State<ViewMedappointment> {
                 fontSize: 23),
           ),
           backgroundColor: Color.fromARGB(255, 0, 36, 94),
+          foregroundColor: Colors.white,
         ),
         body: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -44,7 +45,10 @@ class _ViewMedappointmentState extends State<ViewMedappointment> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   appointments.isEmpty
-                      ? const Center(child: Text("No Appointments Available"))
+                      ? const Center(
+                          child: Text("No Appointments Available",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold)))
                       : Expanded(
                           child: ListView.builder(
                             itemCount: appointments.length,
