@@ -20,7 +20,8 @@ class _NewAdmissionState extends State<NewAdmission> {
 
   Future<void> fetchFiletype() async {
     try {
-      final response = await supabase.from('tbl_resident').select().eq('resident_status', 0);
+      final response =
+          await supabase.from('tbl_resident').select().eq('resident_status', 0);
       setState(() {
         _filetypeList = response;
       });
@@ -49,42 +50,113 @@ class _NewAdmissionState extends State<NewAdmission> {
 
   @override
   Widget build(BuildContext context) {
-    return DataTable(
-        columns: const [
-          DataColumn(label: Text("Sl.No")),
-          DataColumn(label: Text("Resident_Name")),
-          DataColumn(label: Text("Room_ID")),
-          DataColumn(label: Text("Relation_ID")),
-          DataColumn(label: Text("Resident_Contact")),
-          DataColumn(label: Text("Resident_Email")),
-          DataColumn(label: Text("Action")),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Color.fromARGB(255, 227, 242, 253),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withAlpha(51),
+            spreadRadius: 3,
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
         ],
-        rows: _filetypeList.asMap().entries.map((entry) {
-          print(entry.value);
-          return DataRow(cells: [
-            DataCell(Text((entry.key + 1).toString())),
-            DataCell(Text(entry.value['resident_name'].toString())),
-            DataCell(Text(entry.value['room_id'].toString())),
-            DataCell(Text(entry.value['relation_id'].toString())),
-            DataCell(Text(entry.value['resident_contact'].toString())),
-            DataCell(Text(entry.value['resident_email'].toString())),
-            DataCell(Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.check),
-                  onPressed: () {
-                    accept(entry.value['resident_id'].toString());
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.highlight_remove_outlined),
-                  onPressed: () {
-                    reject(entry.value['resident_id'].toString());
-                  },
-                ),
+      ),
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(8),
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          dividerColor: const Color(0xFFEEEEEE),
+          dataTableTheme: DataTableThemeData(
+            headingTextStyle: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Color.fromARGB(255, 24, 56, 111),
+              fontSize: 16,
+            ),
+            dataTextStyle: const TextStyle(
+              color: Color(0xFF333333),
+              fontSize: 14,
+            ),
+          ),
+        ),
+        child: DataTable(
+          
+          headingRowColor: WidgetStateProperty.all(
+            const Color(0xFFF5F7FA),
+          ),
+          dataRowColor: WidgetStateProperty.resolveWith<Color>(
+            (Set<WidgetState> states) {
+              if (states.contains(WidgetState.selected)) {
+                return const Color(0xFFE8F0FE);
+              }
+              return Colors.transparent;
+            },
+          ),
+          horizontalMargin: 20,
+          columnSpacing: 25,
+          dividerThickness: 1,
+          border: TableBorder(
+            horizontalInside: BorderSide(
+              width: 1,
+              color: Colors.grey.withAlpha(51),
+            ),
+            top: BorderSide(
+              width: 1,
+              color: Colors.grey.withAlpha(51),
+            ),
+            bottom: BorderSide(
+              width: 1,
+              color: Colors.grey.withAlpha(51),
+            ),
+          ),
+          showBottomBorder: true,
+          columns: const [
+            DataColumn(label: Text("Sl.No")),
+            DataColumn(label: Text("Resident Name")),
+            DataColumn(label: Text("Room ID")),
+            DataColumn(label: Text("Relation ID")),
+            DataColumn(label: Text("Contact")),
+            DataColumn(label: Text("Email")),
+            DataColumn(label: Text("Action")),
+          ],
+          rows: _filetypeList.asMap().entries.map((entry) {
+            return DataRow(
+              color: WidgetStateProperty.resolveWith<Color?>(
+                (Set<WidgetState> states) {
+                  return entry.key % 2 == 0
+                      ? const Color(0xFFFAFAFA)
+                      : Colors.white;
+                },
+              ),
+              cells: [
+                DataCell(Text((entry.key + 1).toString())),
+                DataCell(Text(entry.value['resident_name'].toString())),
+                DataCell(Text(entry.value['room_id'].toString())),
+                DataCell(Text(entry.value['relation_id'].toString())),
+                DataCell(Text(entry.value['resident_contact'].toString())),
+                DataCell(Text(entry.value['resident_email'].toString())),
+                DataCell(Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.check, color: Colors.green),
+                      onPressed: () {
+                        accept(entry.value['resident_id'].toString());
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close, color: Colors.red),
+                      onPressed: () {
+                        reject(entry.value['resident_id'].toString());
+                      },
+                    ),
+                  ],
+                )),
               ],
-            )),
-          ]);
-        }).toList());
+            );
+          }).toList(),
+        ),
+      ),
+    );
   }
 }
