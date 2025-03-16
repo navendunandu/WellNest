@@ -20,7 +20,7 @@ class _ViewProfileState extends State<ViewProfile> {
   late TextEditingController nameController;
   late TextEditingController addressController;
   late TextEditingController contactController;
-  late TextEditingController emailController;
+  // late TextEditingController emailController;
   late TextEditingController dobController;
 
   // Form key for validation
@@ -33,7 +33,7 @@ class _ViewProfileState extends State<ViewProfile> {
     nameController = TextEditingController();
     addressController = TextEditingController();
     contactController = TextEditingController();
-    emailController = TextEditingController();
+    // emailController = TextEditingController();
     dobController = TextEditingController();
 
     fetchResidentProfile();
@@ -45,7 +45,7 @@ class _ViewProfileState extends State<ViewProfile> {
     nameController.dispose();
     addressController.dispose();
     contactController.dispose();
-    emailController.dispose();
+    // emailController.dispose();
     dobController.dispose();
     super.dispose();
   }
@@ -68,7 +68,7 @@ class _ViewProfileState extends State<ViewProfile> {
           addressController.text = residentData!['resident_address'] ?? '';
           contactController.text =
               residentData!['resident_contact']?.toString() ?? '';
-          emailController.text = residentData!['resident_email'] ?? '';
+          // emailController.text = residentData!['resident_email'] ?? '';
           dobController.text = residentData!['resident_dob'] ?? '';
         }
       });
@@ -86,7 +86,7 @@ class _ViewProfileState extends State<ViewProfile> {
           'resident_name': nameController.text,
           'resident_address': addressController.text,
           'resident_contact': contactController.text,
-          'resident_email': emailController.text,
+          // 'resident_email': emailController.text,
           'resident_dob': dobController.text,
         }).eq('resident_id', widget.profile);
 
@@ -152,8 +152,8 @@ class _ViewProfileState extends State<ViewProfile> {
                         residentData!['resident_address'] ?? '';
                     contactController.text =
                         residentData!['resident_contact']?.toString() ?? '';
-                    emailController.text =
-                        residentData!['resident_email'] ?? '';
+                    // emailController.text =
+                    //     residentData!['resident_email'] ?? '';
                     dobController.text = residentData!['resident_dob'] ?? '';
                   }
                 });
@@ -293,7 +293,7 @@ class _ViewProfileState extends State<ViewProfile> {
             },
           ),
           const SizedBox(height: 12),
-          TextFormField(
+          /*TextFormField(
             controller: emailController,
             decoration: const InputDecoration(
               labelText: 'Email',
@@ -309,7 +309,7 @@ class _ViewProfileState extends State<ViewProfile> {
               }
               return null;
             },
-          ),
+          ),*/
           const SizedBox(height: 12),
           TextFormField(
             controller: dobController,
