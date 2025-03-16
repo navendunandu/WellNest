@@ -23,7 +23,6 @@ class _FamilyMemberState extends State<FamilyMember> {
 
   Future<void> fetchFamilyMemberDetails() async {
     try {
-      // Step 1: Fetch familymember_id from tbl_resident
       final residentResponse = await supabase
           .from('tbl_resident')
           .select('familymember_id')
@@ -39,8 +38,6 @@ class _FamilyMemberState extends State<FamilyMember> {
       }
 
       final String familyMemberId = residentResponse['familymember_id'];
-
-      // Step 2: Fetch family member details from tbl_familymember
       final familyResponse = await supabase
           .from('tbl_familymember')
           .select('*')
@@ -62,49 +59,110 @@ class _FamilyMemberState extends State<FamilyMember> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Family Member Details')),
+      backgroundColor: const Color.fromARGB(230, 255, 252, 197),
+      appBar: AppBar(
+        title: const Text('Family Member Details',
+            style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
+        backgroundColor: const Color.fromARGB(255, 0, 36, 94),
+        foregroundColor: Colors.white,
+      ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : familyMemberData == null
-              ? const Center(child: Text('No family member found'))
+              ? const Center(
+                  child: Text("No family member found",
+                      style: TextStyle(fontSize: 18, color: Colors.black54)))
               : Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Name: ${familyMemberData!['familymember_name']}',
-                          style: TextStyle(fontSize: 18)),
-                      Text('Email: ${familyMemberData!['familymember_email']}',
-                          style: TextStyle(fontSize: 18)),
-                      Text(
-                          'Phone: ${familyMemberData!['familymember_contact']}',
-                          style: TextStyle(fontSize: 18)),
-                      const SizedBox(height: 20),
-
-                      // ✅ Chat Button
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Chat(
-                                    caretakerId: supabase.auth.currentUser!.id,
+                  child: Card(
+                    color: Colors.white,
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child: CircleAvatar(
+                              radius: 50,
+                              backgroundImage: familyMemberData![
+                                          'familymember_photo'] !=
+                                      null
+                                  ? NetworkImage(
+                                      familyMemberData!['familymember_photo'])
+                                  : const AssetImage(
+                                          'assets/default_avatar.png')
+                                      as ImageProvider,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          profileRow(
+                              "Name", familyMemberData!['familymember_name']),
+                          profileRow(
+                              "Email", familyMemberData!['familymember_email']),
+                          profileRow(
+                              "Phone",
+                              familyMemberData!['familymember_contact']
+                                  .toString()),
+                          const SizedBox(height: 20),
+                          ElevatedButton(
+                            
+                            style: ElevatedButton.styleFrom(
+                              shape: const CircleBorder(),
+                              padding: const EdgeInsets.all(8),
+                              backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Chat(
+                                    caretakerId:
+                                        supabase.auth.currentUser!.id,
                                     familyMemberId:
-                                        familyMemberData!['familymember_id'])),
-                          );
-                        },
-                        icon: const Icon(Icons.chat),
-                        label: const Text('Chat with family member'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 20),
-                        ),
+                                        familyMemberData!['familymember_id'],
+                                  ),
+                                ),
+                              );
+                            },
+                            child: const Icon(
+                              Icons.chat_rounded,
+                              color: Color.fromARGB(255, 0, 36, 94),
+                              size: 28,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
+    );
+  }
+
+  Widget profileRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          Text(
+            "$label: ",
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: Color.fromARGB(255, 0, 36, 94),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(fontSize: 16),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
