@@ -127,6 +127,7 @@ class _ViewProfileState extends State<ViewProfile> {
           ),
         ),
         backgroundColor: const Color.fromARGB(255, 0, 36, 94),
+        foregroundColor: Colors.white,
         actions: [
           if (!isEditing && residentData != null)
             IconButton(

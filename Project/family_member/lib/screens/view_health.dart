@@ -1,6 +1,6 @@
-import 'package:family_member/main.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:intl/intl.dart';
 
 class ViewHealth extends StatefulWidget {
   String profile;
@@ -25,6 +25,7 @@ class _ViewHealthState extends State<ViewHealth> {
       final response = await supabase
           .from('tbl_healthrecord')
           .select()
+          .eq('resident_id', widget.profile)
           .order('health_date', ascending: false)
           .limit(1)
           .single();
@@ -54,6 +55,7 @@ class _ViewHealthState extends State<ViewHealth> {
                 fontWeight: FontWeight.bold),
           ),
           backgroundColor: Color.fromARGB(255, 0, 36, 94),
+          foregroundColor: Colors.white,
         ),
         body: isLoading
             ? const Center(child: CircularProgressIndicator())
@@ -64,7 +66,7 @@ class _ViewHealthState extends State<ViewHealth> {
                         Text(
                           "No health records found.",
                           style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                              fontSize: 18),
                         ),
                       ],
                     ),
@@ -78,9 +80,11 @@ class _ViewHealthState extends State<ViewHealth> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Date: ${healthData!['health_date']}",
+                                "Date: ${DateFormat('yyyy-MM-dd').format(DateTime.parse(healthData!['health_date']))}",
                                 style: const TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               _buildHealthCard("Sugar Level",
                                   healthData!['health_sugarlevel']),
