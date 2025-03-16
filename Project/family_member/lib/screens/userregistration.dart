@@ -148,12 +148,13 @@ class _UserregistrationState extends State<Userregistration> {
           "Create Account",
           style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: Color.fromARGB(230, 255, 252, 197)),
+              ),
         ),
-        backgroundColor: Color.fromARGB(255, 24, 56, 111),
+        backgroundColor: Color.fromARGB(255, 0, 36, 94),
+        foregroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back,
-              color: Color.fromARGB(230, 255, 252, 197)),
+              ),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -178,7 +179,7 @@ class _UserregistrationState extends State<Userregistration> {
                       style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 24, 56, 111)),
+                          color: Color.fromARGB(255, 0, 36, 94)),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 20),
@@ -248,7 +249,7 @@ class _UserregistrationState extends State<Userregistration> {
 
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromARGB(255, 24, 56, 111),
+                        backgroundColor: Color.fromARGB(255, 0, 36, 94),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
@@ -263,7 +264,7 @@ class _UserregistrationState extends State<Userregistration> {
                         style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            color: Color.fromARGB(230, 255, 252, 197)),
+                            color: Colors.white),
                       ),
                     ),
                   ],
