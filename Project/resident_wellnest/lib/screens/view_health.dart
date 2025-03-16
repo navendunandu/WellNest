@@ -53,6 +53,7 @@ class _ViewHealthState extends State<ViewHealth> {
                 fontWeight: FontWeight.bold),
           ),
           backgroundColor: Color.fromARGB(255, 0, 36, 94),
+          foregroundColor: Colors.white,
         ),
         body: isLoading
             ? const Center(child: CircularProgressIndicator())
