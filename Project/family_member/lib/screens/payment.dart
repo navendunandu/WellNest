@@ -40,9 +40,9 @@ class _PaymentPageState extends State<PaymentPage> {
       final paymentData = {
         'payment_rzid': response.paymentId,
         'payment_date': DateTime.now().toIso8601String(),
-        'payment_amount': 27500.00, // Convert from paise to rupees (2750000 paise = 27500 INR)
-        // 'payment_rzid': response.paymentId,
+        'payment_amount': 27500.00, 
         'resident_id': widget.residentId,
+        'familymember_id': supabase.auth.currentUser?.id,
       };
 
       await supabase.from('tbl_payment').insert(paymentData);
