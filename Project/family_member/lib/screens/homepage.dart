@@ -2,13 +2,50 @@ import 'package:family_member/screens/view_caretaker.dart';
 import 'package:family_member/screens/view_complaint.dart';
 import 'package:family_member/screens/view_profile.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'view_health.dart'; // Import ViewHealth
 import 'view_medappointments.dart'; // Import ViewMedappointments
 import 'payment.dart'; // Import PaymentPage
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   String profile;
-   HomePage({super.key, required this.profile});
+  HomePage({super.key, required this.profile});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final SupabaseClient supabase = Supabase.instance.client;
+  String? residentName;
+  String? residentPhoto;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchResidentData();
+  }
+
+  Future<void> fetchResidentData() async {
+    try {
+      
+
+      final response = await supabase
+          .from('tbl_resident')
+          .select()
+          .eq('resident_id', widget.profile)
+          .single();
+
+      if (mounted) {
+        setState(() {
+          residentPhoto = response['resident_photo'];
+          residentName = response['resident_name'];
+        });
+      }
+    } catch (error) {
+      debugPrint("Error fetching resident data: $error");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,15 +66,39 @@ class HomePage extends StatelessWidget {
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-            
+            Center(
+              child: CircleAvatar(
+                radius: 50,
+                backgroundImage: residentPhoto != null
+                    ? NetworkImage(residentPhoto!)
+                    : const AssetImage('assets/default_avatar.png')
+                        as ImageProvider,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Center(
+              child: Text(
+                residentName ?? "Resident Name",
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 0, 36, 94),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
             _buildMenuButton(
               context,
               icon: Icons.person,
               label: "View Profile",
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ViewProfile(
-                  profile: profile,
-                ),));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ViewProfile(
+                        profile: widget.profile,
+                      ),
+                    ));
               },
             ),
             _buildMenuButton(
@@ -47,9 +108,10 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ViewCaretaker(
-                    resId: profile,
-                  )),
+                  MaterialPageRoute(
+                      builder: (context) => ViewCaretaker(
+                            resId: widget.profile,
+                          )),
                 );
               },
             ),
@@ -60,9 +122,10 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ViewHealth(
-                    profile: profile,
-                  )),
+                  MaterialPageRoute(
+                      builder: (context) => ViewHealth(
+                            profile: widget.profile,
+                          )),
                 );
               },
             ),
@@ -75,8 +138,8 @@ class HomePage extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) => ViewMedappointments(
-                        profile:profile,
-                      )),
+                            profile: widget.profile,
+                          )),
                 );
               },
             ),
@@ -87,7 +150,9 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => PaymentPage(residentId: profile)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          PaymentPage(residentId: widget.profile)),
                 );
               },
             ),
@@ -96,15 +161,11 @@ class HomePage extends StatelessWidget {
               icon: Icons.feedback,
               label: "Complaint",
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ViewComplaint(
-                  ))
-                );
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ViewComplaint()));
               },
             ),
             const Spacer(),
-           
           ],
         ),
       ),
@@ -123,23 +184,22 @@ class HomePage extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: Color.fromARGB(255, 0, 36, 94),
-          borderRadius: BorderRadius.circular(12),),
-          
+          borderRadius: BorderRadius.circular(12),
+        ),
         margin: const EdgeInsets.symmetric(vertical: 8),
         padding: EdgeInsets.all(10),
-          child: Row(
-            children: [
-              Icon(icon, color: color),
-              const SizedBox(width: 15),
-              Expanded(
-                child: Text(
-                  label,
-                  style: const TextStyle(fontSize: 18, color: Colors.white),
-                ),
+        child: Row(
+          children: [
+            Icon(icon, color: color),
+            const SizedBox(width: 15),
+            Expanded(
+              child: Text(
+                label,
+                style: const TextStyle(fontSize: 18, color: Colors.white),
               ),
-            ],
-          ),
-      
+            ),
+          ],
+        ),
       ),
     );
   }
