@@ -19,21 +19,18 @@ class _HomepageState extends State<Homepage> {
     super.initState();
     fetchResidentData();
   }
-
   Future<void> fetchResidentData() async {
     try {
       final supabase = Supabase.instance.client;
-
+    final resident=supabase.auth.currentUser!.id;
       // Fetch the first resident (modify query as per your requirement)
       final response = await supabase
           .from('tbl_resident')
-          .select('resident_name, resident_photo')
-          .limit(1)
-          .single();
-
+          .select().eq('resident_id',resident).single();
+      print(response);
       setState(() {
-        residentName = response['resident_name'];
-        residentPhoto = response['resident_photo'];
+        residentPhoto=response['resident_photo'] ;
+        residentName=response['resident_name'] ;
       });
     } catch (error) {
       print("Error fetching resident data: $error");
@@ -73,7 +70,7 @@ class _HomepageState extends State<Homepage> {
             ),
             const SizedBox(height: 20),
             Center(
-                child: Text("$residentName",
+                child: Text(residentName ?? "Resident Name",
                     style: const TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -101,7 +98,7 @@ class _HomepageState extends State<Homepage> {
             ),
             _buildMenuButton(
               context,
-              icon: Icons.payment,
+              icon: Icons.health_and_safety_outlined,
               label: "Health Record",
               onPressed: () {
                  Navigator.push(
@@ -113,7 +110,7 @@ class _HomepageState extends State<Homepage> {
             ),
             _buildMenuButton(
               context,
-              icon: Icons.feedback,
+              icon: Icons.local_hospital_sharp,
               label: "Medical appointment",
               onPressed: () {
                  Navigator.push(
