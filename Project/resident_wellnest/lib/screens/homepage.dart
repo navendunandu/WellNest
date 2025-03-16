@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:resident_wellnest/screens/caretaker_profile.dart';
 import 'package:resident_wellnest/screens/fam_profile.dart';
 import 'package:resident_wellnest/screens/resident_profile.dart';
 import 'package:resident_wellnest/screens/view_health.dart';
@@ -13,6 +14,7 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  final SupabaseClient supabase = Supabase.instance.client;
   String? residentName;
   String? residentPhoto;
   String? residentId;
@@ -22,24 +24,33 @@ class _HomepageState extends State<Homepage> {
     super.initState();
     fetchResidentData();
   }
-  
+
   Future<void> fetchResidentData() async {
     try {
-      final supabase = Supabase.instance.client;
-    final resident=supabase.auth.currentUser!.id;
+      final resident = supabase.auth.currentUser!.id;
 
-      // Fetch the first resident (modify query as per your requirement)
       final response = await supabase
           .from('tbl_resident')
-          .select().eq('resident_id',resident).single();
-      print(response);
-      setState(() {
-        residentPhoto=response['resident_photo'] ;
-        residentName=response['resident_name'] ;
-        residentId=response['resident_id'] ;
-      });
+          .select()
+          .eq('resident_id', resident)
+          .single();
+
+      if (mounted) {
+        setState(() {
+          residentPhoto = response['resident_photo'];
+          residentName = response['resident_name'];
+          residentId = response['resident_id'];
+        });
+      }
     } catch (error) {
-      print("Error fetching resident data: $error");
+      debugPrint("Error fetching resident data: $error");
+    }
+  }
+
+  Future<void> logout() async {
+    await supabase.auth.signOut();
+    if (mounted) {
+      Navigator.pushReplacementNamed(context, '/login'); // Redirect to login screen
     }
   }
 
@@ -51,18 +62,21 @@ class _HomepageState extends State<Homepage> {
         title: const Text("Homepage"),
         backgroundColor: const Color.fromARGB(255, 0, 36, 94),
         foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.white),
+            onPressed: logout,
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               "Welcome",
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
             Center(
@@ -76,14 +90,16 @@ class _HomepageState extends State<Homepage> {
             ),
             const SizedBox(height: 20),
             Center(
-                child: Text(residentName ?? "Resident Name",
-                    style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 0, 36, 94)))),
-            SizedBox(
-              height: 20,
+              child: Text(
+                residentName ?? "Resident Name",
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 0, 36, 94),
+                ),
+              ),
             ),
+            const SizedBox(height: 20),
             _buildMenuButton(
               context,
               icon: Icons.person,
@@ -91,9 +107,11 @@ class _HomepageState extends State<Homepage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ResidentProfile(
-                    residentId: residentId.toString(),
-                  )),
+                  MaterialPageRoute(
+                    builder: (context) => ResidentProfile(
+                      residentId: residentId.toString(),
+                    ),
+                  ),
                 );
               },
             ),
@@ -102,19 +120,28 @@ class _HomepageState extends State<Homepage> {
               icon: Icons.medical_services,
               label: "Caretaker Profile",
               onPressed: () {
-
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CaretakerProfile(
+                      residentId: residentId.toString(),
+                    ),
+                  ),
+                );
               },
             ),
             _buildMenuButton(
               context,
-              icon: Icons.calendar_today,
+              icon: Icons.family_restroom,
               label: "Family Profile",
               onPressed: () {
                 Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => FamProfile(
-                  residentId: residentId.toString(),
-                )),
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => FamProfile(
+                      residentId: residentId.toString(),
+                    ),
+                  ),
                 );
               },
             ),
@@ -123,24 +150,28 @@ class _HomepageState extends State<Homepage> {
               icon: Icons.health_and_safety_outlined,
               label: "Health Record",
               onPressed: () {
-                 Navigator.push(
+                Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ViewHealth(
-                    residentId: residentId.toString(),
-                  )),
+                  MaterialPageRoute(
+                    builder: (context) => ViewHealth(
+                      residentId: residentId.toString(),
+                    ),
+                  ),
                 );
               },
             ),
             _buildMenuButton(
               context,
               icon: Icons.local_hospital_sharp,
-              label: "Medical appointment",
+              label: "Medical Appointment",
               onPressed: () {
-                 Navigator.push(
+                Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ViewMedappointment(
-                    residentId: residentId.toString(),
-                  )),
+                  MaterialPageRoute(
+                    builder: (context) => ViewMedappointment(
+                      residentId: residentId.toString(),
+                    ),
+                  ),
                 );
               },
             ),
