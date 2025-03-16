@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:resident_wellnest/screens/resident_profile.dart';
 import 'package:resident_wellnest/screens/view_health.dart';
 import 'package:resident_wellnest/screens/view_medappointment.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -13,16 +14,19 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   String? residentName;
   String? residentPhoto;
+  String? residentId;
 
   @override
   void initState() {
     super.initState();
     fetchResidentData();
   }
+  
   Future<void> fetchResidentData() async {
     try {
       final supabase = Supabase.instance.client;
     final resident=supabase.auth.currentUser!.id;
+
       // Fetch the first resident (modify query as per your requirement)
       final response = await supabase
           .from('tbl_resident')
@@ -31,6 +35,7 @@ class _HomepageState extends State<Homepage> {
       setState(() {
         residentPhoto=response['resident_photo'] ;
         residentName=response['resident_name'] ;
+        residentId=response['resident_id'] ;
       });
     } catch (error) {
       print("Error fetching resident data: $error");
@@ -82,7 +87,14 @@ class _HomepageState extends State<Homepage> {
               context,
               icon: Icons.person,
               label: "My Profile",
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ResidentProfile(
+                    residentId: residentId.toString(),
+                  )),
+                );
+              },
             ),
             _buildMenuButton(
               context,
@@ -104,6 +116,7 @@ class _HomepageState extends State<Homepage> {
                  Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => ViewHealth(
+                    residentId: residentId.toString(),
                   )),
                 );
               },
@@ -116,6 +129,7 @@ class _HomepageState extends State<Homepage> {
                  Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => ViewMedappointment(
+                    residentId: residentId.toString(),
                   )),
                 );
               },
