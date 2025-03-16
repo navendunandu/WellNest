@@ -2,6 +2,7 @@ import 'package:family_member/main.dart';
 import 'package:family_member/screens/fam_profile.dart';
 import 'package:family_member/screens/homepage.dart';
 import 'package:family_member/screens/login_page.dart';
+import 'package:family_member/screens/visit_booking.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'residentregistration.dart';
@@ -70,7 +71,8 @@ class _ManageProfileState extends State<ManageProfile> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => FamProfile(
-                       familymemberID: familyMember!['familymember_id'].toString(),
+                      familymemberID:
+                          familyMember!['familymember_id'].toString(),
                     ),
                   ),
                 );
@@ -135,22 +137,38 @@ class _ProfileGridState extends State<ProfileGrid> {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      padding: const EdgeInsets.all(16.0),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 16.0,
-        mainAxisSpacing: 16.0,
-        childAspectRatio: 0.8,
+    return Scaffold(
+      backgroundColor: Color.fromARGB(230, 255, 252, 197),
+      body: GridView.builder(
+        padding: const EdgeInsets.all(16.0),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 16.0,
+          mainAxisSpacing: 16.0,
+          childAspectRatio: 0.8,
+        ),
+        itemCount: residents.length + 1, // +1 for the add profile card
+        itemBuilder: (context, index) {
+          if (index < residents.length) {
+            return ProfileCard(profile: residents[index]);
+          } else {
+            return const AddProfileCard();
+          }
+        },
       ),
-      itemCount: residents.length + 1, // +1 for the add profile card
-      itemBuilder: (context, index) {
-        if (index < residents.length) {
-          return ProfileCard(profile: residents[index]);
-        } else {
-          return const AddProfileCard();
-        }
-      },
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => VisitBooking(),) );
+        },
+        label: const Text(
+          'Book Visit',
+          style: TextStyle(color: Colors.white, fontSize: 20), // Set text color
+        ),
+        icon: const Icon(Icons.event, color: Colors.white), // Set icon color
+        backgroundColor: Color.fromARGB(255, 0, 36, 94), // Custom ARGB color
+        foregroundColor: Colors.white, // Ensures icon and text are white
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
