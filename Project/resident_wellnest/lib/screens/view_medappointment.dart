@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ViewMedappointment extends StatefulWidget {
-  const ViewMedappointment({super.key});
+  String residentId;
+  ViewMedappointment({super.key, required this.residentId});
 
   @override
   State<ViewMedappointment> createState() => _ViewMedappointmentState();
@@ -13,11 +14,16 @@ class _ViewMedappointmentState extends State<ViewMedappointment> {
   List<Map<String, dynamic>> appointments = [];
 
   Future<void> fetchAppointments() async {
-    final response = await supabase.from('tbl_appointment').select();
+    final response = await supabase
+        .from('tbl_appointment')
+        .select()
+        .eq('resident_id', widget.residentId)
+        .order('appointment_date', ascending: false);
     setState(() {
       appointments = response;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
