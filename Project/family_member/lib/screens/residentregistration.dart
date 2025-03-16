@@ -261,12 +261,15 @@ class _ResidentregistrationState extends State<Residentregistration> {
         appBar: AppBar(
           title: Text(
             'Resident Registration Page',
-            style: TextStyle(color: Color.fromARGB(230, 255, 252, 197)),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,fontSize: 20),
           ),
-          backgroundColor: Color.fromARGB(255, 0, 38, 81),
+          backgroundColor: Color.fromARGB(255, 0, 36, 94),
+          foregroundColor: Colors.white,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back,
-                color: Color.fromARGB(230, 255, 252, 197)),
+            icon: const Icon(
+              Icons.arrow_back,
+            ),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -294,7 +297,7 @@ class _ResidentregistrationState extends State<Residentregistration> {
                                         fontSize: 22,
                                         fontWeight: FontWeight.bold,
                                         color:
-                                            Color.fromARGB(255, 24, 56, 111)),
+                                            Color.fromARGB(255, 0, 36, 94)),
                                     textAlign: TextAlign.center,
                                   ),
                                   const SizedBox(height: 20),
@@ -479,7 +482,7 @@ class _ResidentregistrationState extends State<Residentregistration> {
                                   ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor:
-                                          Color.fromARGB(255, 24, 56, 111),
+                                          Color.fromARGB(255, 0, 36, 94),
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 14),
                                       shape: RoundedRectangleBorder(
@@ -496,8 +499,7 @@ class _ResidentregistrationState extends State<Residentregistration> {
                                       style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,
-                                          color: Color.fromARGB(
-                                              230, 255, 252, 197)),
+                                          color: Colors.white),
                                     ),
                                   ),
                                 ]))),
