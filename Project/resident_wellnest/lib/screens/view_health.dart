@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ViewHealth extends StatefulWidget {
-  const ViewHealth({super.key});
+  String residentId;
+  ViewHealth({super.key, required this.residentId});
 
   @override
   State<ViewHealth> createState() => _ViewHealthState();
@@ -23,7 +24,7 @@ class _ViewHealthState extends State<ViewHealth> {
     try {
       final response = await supabase
           .from('tbl_healthrecord')
-          .select()
+          .select().eq('resident_id', widget.residentId)
           .order('health_date', ascending: false)
           .limit(1)
           .single();
