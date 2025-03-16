@@ -19,9 +19,8 @@ class _LeaveApplicationState extends State<LeaveApplication> {
 
   Future<void> fetchFiletype() async {
     try {
-      final response = await supabase
-          .from('tbl_leave')
-          .select().eq('leave_status', 0);
+      final response =
+          await supabase.from('tbl_leave').select().eq('leave_status', 0);
       setState(() {
         _filetypeList = response;
       });
@@ -42,57 +41,133 @@ class _LeaveApplicationState extends State<LeaveApplication> {
   }
 
   void leaveVerify(String leaveId) {
-    updateLeaveStatus(leaveId, 1);
+    _showConfirmationDialog(
+      "Are you sure you want to accept the request?",
+      () => updateLeaveStatus(leaveId, 1),
+    );
   }
 
-  void leavedeny(String leaveid)
-  {
-    updateLeaveStatus(leaveid, 2);
+  void leavedeny(String leaveId) {
+    _showConfirmationDialog(
+      "Are you sure you want to reject the request?",
+      () => updateLeaveStatus(leaveId, 2),
+    );
+  }
+
+  void _showConfirmationDialog(String message, VoidCallback onConfirm) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirmation"),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                onConfirm();
+              },
+              child: Text("Confirm"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return DataTable(
-        columns: const [
-          DataColumn(label: Text("Sl.No")),
-          DataColumn(label: Text("Leave Reason")),
-          DataColumn(label: Text("From date")),
-          DataColumn(label: Text("To Date")),
-          DataColumn(label: Text("Applied Date")),
-          DataColumn(label: Text("Action")),
-        ],
-        rows: _filetypeList.asMap().entries.map((entry) {
-          print(entry.value);
-          return DataRow(cells: [
-            DataCell(Text((entry.key + 1).toString())),
-            DataCell(Text(entry.value['leave_reason'].toString())),
-            DataCell(Text(entry.value['leave_fromdate'].toString())),
-            DataCell(Text(entry.value['leave_todate'].toString())),
-            DataCell(Text(entry.value['leave_date'].toString())),
-            DataCell(
-                Row(
-                    children: [
-                      Text("Leave application pending.."),
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.verified_outlined),
-                            onPressed: () {
-                              leaveVerify(entry.value['leave_id'].toString());
-                            },
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.cancel_rounded),
-                            onPressed: () {
-                              leavedeny(entry.value['leave_id'].toString());
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
-                  )
-            )
-          ]);
-        }).toList());
+    return Container(
+      padding: EdgeInsets.all(20),
+      child: Center(
+        child: SingleChildScrollView(
+          child: Card(
+            elevation: 5,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(30),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Leave Applications",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 24, 56, 111),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  _filetypeList.isEmpty
+                      ? Text("No leave applications available.")
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: _filetypeList.length,
+                          itemBuilder: (context, index) {
+                            final entry = _filetypeList[index];
+                            return Card(
+                              margin: EdgeInsets.symmetric(vertical: 10),
+                              elevation: 3,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: ListTile(
+                                title: Text(
+                                  entry['leave_reason'].toString(),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("From: ${entry['leave_fromdate']}"),
+                                    Text("To: ${entry['leave_todate']}"),
+                                    Text(
+                                      "Applied on: ${DateTime.parse(entry['leave_date']).toLocal().toString().split(' ')[0]} at "
+                                      "${DateTime.parse(entry['leave_date']).toLocal().toString().split(' ')[1].split('.')[0]}",
+                                    ),
+                                  ],
+                                ),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.check,
+                                          color: Colors.green),
+                                      onPressed: () {
+                                        leaveVerify(
+                                            entry['leave_id'].toString());
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon:
+                                          Icon(Icons.close, color: Colors.red),
+                                      onPressed: () {
+                                        leavedeny(entry['leave_id'].toString());
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
