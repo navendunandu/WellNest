@@ -1,6 +1,7 @@
 import 'package:family_member/main.dart';
 import 'package:family_member/screens/homepage.dart';
 import 'package:family_member/screens/landingpage.dart';
+import 'package:family_member/screens/login_page.dart';
 import 'package:flutter/material.dart';
 import 'residentregistration.dart';
 
@@ -16,18 +17,31 @@ class ManageProfile extends StatelessWidget {
           'Manage Profiles',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Color.fromARGB(230, 255, 252, 197),
           ),
         ),
-        backgroundColor: const Color.fromARGB(255, 24, 56, 111),
-        leading: IconButton(
-          icon: const Icon(Icons.logout_outlined,
-              color: Color.fromARGB(230, 255, 252, 197)),
-          onPressed: () {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => Landingpage()));
-          },
+        backgroundColor: const Color.fromARGB(255, 0, 36, 94),
+        foregroundColor: Colors.white,
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GestureDetector(
+            onTap: () {
+              
+            },
+          ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout_outlined),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        LoginPage()), // Ensure LandingPage is correctly imported
+              );
+            },
+          ),
+        ],
       ),
       body: ProfileGrid(),
     );
@@ -98,7 +112,8 @@ class ProfileCard extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => HomePage(profile: profile['resident_id'])),
+          MaterialPageRoute(
+              builder: (context) => HomePage(profile: profile['resident_id'])),
         );
       },
       child: Card(
