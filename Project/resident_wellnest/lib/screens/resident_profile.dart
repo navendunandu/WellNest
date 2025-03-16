@@ -24,10 +24,10 @@ class _ResidentProfileState extends State<ResidentProfile> {
     try {
       final response = await supabase
           .from('tbl_resident')
-          .select("*, tbl_relation(relation_name)")
+          .select("*, tbl_relation(*)")
           .eq('resident_id', widget.residentId)
           .maybeSingle();
-
+      print("${response!['tbl_relation']['relation_name']}: response");
       if (mounted) {
         setState(() {
           resident = response;
@@ -39,7 +39,6 @@ class _ResidentProfileState extends State<ResidentProfile> {
       setState(() => isLoading = false);
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,9 +50,7 @@ class _ResidentProfileState extends State<ResidentProfile> {
         foregroundColor: Colors.white,
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : resident == null
-              ? const Center(
+          ? Center(
                   child: Text("No resident found",
                       style: TextStyle(fontSize: 18, color: Colors.black54)))
               : Padding(
@@ -82,11 +79,16 @@ class _ResidentProfileState extends State<ResidentProfile> {
                           ),
                           const SizedBox(height: 16),
                           profileRow("Name", resident!['resident_name']),
-                          profileRow("DOB", resident!['resident_dob'].toString()),
-                          profileRow("Contact", resident!['resident_contact'].toString()),
+                          profileRow(
+                              "DOB", resident!['resident_dob'].toString()),
+                          profileRow("Contact",
+                              resident!['resident_contact'].toString()),
                           profileRow("Address", resident!['resident_address']),
                           profileRow("Email", resident!['resident_email']),
-                          profileRow("Relation", resident!['tbl_relation']['relation_name'].toString()),
+                          profileRow(
+                              "Relation",
+                              resident!['tbl_relation']['relation_name']
+                                  .toString()),
                         ],
                       ),
                     ),
