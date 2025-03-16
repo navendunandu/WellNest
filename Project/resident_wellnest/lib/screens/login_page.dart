@@ -2,7 +2,6 @@ import 'package:resident_wellnest/components/form_validation.dart';
 import 'package:flutter/material.dart';
 import 'package:resident_wellnest/main.dart';
 import 'package:resident_wellnest/screens/homepage.dart';
-import 'package:resident_wellnest/services/auth_services.dart';
 // import 'package:flutter/gestures.dart';
 
 class LoginPage extends StatefulWidget {
@@ -35,9 +34,15 @@ class _LoginPageState extends State<LoginPage> {
           email: email,
           password: password,
         );
+        
+        final resident = await supabase
+            .from('tbl_resident')
+            .select()
+            .eq('resident_id', response.user!.id)
+            .single();
+        print('resident: $resident');
 
-        if (response.user != null) {
-          // Navigate to Homepage on successful login
+        if (resident.isNotEmpty) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => Homepage()),
@@ -61,13 +66,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back,
-              color: Color.fromARGB(255, 24, 56, 111)),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+    
         title: const Text(
           "Login Page",
           style: TextStyle(
