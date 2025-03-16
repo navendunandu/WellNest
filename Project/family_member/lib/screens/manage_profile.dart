@@ -1,12 +1,52 @@
 import 'package:family_member/main.dart';
+import 'package:family_member/screens/fam_profile.dart';
 import 'package:family_member/screens/homepage.dart';
-import 'package:family_member/screens/landingpage.dart';
 import 'package:family_member/screens/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'residentregistration.dart';
 
-class ManageProfile extends StatelessWidget {
+class ManageProfile extends StatefulWidget {
   const ManageProfile({super.key});
+
+  @override
+  State<ManageProfile> createState() => _ManageProfileState();
+}
+
+class _ManageProfileState extends State<ManageProfile> {
+  final SupabaseClient supabase = Supabase.instance.client;
+  Map<String, dynamic>? familyMember;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchFamilyMember();
+  }
+
+  Future<void> fetchFamilyMember() async {
+    try {
+      final userId = supabase.auth.currentUser?.id;
+
+      if (userId == null) {
+        debugPrint("User not logged in.");
+        return;
+      }
+
+      final response = await supabase
+          .from('tbl_familymember')
+          .select()
+          .eq('familymember_id', userId)
+          .maybeSingle();
+
+      if (mounted) {
+        setState(() {
+          familyMember = response;
+        });
+      }
+    } catch (error) {
+      debugPrint("Error fetching family member: $error");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,19 +65,33 @@ class ManageProfile extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
             onTap: () {
-              
+              if (familyMember != null) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => FamProfile(
+                       familymemberID: familyMember!['familymember_id'].toString(),
+                    ),
+                  ),
+                );
+              }
             },
+            child: CircleAvatar(
+              backgroundImage: familyMember?['familymember_photo'] != null
+                  ? NetworkImage(familyMember!['familymember_photo'])
+                  : const AssetImage('assets/default_avatar.png')
+                      as ImageProvider,
+            ),
           ),
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout_outlined),
             onPressed: () {
+              supabase.auth.signOut();
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        LoginPage()), // Ensure LandingPage is correctly imported
+                MaterialPageRoute(builder: (context) => const LoginPage()),
               );
             },
           ),
