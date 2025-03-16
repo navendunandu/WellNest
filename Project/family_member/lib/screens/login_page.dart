@@ -74,22 +74,16 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back,
-              color: Color.fromARGB(255, 24, 56, 111)),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
         title: const Text(
           "Login Page",
           style: TextStyle(
-            color: Color.fromARGB(255, 24, 56, 111),
-            fontSize: 20,
+            
+            fontSize: 23,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: const Color.fromARGB(230, 255, 252, 197),
+        backgroundColor: const Color.fromARGB(255, 0, 36, 94),
+        foregroundColor: Colors.white,
       ),
       body: Container(
         color: const Color.fromARGB(230, 255, 252, 197),
@@ -107,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                       "Welcome",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Color.fromARGB(255, 24, 56, 111),
+                        color: Color.fromARGB(255, 0, 36, 94),
                         fontSize: 40,
                         fontWeight: FontWeight.bold,
                       ),
@@ -117,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                       "Login to Continue",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Color.fromARGB(255, 24, 56, 111),
+                        color: Color.fromARGB(255, 0, 36, 94),
                         fontSize: 15,
                       ),
                     ),
@@ -126,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                       "Email Address",
                       textAlign: TextAlign.start,
                       style: TextStyle(
-                        color: Color.fromARGB(255, 24, 56, 111),
+                        color: Color.fromARGB(255, 0, 36, 94),
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -137,13 +131,13 @@ class _LoginPageState extends State<LoginPage> {
                         border: const OutlineInputBorder(),
                         enabledBorder: const OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: Color.fromARGB(255, 24, 56, 111),
+                            color: Color.fromARGB(255, 0, 36, 94),
                             width: 1,
                           ),
                         ),
                         focusedBorder: const OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: Color.fromARGB(255, 24, 56, 111),
+                            color: Color.fromARGB(255, 0, 36, 94),
                             width: 2,
                           ),
                         ),
@@ -164,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
                       "Password",
                       textAlign: TextAlign.start,
                       style: TextStyle(
-                        color: Color.fromARGB(255, 24, 56, 111),
+                        color: Color.fromARGB(255, 0, 36, 94),
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -175,7 +169,7 @@ class _LoginPageState extends State<LoginPage> {
                         border: const OutlineInputBorder(),
                         enabledBorder: const OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: Color.fromARGB(255, 24, 56, 111),
+                            color: Color.fromARGB(255, 0, 36, 94),
                             width: 1,
                           ),
                         ),
@@ -214,7 +208,7 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: _isLoading ? null : _login,
                       style: ElevatedButton.styleFrom(
                         shape: const ContinuousRectangleBorder(),
-                        backgroundColor: const Color.fromARGB(255, 24, 56, 111),
+                        backgroundColor: const Color.fromARGB(255, 0, 36, 94),
                         fixedSize: const Size(100, 55),
                       ),
                       child: _isLoading
@@ -224,7 +218,7 @@ class _LoginPageState extends State<LoginPage> {
                           : const Text(
                               "Sign in",
                               style: TextStyle(
-                                color: Color.fromARGB(230, 255, 252, 197),
+                                color: Colors.white,
                                 fontSize: 20,
                               ),
                             ),
@@ -242,7 +236,7 @@ class _LoginPageState extends State<LoginPage> {
                             TextSpan(
                               text: "Create Account",
                               style: GoogleFonts.lato(
-                                color: const Color.fromARGB(255, 24, 56, 111),
+                                color: const Color.fromARGB(255, 0, 36, 94),
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 decoration: TextDecoration.underline,
