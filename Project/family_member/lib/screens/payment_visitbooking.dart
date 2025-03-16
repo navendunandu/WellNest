@@ -4,7 +4,9 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PaymentVisitbooking extends StatefulWidget {
-  const PaymentVisitbooking({super.key});
+  final int id;
+  final int amt;
+  const PaymentVisitbooking({super.key, required this.id, required this.amt});
 
   @override
   State<PaymentVisitbooking> createState() => _PaymentVisitbookingState();
@@ -37,19 +39,18 @@ class _PaymentVisitbookingState extends State<PaymentVisitbooking> {
       final paymentData = {
         'payment_rzid': response.paymentId,
         'payment_date': DateTime.now().toIso8601String(),
-        'payment_amount': 27500.00, 
+        'payment_amount': widget.amt, 
         'familymember_id': supabase.auth.currentUser?.id,
       };
 
       await supabase.from('tbl_payment').insert(paymentData);
-
+      await supabase.from('tbl_visitbooking').update({'visitbooking_status': 1}).eq('visitbooking_id', widget.id);
       Fluttertoast.showToast(
         msg: "Payment Successful: ${response.paymentId}",
         toastLength: Toast.LENGTH_SHORT,
       );
       
-      // Optionally navigate back or to a success page
-      // Navigator.pop(context);
+
     } catch (e) {
       print('The recorded error is: $e');
       Fluttertoast.showToast(
@@ -108,7 +109,7 @@ class _PaymentVisitbookingState extends State<PaymentVisitbooking> {
 
     var options = {
       'key': 'rzp_test_565dkZaITtTfYu',
-      'amount': 2750000, // in paise
+      'amount': widget.amt*100,
       'name': 'WellNest',
       'description': 'Payment',
       'prefill': {
