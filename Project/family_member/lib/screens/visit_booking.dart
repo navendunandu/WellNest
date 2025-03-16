@@ -1,4 +1,5 @@
 import 'package:family_member/main.dart';
+import 'package:family_member/screens/payment_visitbooking.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -14,6 +15,11 @@ class _VisitBookingState extends State<VisitBooking> {
   DateTime? toDate;
   int? personCount = 1;
   int numberOfDays = 0;
+  int total = 0;
+
+  // Add TextEditingControllers
+  final TextEditingController _fromDateController = TextEditingController();
+  final TextEditingController _toDateController = TextEditingController();
 
   Future<void> _selectDate(BuildContext context, bool isFromDate) async {
     DateTime initialDate = isFromDate
@@ -34,12 +40,12 @@ class _VisitBookingState extends State<VisitBooking> {
       setState(() {
         if (isFromDate) {
           fromDate = picked;
-          // Ensure `toDate` is valid
+          _fromDateController.text = DateFormat('yyyy-MM-dd').format(picked);
           if (toDate != null && toDate!.isBefore(fromDate!)) {
             toDate = null;
+            _toDateController.clear();
           }
         } else {
-          // Ensure fromDate exists before selecting toDate
           if (fromDate == null) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("Please select a From Date first.")),
@@ -47,8 +53,9 @@ class _VisitBookingState extends State<VisitBooking> {
             return;
           }
           toDate = picked;
+          _toDateController.text = DateFormat('yyyy-MM-dd').format(picked);
         }
-        _calculateDays();
+        _calculateDays(personCount ?? 1); // Update total when dates change
       });
     }
   }
@@ -64,9 +71,8 @@ class _VisitBookingState extends State<VisitBooking> {
           .maybeSingle()
           .limit(1);
       setState(() {
-        roomList = response!;
+        roomList = response ?? {};
       });
-      
     } catch (e) {
       print(e);
     }
@@ -74,17 +80,30 @@ class _VisitBookingState extends State<VisitBooking> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchRoom();
   }
 
-  void _calculateDays() {
+  @override
+  void dispose() {
+    _fromDateController.dispose();
+    _toDateController.dispose();
+    super.dispose();
+  }
+
+  void _calculateDays(int count) {
     if (fromDate != null && toDate != null) {
       numberOfDays = toDate!.difference(fromDate!).inDays + 1;
     } else {
       numberOfDays = 0;
     }
+    // Use null-safe default value for room_price
+    int price = roomList['room_price'] as int? ?? 0;
+    int amount = numberOfDays * price * count;
+    print("Amount: $amount");
+    setState(() {
+      total = amount;
+    });
   }
 
   void _submitBooking() async {
@@ -96,7 +115,6 @@ class _VisitBookingState extends State<VisitBooking> {
     }
 
     try {
-      // Ensure room_id exists
       if (roomList['room_id'] == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Invalid room selection.")),
@@ -104,21 +122,19 @@ class _VisitBookingState extends State<VisitBooking> {
         return;
       }
 
-      // Fetch booked count for the selected room and dates
       final bookedCountResponse = await supabase
           .from('tbl_familybooking')
-          .select('familybooking_id') // Ensure column exists
+          .select('familybooking_id')
           .gte('familybooking_fromdate', fromDate!.toIso8601String())
           .lte('familybooking_todate', toDate!.toIso8601String())
           .eq('room_id', roomList['room_id']);
 
-      // Ensure response is a valid list
       if (bookedCountResponse == null || bookedCountResponse is! List) {
         throw Exception("Invalid response from Supabase");
       }
 
       int bookedCount = bookedCountResponse.length;
-      int availableRooms = (roomList['room_count'] ?? 0) - bookedCount;
+      int availableRooms = (roomList['room_count'] as int? ?? 0) - bookedCount;
 
       if (availableRooms <= 0) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -128,13 +144,13 @@ class _VisitBookingState extends State<VisitBooking> {
         return;
       }
 
-      await supabase.from('tbl_familybooking').insert({
+      final result = await supabase.from('tbl_familybooking').insert({
         'familybooking_fromdate': fromDate!.toIso8601String(),
         'familybooking_todate': toDate!.toIso8601String(),
         'familybooking_count': personCount,
         'room_id': roomList['room_id'],
-        'familymember_id': supabase.auth.currentUser?.id, // Handle null safely
-      });
+        'familymember_id': supabase.auth.currentUser?.id,
+      }).select().single();
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -142,6 +158,16 @@ class _VisitBookingState extends State<VisitBooking> {
               "Booking confirmed for ${toDate!.difference(fromDate!).inDays} days with $personCount person(s)"),
         ),
       );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PaymentVisitbooking(
+            amt: total,
+            id: result['familybooking_id'],
+          ),
+        ),
+      );
+      print('total: $total');
     } catch (e) {
       print("Error checking availability: $e");
       ScaffoldMessenger.of(context).showSnackBar(
@@ -183,17 +209,21 @@ class _VisitBookingState extends State<VisitBooking> {
                 ),
                 const SizedBox(height: 20),
                 _buildDateField(
-                    "From Date", fromDate, () => _selectDate(context, true)),
+                    "From Date", _fromDateController, () => _selectDate(context, true)),
                 _buildDateField(
-                    "To Date", toDate, () => _selectDate(context, false)),
+                    "To Date", _toDateController, () => _selectDate(context, false)),
                 _buildDropdownField("Number of Persons", personCount!),
                 const SizedBox(height: 20),
                 Text("Number of Days: $numberOfDays",
                     style: const TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 20),
+                Text("Total Amount: Rs.$total",
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 20),
                 Text(
-                    'Disclaimer: The room price is Rs.1500 per head per day. There will not be any refunds',
+                    "Disclaimer: The room price is Rs.${roomList['room_price'] ?? 'N/A'} per head per day. There will not be any refunds.",
                     style: const TextStyle(
                         fontSize: 16,
                         fontStyle: FontStyle.italic,
@@ -223,25 +253,21 @@ class _VisitBookingState extends State<VisitBooking> {
     );
   }
 
-  Widget _buildDateField(String label, DateTime? date, VoidCallback onTap) {
+  Widget _buildDateField(String label, TextEditingController controller, VoidCallback onTap) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
-      child: InkWell(
+      child: TextField(
+        controller: controller,
+        readOnly: true,
         onTap: onTap,
-        child: InputDecorator(
-          decoration: InputDecoration(
-            labelText: label,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-            filled: true,
-            fillColor: Colors.white,
-          ),
-          child: Text(
-            date == null
-                ? "Select Date"
-                : DateFormat('yyyy-MM-dd').format(date),
-            style: const TextStyle(fontSize: 16),
-          ),
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          filled: true,
+          fillColor: Colors.white,
+          hintText: "Select Date",
         ),
+        style: const TextStyle(fontSize: 16),
       ),
     );
   }
@@ -266,6 +292,7 @@ class _VisitBookingState extends State<VisitBooking> {
         onChanged: (value) {
           setState(() {
             personCount = value;
+            _calculateDays(value!);
           });
         },
       ),
