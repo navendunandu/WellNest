@@ -66,9 +66,17 @@ class _VisitBookingState extends State<VisitBooking> {
       setState(() {
         roomList = response!;
       });
+      
     } catch (e) {
       print(e);
     }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchRoom();
   }
 
   void _calculateDays() {
@@ -123,7 +131,7 @@ class _VisitBookingState extends State<VisitBooking> {
       await supabase.from('tbl_familybooking').insert({
         'familybooking_fromdate': fromDate!.toIso8601String(),
         'familybooking_todate': toDate!.toIso8601String(),
-        'familybooking_personcount': personCount,
+        'familybooking_count': personCount,
         'room_id': roomList['room_id'],
         'familymember_id': supabase.auth.currentUser?.id, // Handle null safely
       });
