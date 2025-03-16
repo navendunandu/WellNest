@@ -65,8 +65,7 @@ class _ViewHealthState extends State<ViewHealth> {
                       children: [
                         Text(
                           "No health records found.",
-                          style: TextStyle(
-                              fontSize: 18),
+                          style: TextStyle(fontSize: 18),
                         ),
                       ],
                     ),
