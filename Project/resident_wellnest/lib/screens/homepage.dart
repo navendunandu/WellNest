@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:resident_wellnest/screens/fam_profile.dart';
 import 'package:resident_wellnest/screens/resident_profile.dart';
 import 'package:resident_wellnest/screens/view_health.dart';
 import 'package:resident_wellnest/screens/view_medappointment.dart';
@@ -100,13 +101,22 @@ class _HomepageState extends State<Homepage> {
               context,
               icon: Icons.medical_services,
               label: "Caretaker Profile",
-              onPressed: () {},
+              onPressed: () {
+
+              },
             ),
             _buildMenuButton(
               context,
               icon: Icons.calendar_today,
               label: "Family Profile",
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FamProfile(
+                  residentId: residentId.toString(),
+                )),
+                );
+              },
             ),
             _buildMenuButton(
               context,
