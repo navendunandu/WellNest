@@ -49,24 +49,16 @@ class _ChatState extends State<Chat> {
         .order('datetime', ascending: true)
         .listen((snapshot) {
           print('🔄 New snapshot received: $snapshot'); // Debugging line
-
           if (mounted) {
             setState(() {
               for (var message in snapshot) {
-                // Ensure the message belongs to the current conversation
-                if ((message['chat_tocid'] == widget.caretakerId &&
-                        message['chat_tofid'] == widget.familyMemberId) ||
-                    (message['chat_fromfid'] == widget.familyMemberId &&
-                        message['chat_tocid'] == widget.caretakerId)) {
-                  // Prevent duplicate messages
-                  if (!messages
-                      .any((msg) => msg['chat_id'] == message['chat_id'])) {
-                    messages.add(Map<String, dynamic>.from(message));
-                  }
+                // Add only if not already in the list
+                if (!messages
+                    .any((msg) => msg['chat_id'] == message['chat_id'])) {
+                  messages.add(Map<String, dynamic>.from(message));
                 }
               }
             });
-            setState(() {});
           }
         });
   }
