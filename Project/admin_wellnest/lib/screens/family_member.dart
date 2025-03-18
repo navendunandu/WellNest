@@ -45,7 +45,7 @@ class _FamilyMemberState extends State<FamilyMember> {
     try {
       final response = await supabase
           .from("tbl_familybooking")
-          .select()
+          .select("*, tbl_room(*)")
           .eq("familymember_id", widget.id);
 
       print("Fetched booking data: $response");
@@ -215,7 +215,7 @@ class _FamilyMemberState extends State<FamilyMember> {
                                                                 .parse(booking[
                                                                     'familybooking_todate'])))),
                                                         DataCell(Text(
-                                                            booking['room_id']
+                                                            booking['tbl_room']['room_name']
                                                                 .toString())),
                                                         DataCell(Text(booking[
                                                                 'familybooking_count']
