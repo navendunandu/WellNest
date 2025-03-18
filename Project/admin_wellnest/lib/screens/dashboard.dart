@@ -15,6 +15,8 @@ class _DashboardState extends State<Dashboard> {
   int caretakerCount = 0;
   int addressedComplaints = 0;
   int notAddressedComplaints = 0;
+  int addressedLeaves=0;
+  int notAddressedLeaves=0;
   bool isLoading = true;
 
   @override
@@ -29,16 +31,18 @@ class _DashboardState extends State<Dashboard> {
       final supabase = Supabase.instance.client;
       
       final residentData = await supabase.from('tbl_resident').select('resident_id');
-      final roomData = await supabase.from('tbl_room').select('room_id');
+      final leaveData = await supabase.from('tbl_leave').select('leave_id, leave_status');
       final caretakerData = await supabase.from('tbl_caretaker').select('caretaker_id');
       final complaintData = await supabase.from('tbl_complaint').select('complaint_id, complaint_status');
       
       setState(() {
         residentCount = residentData.length;
-        roomCount = roomData.length;
+        roomCount = leaveData.length;
         caretakerCount = caretakerData.length;
         addressedComplaints = complaintData.where((c) => c['complaint_status'] == 1).length;
         notAddressedComplaints = complaintData.where((c) => c['complaint_status'] == 0).length;
+        addressedLeaves=leaveData.where((l) => l['leave_status'] == 1).length;
+        notAddressedLeaves=leaveData.where((l) => l['leave_status'] == 0).length;
         isLoading = false;
       });
     } catch (e) {
@@ -58,7 +62,7 @@ class _DashboardState extends State<Dashboard> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   _buildPieChart("Residents", residentCount, 70, Color.fromARGB(255, 33, 11, 55)),
-                  _buildPieChart("Rooms", roomCount, 35, Color.fromARGB(255, 8, 38, 9)),
+                  _buildPieChart("Leaves", addressedLeaves, notAddressedLeaves + addressedLeaves, Color.fromARGB(255, 8, 38, 9)),
                   _buildPieChart("Caretakers", caretakerCount, 14, Color.fromARGB(255, 79, 0, 0)),
                   _buildPieChart("Complaints", addressedComplaints, addressedComplaints + notAddressedComplaints, Color.fromARGB(255, 5, 37, 63)),
                   
