@@ -62,6 +62,7 @@ class _HomepageState extends State<Homepage> {
         residentList = (response);
         isLoading = false;
       });
+      print('response:$response');
     } catch (e) {
       print("Error fetching data: $e");
       setState(() {
@@ -215,7 +216,7 @@ class _HomepageState extends State<Homepage> {
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold)),
                             const SizedBox(height: 8),
-                            Text(resident['resident_name']),
+                            Text(resident['resident_name'] ?? ""),
                             const SizedBox(height: 8),
                             Text(resident['resident_dob'] ?? "")
                           ],
