@@ -48,23 +48,16 @@ class _ChatState extends State<Chat> {
         .stream(primaryKey: ['chat_id'])
         .order('datetime', ascending: true)
         .listen((snapshot) {
-          print('🔄 New snapshot received: $snapshot'); // Debugging line
-
           if (mounted) {
             setState(() {
               for (var message in snapshot) {
-                if ((message['chat_tocid'] == widget.caretakerId &&
-                        message['chat_tofid'] == widget.familyMemberId) ||
-                    (message['chat_tocid'] == widget.familyMemberId &&
-                        message['chat_tofid'] == widget.caretakerId)) {
-                  if (!messages
-                      .any((msg) => msg['chat_id'] == message['chat_id'])) {
-                    messages.add(Map<String, dynamic>.from(message));
-                  }
+                // Add only if not already in the list
+                if (!messages
+                    .any((msg) => msg['chat_id'] == message['chat_id'])) {
+                  messages.add(Map<String, dynamic>.from(message));
                 }
               }
             });
-            setState(() {});
           }
         });
   }
@@ -82,7 +75,7 @@ class _ChatState extends State<Chat> {
       'chat_content': messageText,
       'datetime': DateTime.now().toIso8601String(),
     });
-
+    listenForMessages();
     _messageController.clear();
   }
 
