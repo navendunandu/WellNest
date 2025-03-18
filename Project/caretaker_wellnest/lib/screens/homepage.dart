@@ -27,6 +27,7 @@ class _HomepageState extends State<Homepage> {
     fetchData();
     fetchcaretaker();
   }
+
   Future<void> fetchcaretaker() async {
     setState(() {
       isLoading = true;
@@ -38,7 +39,6 @@ class _HomepageState extends State<Homepage> {
           .select()
           .eq('caretaker_id', caretaker)
           .single();
-      print("Fetched data: $response");
       setState(() {
         caretaker_name = response['caretaker_name'];
         caretaker_photo = response['caretaker_photo'];
@@ -51,12 +51,16 @@ class _HomepageState extends State<Homepage> {
       });
     }
   }
+
   Future<void> fetchData() async {
     setState(() {
       isLoading = true;
     });
     try {
-      final response = await supabase.from('tbl_assign').select('*,tbl_resident(*)').eq('caretaker_id', supabase.auth.currentUser!.id);
+      final response = await supabase
+          .from('tbl_assign')
+          .select('*,tbl_resident(*)')
+          .eq('caretaker_id', supabase.auth.currentUser!.id);
       print("Fetched data: $response");
       setState(() {
         residentList = (response);
@@ -70,6 +74,7 @@ class _HomepageState extends State<Homepage> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -157,8 +162,7 @@ class _HomepageState extends State<Homepage> {
                 CircleAvatar(
                   radius: 30,
                   backgroundImage: NetworkImage(caretaker_photo),
-                  onBackgroundImageError: (exception, stackTrace) {
-                  },
+                  onBackgroundImageError: (exception, stackTrace) {},
                 ),
                 const SizedBox(width: 16),
                 Column(
@@ -187,7 +191,7 @@ class _HomepageState extends State<Homepage> {
                 ),
                 itemCount: residentList.length,
                 itemBuilder: (context, index) {
-                  final resident = residentList[index];
+                  final resident = residentList[index]['tbl_resident'];
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
