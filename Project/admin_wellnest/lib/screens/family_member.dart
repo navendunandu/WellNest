@@ -1,5 +1,6 @@
 import 'package:admin_wellnest/main.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // For date formatting
 
 class FamilyMember extends StatefulWidget {
   final String id;
@@ -12,11 +13,13 @@ class FamilyMember extends StatefulWidget {
 class _FamilyMemberState extends State<FamilyMember> {
   bool isLoading = true;
   List<Map<String, dynamic>> familyMembers = [];
+  List<Map<String, dynamic>> bookings = [];
 
   @override
   void initState() {
     super.initState();
     fetchData();
+    fetchBookings();
   }
 
   Future<void> fetchData() async {
@@ -32,10 +35,26 @@ class _FamilyMemberState extends State<FamilyMember> {
       print("Fetched family member data: $response");
       setState(() {
         familyMembers = List<Map<String, dynamic>>.from(response);
-        isLoading = false;
       });
     } catch (e) {
-      print("Error fetching data: $e");
+      print("Error fetching family member data: $e");
+    }
+  }
+
+  Future<void> fetchBookings() async {
+    try {
+      final response = await supabase
+          .from("tbl_familybooking")
+          .select()
+          .eq("familymember_id", widget.id);
+
+      print("Fetched booking data: $response");
+      setState(() {
+        bookings = List<Map<String, dynamic>>.from(response);
+        isLoading = false; // Set loading false only after both fetches complete
+      });
+    } catch (e) {
+      print("Error fetching booking data: $e");
       setState(() {
         isLoading = false;
       });
@@ -55,8 +74,8 @@ class _FamilyMemberState extends State<FamilyMember> {
         centerTitle: true,
       ),
       body: Container(
-        width: double.infinity, // Ensure container takes full width
-        height: double.infinity, // Ensure container takes full height
+        width: double.infinity,
+        height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -141,6 +160,85 @@ class _FamilyMemberState extends State<FamilyMember> {
                                     ),
                                   ),
                                 ),
+                                const SizedBox(height: 30),
+                                const Text(
+                                  'Booking Details',
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 24, 56, 111),
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                bookings.isEmpty
+                                    ? const Center(
+                                        child: Text('No bookings found'))
+                                    : Card(
+                                        elevation: 4,
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: DataTable(
+                                            columnSpacing: 16,
+                                            columns: const [
+                                              DataColumn(
+                                                  label: Text('Booking ID')),
+                                              DataColumn(
+                                                  label: Text('Booking Date')),
+                                              DataColumn(
+                                                  label: Text('From Date')),
+                                              DataColumn(
+                                                  label: Text('To Date')),
+                                              DataColumn(
+                                                  label: Text('Room Type')),
+                                              DataColumn(label: Text('Count')),
+                                              DataColumn(label: Text('Status')),
+                                            ],
+                                            rows: bookings
+                                                .map((booking) => DataRow(
+                                                      cells: [
+                                                        DataCell(Text(booking[
+                                                                'familybooking_id']
+                                                            .toString())),
+                                                        DataCell(Text(DateFormat(
+                                                                'yyyy-MM-dd HH:mm')
+                                                            .format(DateTime
+                                                                .parse(booking[
+                                                                    'familybooking_date'])))),
+                                                        DataCell(Text(DateFormat(
+                                                                'yyyy-MM-dd')
+                                                            .format(DateTime
+                                                                .parse(booking[
+                                                                    'familybooking_fromdate'])))),
+                                                        DataCell(Text(DateFormat(
+                                                                'yyyy-MM-dd')
+                                                            .format(DateTime
+                                                                .parse(booking[
+                                                                    'familybooking_todate'])))),
+                                                        DataCell(Text(
+                                                            booking['room_id']
+                                                                .toString())),
+                                                        DataCell(Text(booking[
+                                                                'familybooking_count']
+                                                            .toString())),
+                                                        DataCell(Text(
+                                                          booking['familybooking_status'] ==
+                                                                  1
+                                                              ? 'Confirmed'
+                                                              : 'Pending',
+                                                          style: TextStyle(
+                                                            color: booking[
+                                                                        'familybooking_status'] ==
+                                                                    1
+                                                                ? Colors.green
+                                                                : Colors.orange,
+                                                          ),
+                                                        )),
+                                                      ],
+                                                    ))
+                                                .toList(),
+                                          ),
+                                        ),
+                                      ),
                                 const SizedBox(height: 20),
                               ],
                             ),
