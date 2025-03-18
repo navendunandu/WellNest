@@ -14,11 +14,12 @@ class ManageCaretaker extends StatefulWidget {
 }
 
 class _ManageCaretakerState extends State<ManageCaretaker> {
-  final nameController = TextEditingController();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final phoneController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   final formKey = GlobalKey<FormState>();
   bool isLoading = true;
   List<Map<String, dynamic>> caretaker = [];
@@ -60,25 +61,34 @@ class _ManageCaretakerState extends State<ManageCaretaker> {
     }
   }
 
-  Future<void> register() async {
-    try {
-      final auth = await supabase.auth.signUp(
-          password: passwordController.text, email: emailController.text);
-      String uid = auth.user!.id;
-      submit(uid);
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
+  // Future<void> register() async {
+  //   try {
+  //     final auth = await supabase.auth.signUp(
+  //         password: passwordController.text, email: emailController.text);
+  //     String uid = auth.user!.id;
+  //     submit(uid);
+  //   } catch (e) {
+  //     print('Error: $e');
+  //   }
+  // }
 
-  Future<void> submit(String uid) async {
+  Future<void> submit() async {
     if (formKey.currentState!.validate()) {
       setState(() {
         isLoading = true;
       });
       try {
+        // Sign up the user
+        final auth = await supabase.auth.signUp(
+          password: passwordController.text,
+          email: emailController.text,
+        );
+
+        String uid = auth.user!.id;
         String? url = await photoUpload(uid);
-        if (url!.isNotEmpty) {
+
+        // Check if URL is valid before proceeding
+        if (url != null && url.isNotEmpty) {
           await supabase.from('tbl_caretaker').insert({
             'caretaker_id': uid,
             'caretaker_name': nameController.text,
@@ -87,31 +97,47 @@ class _ManageCaretakerState extends State<ManageCaretaker> {
             'caretaker_contact': phoneController.text,
             'caretaker_photo': url,
           });
-        }
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-            "Caretaker details updated successfully!",
-            style: TextStyle(color: Colors.white),
-          ),
-          backgroundColor: Color.fromARGB(255, 0, 40, 1),
-        ));
-        print("Insert Successful");
 
-        // Clear fields after successful submission
-        nameController.clear();
-        emailController.clear();
-        passwordController.clear();
-        confirmPasswordController.clear();
-        phoneController.clear();
-        formKey.currentState!.reset();
-        setState(() {
-          pickedImage = null;
-        });
-        // Refresh data after insert
-        await fetchData();
+          // Show success message
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text(
+              "Caretaker details updated successfully!",
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Color.fromARGB(255, 0, 40, 1),
+          ));
+
+          print("Insert Successful");
+
+          // Clear all controllers
+          nameController.clear();
+          emailController.clear();
+          passwordController.clear();
+          confirmPasswordController.clear();
+          phoneController.clear();
+
+          // Reset form and image
+          setState(() {
+            pickedImage = null;
+            isLoading = false; // Move this here to ensure UI updates
+          });
+
+          // Reset form state
+          formKey.currentState!.reset();
+
+          // Refresh data
+          await fetchData();
+        } else {
+          throw Exception("Photo upload failed");
+        }
       } catch (e) {
         print("Error: $e");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Error: ${e.toString()}"),
+          backgroundColor: Colors.red,
+        ));
       } finally {
+        // Ensure loading state is always reset, even on error
         setState(() {
           isLoading = false;
         });
@@ -272,7 +298,7 @@ class _ManageCaretakerState extends State<ManageCaretaker> {
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: register,
+                      onPressed: submit,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color.fromARGB(255, 24, 56, 111),
                         padding:
@@ -342,25 +368,23 @@ class _ManageCaretakerState extends State<ManageCaretaker> {
                                               "Email: ${data['caretaker_email']}"),
                                           Row(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                                MainAxisAlignment.start,
                                             children: [
                                               Text(
                                                   "Contact: ${data['caretaker_contact']}"),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 10),
-                                                child: IconButton(
-                                                  icon: Icon(Icons.delete,
-                                                      color:
-                                                          const Color.fromARGB(
-                                                              255, 67, 4, 0)),
-                                                  onPressed: () {
-                                                   deletecaretaker(data['caretaker_id'].toString());
-                                                  },
-                                                ),
+                                              Spacer(),
+                                              IconButton(
+                                                icon: Icon(Icons.delete,
+                                                    color: const Color.fromARGB(
+                                                        255, 67, 4, 0)),
+                                                onPressed: () {
+                                                  deletecaretaker(
+                                                      data['caretaker_id']
+                                                          .toString());
+                                                },
                                               ),
                                             ],
-                                          ),
+                                          )
                                         ],
                                       ),
                                     ),
