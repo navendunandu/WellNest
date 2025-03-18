@@ -21,7 +21,8 @@ class _ManageComplaintsState extends State<ManageComplaints> {
 
   Future<void> _fetchComplaints() async {
     try {
-      final response = await supabase.from('tbl_complaint').select("*,tbl_familymember(*)");
+      final response =
+          await supabase.from('tbl_complaint').select("*,tbl_familymember(*),tbl_resident(*)");
       setState(() {
         complaints = response;
       });
@@ -35,8 +36,10 @@ class _ManageComplaintsState extends State<ManageComplaints> {
     try {
       final replyText = _replyControllers.text;
       if (replyText.isNotEmpty) {
-        await supabase.from('tbl_complaint').update(
-            {'complaint_reply': replyText, 'complaint_status':1}).eq('complaint_id', complaintId);
+        await supabase
+            .from('tbl_complaint')
+            .update({'complaint_reply': replyText, 'complaint_status': 1}).eq(
+                'complaint_id', complaintId);
         _replyControllers.clear();
         _fetchComplaints();
         Navigator.pop(context);
@@ -71,78 +74,86 @@ class _ManageComplaintsState extends State<ManageComplaints> {
                     Text('Date: ${complaint['complaint_date']}'),
                     Text('Priority: ${complaint['complaint_priority']}'),
                     Text('Content: ${complaint['complaint_content']}'),
-                    Text('Name: ${complaint['tbl_familymember']['familymember_name']}'),
-                    Text('Phone: ${complaint['tbl_familymember']['familymember_contact']}'),
-                    Text('Email: ${complaint['tbl_familymember']['familymember_email']}'),
-                  
+                    Text(
+                        'Resident: ${complaint['tbl_resident']['resident_name']}'),
+                    Text(
+                        'Name: ${complaint['tbl_familymember']['familymember_name']}'),
+                    Text(
+                        'Phone: ${complaint['tbl_familymember']['familymember_contact']}'),
+                    Text(
+                        'Email: ${complaint['tbl_familymember']['familymember_email']}'),
                     const SizedBox(height: 10),
-
-                    complaint['complaint_status'] == 0 ?
-
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromARGB(255, 0, 36, 94),
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        padding:
-                            EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-                      ),
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                                  title: Text('Provide Your Response'),
-                                  content: TextFormField(
-                                    controller: _replyControllers,
-                                    minLines: 2,
-                                    maxLines: null,
-                                    decoration: InputDecoration(
-                                      hintText: "Enter Response",
-                                      border: OutlineInputBorder(),
-                                    ),
-                                  ),
-                                  actions: [
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            Color.fromARGB(255, 0, 36, 94),
-                                        foregroundColor: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8)),
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 14, horizontal: 28),
-                                      ),
-                                      onPressed: () => Navigator.pop(context),
-                                      child: Text(
-                                        'Cancel',
-                                        style: TextStyle(color: Colors.white,fontSize: 18),
-                                      ),
-                                    ),
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            Color.fromARGB(255, 0, 36, 94),
-                                        foregroundColor: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8)),
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 14, horizontal: 28),
-                                      ),
-                                      onPressed: () {
-                                        print("complaintid $complaintId");
-                                        _submitReply(complaintId);
-                                       
-                                      },
-                                      child: Text('Submit',style: TextStyle(fontSize: 18),),
-                                    ),
-                                  ],
-                                ));
-                      },
-                      child: const Text('Reply'),
-                    ):Text('Reply: ${complaint['complaint_reply']}')
+                    complaint['complaint_status'] == 0
+                        ? ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color.fromARGB(255, 0, 36, 94),
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 16, horizontal: 32),
+                            ),
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                        title: Text('Provide Your Response'),
+                                        content: TextFormField(
+                                          controller: _replyControllers,
+                                          minLines: 2,
+                                          maxLines: null,
+                                          decoration: InputDecoration(
+                                            hintText: "Enter Response",
+                                            border: OutlineInputBorder(),
+                                          ),
+                                        ),
+                                        actions: [
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Color.fromARGB(
+                                                  255, 0, 36, 94),
+                                              foregroundColor: Colors.white,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8)),
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 14, horizontal: 28),
+                                            ),
+                                            onPressed: () =>
+                                                Navigator.pop(context),
+                                            child: Text(
+                                              'Cancel',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18),
+                                            ),
+                                          ),
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Color.fromARGB(
+                                                  255, 0, 36, 94),
+                                              foregroundColor: Colors.white,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8)),
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 14, horizontal: 28),
+                                            ),
+                                            onPressed: () {
+                                              print("complaintid $complaintId");
+                                              _submitReply(complaintId);
+                                            },
+                                            child: Text(
+                                              'Submit',
+                                              style: TextStyle(fontSize: 18),
+                                            ),
+                                          ),
+                                        ],
+                                      ));
+                            },
+                            child: const Text('Reply'),
+                          )
+                        : Text('Reply: ${complaint['complaint_reply']}')
                   ],
                 ),
               ),
