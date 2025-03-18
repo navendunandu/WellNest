@@ -73,8 +73,7 @@ class _ManageRoomState extends State<ManageRoom> {
       nameController.clear();
       countController.clear();
       priceController.clear();
-      
-      
+
       await fetchData();
     } catch (e) {
       print("Error: $e");
@@ -88,8 +87,10 @@ class _ManageRoomState extends State<ManageRoom> {
     try {
       final bucketName = 'room_files'; // Replace with your bucket name
       final timestamp = DateTime.now().millisecondsSinceEpoch;
-      final fileExtension = pickedImage!.name.split('.').last; // Extract extension
-      final filePath = "${pickedImage!.name.split('.').first}_$timestamp.$fileExtension";
+      final fileExtension =
+          pickedImage!.name.split('.').last; // Extract extension
+      final filePath =
+          "${pickedImage!.name.split('.').first}_$timestamp.$fileExtension";
       await supabase.storage.from(bucketName).uploadBinary(
             filePath,
             pickedImage!.bytes!, // Use file.bytes for Flutter Web
@@ -217,7 +218,6 @@ class _ManageRoomState extends State<ManageRoom> {
                               return Card(
                                 margin: EdgeInsets.symmetric(vertical: 10),
                                 child: ListTile(
-                                
                                   title: Text(data['room_name']),
                                   leading: Image.network(data['room_photo']),
                                   subtitle:
