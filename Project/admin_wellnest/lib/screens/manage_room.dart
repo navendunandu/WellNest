@@ -13,9 +13,9 @@ class ManageRoom extends StatefulWidget {
 }
 
 class _ManageRoomState extends State<ManageRoom> {
-  final nameController = TextEditingController();
-  final countController = TextEditingController();
-  final priceController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController countController = TextEditingController();
+  final TextEditingController priceController = TextEditingController();
   bool isLoading = true;
   List<Map<String, dynamic>> rooms = [];
   PlatformFile? pickedImage;
@@ -81,6 +81,26 @@ class _ManageRoomState extends State<ManageRoom> {
         isLoading = false;
       });
     }
+  }
+
+  int eid=0;
+
+  Future<void> editroom() async {
+    try{
+      await supabase.from('tbl_room').update({
+        'room_name': nameController.text,
+        'room_count': countController.text,
+        'room_price': priceController.text,
+      }).eq('room_id', eid);
+      print("Update Successful");
+      nameController.clear();
+      countController.clear();
+      priceController.clear();
+      fetchData();
+    }catch(e){
+      print("Error: $e");
+    }
+
   }
 
   Future<String?> photoUpload() async {
@@ -191,7 +211,7 @@ class _ManageRoomState extends State<ManageRoom> {
                           ),
                   ),
                   ElevatedButton(
-                    onPressed: submit,
+                    onPressed: eid==0?submit:editroom,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromARGB(255, 24, 56, 111),
                       padding:
@@ -226,6 +246,19 @@ class _ManageRoomState extends State<ManageRoom> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text('Price: \₹${data['room_price']}'),
+                                      IconButton(
+                                        icon: Icon(Icons.edit,
+                                            color: const Color.fromARGB(
+                                                255, 67, 4, 0)),
+                                        onPressed: () {
+                                          setState(() {
+                                            nameController.text = data['room_name'];
+                                            countController.text = data['room_count'].toString();
+                                            priceController.text = data['room_price'].toString();
+                                            eid=data['room_id'].toInt();
+                                          });
+                                        },
+                                      ),
                                       IconButton(
                                         icon: Icon(Icons.delete,
                                             color: const Color.fromARGB(

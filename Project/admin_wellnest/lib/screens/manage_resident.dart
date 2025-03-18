@@ -1,5 +1,7 @@
 import 'package:admin_wellnest/main.dart';
 import 'package:admin_wellnest/screens/assign_caretaker.dart';
+import 'package:admin_wellnest/screens/family_member.dart';
+import 'package:admin_wellnest/screens/monthly_payment.dart';
 import 'package:flutter/material.dart';
 
 class ManageResident extends StatefulWidget {
@@ -22,9 +24,8 @@ class _ManageResidentState extends State<ManageResident> {
     try {
       final response = await supabase
           .from('tbl_resident')
-          .select()
-          .gt('resident_status', 0)
-          .neq('resident_status', 2);
+          .select("*,tbl_relation(*),tbl_room(*)")
+          .gt('resident_status', 0);
       setState(() {
         _filetypeList = response;
       });
@@ -44,7 +45,7 @@ class _ManageResidentState extends State<ManageResident> {
   }
 
   void paymentVerify(String residentId) {
-    updateResidentStatus(residentId, 3);
+    updateResidentStatus(residentId, 2);
   }
 
   @override
@@ -112,8 +113,8 @@ class _ManageResidentState extends State<ManageResident> {
           columns: const [
             DataColumn(label: Text("Sl.No")),
             DataColumn(label: Text("Resident Name")),
-            DataColumn(label: Text("Room ID")),
-            DataColumn(label: Text("Relation ID")),
+            DataColumn(label: Text("Room Type")),
+            DataColumn(label: Text("Relation")),
             DataColumn(label: Text("Contact")),
             DataColumn(label: Text("Email")),
             DataColumn(label: Text("Action")),
@@ -151,20 +152,21 @@ class _ManageResidentState extends State<ManageResident> {
                 )),
                 DataCell(
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: const Color(0xFFE8F0FE),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      entry.value['room_id'].toString(),
+                      entry.value['tbl_room']['room_name'].toString(),
                       style: const TextStyle(
                           color: Color.fromARGB(255, 24, 56, 111)),
                     ),
                   ),
                 ),
-                DataCell(Text(entry.value['relation_id'].toString())),
+                DataCell(Text(
+                    entry.value['tbl_relation']['relation_name'].toString())),
                 DataCell(Text(entry.value['resident_contact'].toString())),
                 DataCell(Text(
                   entry.value['resident_email'].toString(),
@@ -204,33 +206,182 @@ class _ManageResidentState extends State<ManageResident> {
                             ],
                           ),
                         )
-                      : ElevatedButton.icon(
-                          icon: const Icon(
-                            Icons.person_add,
-                            size: 18,
-                          ),
-                          label: const Text("Assign"),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AssignCaretaker(
-                                    id: entry.value['resident_id']),
-                              ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                const Color.fromARGB(255, 24, 56, 111),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                      : entry.value['resident_status'] == 3
+                          ? Row(
+                              children: [
+                                ElevatedButton.icon(
+                                  icon: const Icon(
+                                    Icons.person_add,
+                                    size: 18,
+                                  ),
+                                  label: const Text("Reassign"),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => AssignCaretaker(
+                                          id: entry.value['resident_id'],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors
+                                        .orange, // Different color for Reassign
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 10),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    elevation: 2,
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                ElevatedButton.icon(
+                                  icon: const Icon(
+                                    Icons.person_add,
+                                    size: 18,
+                                  ),
+                                  label: const Text("Payment"),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => MonthlyPayment(
+                                            id: entry.value['resident_id']),
+                                      ),
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        const Color.fromARGB(255, 24, 56, 111),
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 10),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    elevation: 2,
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                ElevatedButton.icon(
+                                  icon: const Icon(
+                                    Icons.person_add,
+                                    size: 18,
+                                  ),
+                                  label: const Text("Family Member"),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => FamilyMember(
+                                            id: entry.value['familymember_id'].toString()),
+                                      ),
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        const Color.fromARGB(255, 24, 56, 111),
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 10),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    elevation: 2,
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Row(
+                              children: [
+                                ElevatedButton.icon(
+                                  icon: const Icon(
+                                    Icons.person_add,
+                                    size: 18,
+                                  ),
+                                  label: const Text("Assign"),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => AssignCaretaker(
+                                            id: entry.value['resident_id']),
+                                      ),
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        const Color.fromARGB(255, 24, 56, 111),
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 10),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    elevation: 2,
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                ElevatedButton.icon(
+                                  icon: const Icon(
+                                    Icons.person_add,
+                                    size: 18,
+                                  ),
+                                  label: const Text("Payment"),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => MonthlyPayment(
+                                            id: entry.value['resident_id']),
+                                      ),
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        const Color.fromARGB(255, 24, 56, 111),
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 10),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    elevation: 2,
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                ElevatedButton.icon(
+                                  icon: const Icon(
+                                    Icons.person_add,
+                                    size: 18,
+                                  ),
+                                  label: const Text("Family Member"),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => FamilyMember(
+                                            id: entry.value['familymember_id'].toString()),
+                                      ),
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        const Color.fromARGB(255, 24, 56, 111),
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 10),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    elevation: 2,
+                                  ),
+                                ),
+                              ],
                             ),
-                            elevation: 2,
-                          ),
-                        ),
                 ),
               ],
             );

@@ -27,7 +27,6 @@ class _HomepageState extends State<Homepage> {
     fetchData();
     fetchcaretaker();
   }
-
   Future<void> fetchcaretaker() async {
     setState(() {
       isLoading = true;
@@ -52,13 +51,12 @@ class _HomepageState extends State<Homepage> {
       });
     }
   }
-
   Future<void> fetchData() async {
     setState(() {
       isLoading = true;
     });
     try {
-      final response = await supabase.from('tbl_resident').select();
+      final response = await supabase.from('tbl_assign').select('*,tbl_resident(*)').eq('caretaker_id', supabase.auth.currentUser!.id);
       print("Fetched data: $response");
       setState(() {
         residentList = (response);
@@ -71,7 +69,6 @@ class _HomepageState extends State<Homepage> {
       });
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

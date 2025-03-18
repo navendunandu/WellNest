@@ -20,12 +20,16 @@ class _ManageRelationState extends State<ManageRelation> {
     fetchData();
   }
 
+
+
+ int eid=0;
+
   Future<void> fetchData() async {
     setState(() {
       isLoading = true;
     });
     try {
-      final response = await supabase.from('tbl_relation').select();
+      final response = await supabase.from('tbl_relation').select().order('relation_name',ascending: true);
       print("Fetched data: $response");
       setState(() {
         relation = response;
@@ -56,6 +60,30 @@ class _ManageRelationState extends State<ManageRelation> {
       setState(() {
         isLoading = false;
       });
+    }
+  }
+
+
+  Future<void> updaterelation() async {
+    try {
+      await supabase.from('tbl_relation').update({'relation_name': nameController.text}).eq('relation_id', eid);
+      print("Update Successful");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Relation updated successfully!'),
+          backgroundColor: const Color.fromARGB(255, 77, 10, 0),
+        ),
+      );
+     nameController.clear();
+      fetchData();
+    } catch (e) {
+      print("Error updating relation: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to update room. Please try again.'),
+          backgroundColor: const Color.fromARGB(255, 77, 5, 0),
+        ),
+      );
     }
   }
 
@@ -109,7 +137,7 @@ class _ManageRelationState extends State<ManageRelation> {
                       "Enter Relation", Icons.arrow_drop_down),
                   SizedBox(height: 15),
                   ElevatedButton(
-                    onPressed: submit,
+                    onPressed: eid==0?submit:updaterelation,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromARGB(255, 24, 56, 111),
                       padding:
@@ -148,6 +176,18 @@ class _ManageRelationState extends State<ManageRelation> {
                                                 255, 67, 4, 0)),
                                         onPressed: () {
                                           deleteRoom(data['relation_id']);
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.edit,
+                                            color: const Color.fromARGB(
+                                                255, 67, 4, 0)),
+                                        onPressed: () {
+                                          setState(() {
+                                            nameController.text =
+                                                data['relation_name'];
+                                            eid=data['relation_id'];  
+                                          });
                                         },
                                       ),
                                     ],
