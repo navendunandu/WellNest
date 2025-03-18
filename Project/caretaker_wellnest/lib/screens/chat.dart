@@ -64,6 +64,7 @@ class _ChatState extends State<Chat> {
                 }
               }
             });
+            setState(() {});
           }
         });
   }
