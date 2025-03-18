@@ -40,13 +40,34 @@ class _NewAdmissionState extends State<NewAdmission> {
     }
   }
 
-  void accept(String residentId) {
-    updateResidentStatus(residentId, 1);
+  void confirmAction(String residentId, int status, String action) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('$action Resident'),
+          content: Text('Are you sure you want to $action this resident?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                updateResidentStatus(residentId, status);
+                Navigator.of(context).pop();
+              },
+              child: Text(action),
+            ),
+          ],
+        );
+      },
+    );
   }
 
-  void reject(String residentId) {
-    updateResidentStatus(residentId, 2);
-  }
+  void accept(String residentId) => confirmAction(residentId, 1, 'Accept');
+
+  void reject(String residentId) => confirmAction(residentId, 2, 'Reject');
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +102,6 @@ class _NewAdmissionState extends State<NewAdmission> {
           ),
         ),
         child: DataTable(
-          
           headingRowColor: WidgetStateProperty.all(
             const Color(0xFFF5F7FA),
           ),
@@ -140,15 +160,13 @@ class _NewAdmissionState extends State<NewAdmission> {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.check, color: Colors.green),
-                      onPressed: () {
-                        accept(entry.value['resident_id'].toString());
-                      },
+                      onPressed: () =>
+                          accept(entry.value['resident_id'].toString()),
                     ),
                     IconButton(
                       icon: const Icon(Icons.close, color: Colors.red),
-                      onPressed: () {
-                        reject(entry.value['resident_id'].toString());
-                      },
+                      onPressed: () =>
+                          reject(entry.value['resident_id'].toString()),
                     ),
                   ],
                 )),
