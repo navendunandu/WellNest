@@ -129,10 +129,6 @@ class _VisitBookingState extends State<VisitBooking> {
           .lte('familybooking_todate', toDate!.toIso8601String())
           .eq('room_id', roomList['room_id']);
 
-      if (bookedCountResponse == null || bookedCountResponse is! List) {
-        throw Exception("Invalid response from Supabase");
-      }
-
       int bookedCount = bookedCountResponse.length;
       int availableRooms = (roomList['room_count'] as int? ?? 0) - bookedCount;
 
@@ -144,13 +140,17 @@ class _VisitBookingState extends State<VisitBooking> {
         return;
       }
 
-      final result = await supabase.from('tbl_familybooking').insert({
-        'familybooking_fromdate': fromDate!.toIso8601String(),
-        'familybooking_todate': toDate!.toIso8601String(),
-        'familybooking_count': personCount,
-        'room_id': roomList['room_id'],
-        'familymember_id': supabase.auth.currentUser?.id,
-      }).select().single();
+      final result = await supabase
+          .from('tbl_familybooking')
+          .insert({
+            'familybooking_fromdate': fromDate!.toIso8601String(),
+            'familybooking_todate': toDate!.toIso8601String(),
+            'familybooking_count': personCount,
+            'room_id': roomList['room_id'],
+            'familymember_id': supabase.auth.currentUser?.id,
+          })
+          .select()
+          .single();
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -208,10 +208,10 @@ class _VisitBookingState extends State<VisitBooking> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
-                _buildDateField(
-                    "From Date", _fromDateController, () => _selectDate(context, true)),
-                _buildDateField(
-                    "To Date", _toDateController, () => _selectDate(context, false)),
+                _buildDateField("From Date", _fromDateController,
+                    () => _selectDate(context, true)),
+                _buildDateField("To Date", _toDateController,
+                    () => _selectDate(context, false)),
                 _buildDropdownField("Number of Persons", personCount!),
                 const SizedBox(height: 20),
                 Text("Number of Days: $numberOfDays",
@@ -253,7 +253,8 @@ class _VisitBookingState extends State<VisitBooking> {
     );
   }
 
-  Widget _buildDateField(String label, TextEditingController controller, VoidCallback onTap) {
+  Widget _buildDateField(
+      String label, TextEditingController controller, VoidCallback onTap) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: TextField(

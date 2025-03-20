@@ -147,14 +147,15 @@ class _UserregistrationState extends State<Userregistration> {
         title: const Text(
           "Create Account",
           style: TextStyle(
-              fontWeight: FontWeight.bold,
-              ),
+            fontWeight: FontWeight.bold,
+          ),
         ),
         backgroundColor: Color.fromARGB(255, 0, 36, 94),
         foregroundColor: Colors.white,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back,
-              ),
+          icon: const Icon(
+            Icons.arrow_back,
+          ),
           onPressed: () {
             Navigator.pop(context);
           },

@@ -18,10 +18,10 @@ class _PaymentPageState extends State<PaymentPage> {
   @override
   void initState() {
     super.initState();
-    
+
     // Initialize Supabase
     supabase = Supabase.instance.client;
-    
+
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
@@ -33,14 +33,14 @@ class _PaymentPageState extends State<PaymentPage> {
     _razorpay.clear();
     super.dispose();
   }
-   
+
   Future<void> _handlePaymentSuccess(PaymentSuccessResponse response) async {
     try {
       // Insert payment details into Supabase
       final paymentData = {
         'payment_rzid': response.paymentId,
         'payment_date': DateTime.now().toIso8601String(),
-        'payment_amount': 27500.00, 
+        'payment_amount': 27500.00,
         'resident_id': widget.residentId,
         'familymember_id': supabase.auth.currentUser?.id,
       };
@@ -51,7 +51,7 @@ class _PaymentPageState extends State<PaymentPage> {
         msg: "Payment Successful: ${response.paymentId}",
         toastLength: Toast.LENGTH_SHORT,
       );
-      
+
       // Optionally navigate back or to a success page
       // Navigator.pop(context);
     } catch (e) {
@@ -108,7 +108,11 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   Future<void> openCheckout() async {
-    final user = await supabase.from('tbl_familymember').select().eq('familymember_id', supabase.auth.currentUser!.id).single();
+    final user = await supabase
+        .from('tbl_familymember')
+        .select()
+        .eq('familymember_id', supabase.auth.currentUser!.id)
+        .single();
 
     var options = {
       'key': 'rzp_test_565dkZaITtTfYu',

@@ -6,8 +6,8 @@ import 'package:intl/intl.dart';
 import 'update_medication.dart';
 
 class ViewMedication extends StatefulWidget {
-  String resident_id;
-  ViewMedication({super.key, required this.resident_id});
+  final String residentId;
+  const ViewMedication({super.key, required this.residentId});
 
   @override
   State<ViewMedication> createState() => _ViewMedicationState();
@@ -28,7 +28,7 @@ class _ViewMedicationState extends State<ViewMedication> {
       final response = await supabase
           .from('tbl_medication')
           .select()
-          .eq('resident_id', widget.resident_id);
+          .eq('resident_id', widget.residentId);
 
       print("Supabase Response: $response"); // Debugging Output
 
@@ -80,10 +80,16 @@ class _ViewMedicationState extends State<ViewMedication> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(230, 255, 252, 197),
-      appBar: AppBar(title: const Text('View Medication', style: TextStyle(
-        fontSize: 23, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 255, 255)
-      ),), 
-      backgroundColor: Color.fromARGB(255  , 0, 36, 94),),
+      appBar: AppBar(
+        title: const Text(
+          'View Medication',
+          style: TextStyle(
+              fontSize: 23,
+              fontWeight: FontWeight.bold,
+              color: Color.fromARGB(255, 255, 255, 255)),
+        ),
+        backgroundColor: Color.fromARGB(255, 0, 36, 94),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -127,7 +133,7 @@ class _ViewMedicationState extends State<ViewMedication> {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        UpdateMedication(resident_id: widget.resident_id),
+                        UpdateMedication(residentId: widget.residentId),
                   ),
                 );
 

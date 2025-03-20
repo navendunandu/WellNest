@@ -3,8 +3,8 @@ import 'package:intl/intl.dart'; // For formatting date and time
 import 'package:caretaker_wellnest/main.dart';
 
 class UpdateMedappointments extends StatefulWidget {
-  String resident_id;
-  UpdateMedappointments({super.key, required this.resident_id});
+  final String residentId;
+  const UpdateMedappointments({super.key, required this.residentId});
 
   @override
   State<UpdateMedappointments> createState() => _UpdateMedappointmentsState();
@@ -59,7 +59,7 @@ class _UpdateMedappointmentsState extends State<UpdateMedappointments> {
         'appointment_date': _dateController.text,
         'appointment_time': _timeController.text,
         'appointment_name': _docNameController.text,
-        'resident_id':widget.resident_id
+        'resident_id':widget.residentId
       });
 
       ScaffoldMessenger.of(context).showSnackBar(

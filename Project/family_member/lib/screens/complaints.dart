@@ -25,46 +25,46 @@ class _ComplaintsState extends State<Complaints> {
   ];
 
   void _submitComplaint() async {
-  String complaint = _descriptionController.text.trim();
+    String complaint = _descriptionController.text.trim();
 
-  if (complaint.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Please enter a complaint description.")),
-    );
-    return;
-  }
+    if (complaint.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enter a complaint description.")),
+      );
+      return;
+    }
 
-  try {
-    // Insert data into Supabase table
-    await supabase.from('tbl_complaint').insert({
-      'complaint_title': _selectedComplaintType,
-      'complaint_content': complaint,
-      'complaint_priority': _selectedUrgency,
-    });
+    try {
+      // Insert data into Supabase table
+      await supabase.from('tbl_complaint').insert({
+        'complaint_title': _selectedComplaintType,
+        'complaint_content': complaint,
+        'complaint_priority': _selectedUrgency,
+      });
 
-    // Show success message
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          "Complaint Submitted:\nType: $_selectedComplaintType\nUrgency: $_selectedUrgency\nDescription: $complaint",
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Complaint Submitted:\nType: $_selectedComplaintType\nUrgency: $_selectedUrgency\nDescription: $complaint",
+          ),
         ),
-      ),
-    );
+      );
 
-    // Clear fields after submission
-    setState(() {
-      _descriptionController.clear();
-      _selectedComplaintType = "Room Cleaning";
-      _selectedUrgency = "Low Priority";
-    });
-  } catch (e) {
-    // Handle errors
-    print('Error: $e');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Error submitting complaint: $e")),
-    );
+      // Clear fields after submission
+      setState(() {
+        _descriptionController.clear();
+        _selectedComplaintType = "Room Cleaning";
+        _selectedUrgency = "Low Priority";
+      });
+    } catch (e) {
+      // Handle errors
+      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error submitting complaint: $e")),
+      );
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {

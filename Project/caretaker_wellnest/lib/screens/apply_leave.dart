@@ -108,7 +108,10 @@ class _ApplyLeaveState extends State<ApplyLeave> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Leave Application',style: TextStyle(color:Colors.white),),
+        title: const Text(
+          'Leave Application',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Color.fromARGB(255, 0, 36, 90), // AppBar color
         elevation: 0,
       ),
@@ -226,7 +229,8 @@ class _ApplyLeaveState extends State<ApplyLeave> {
                     : ElevatedButton(
                         onPressed: _submitForm,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(230, 172, 210, 253), // Button color
+                          backgroundColor: Color.fromARGB(
+                              230, 172, 210, 253), // Button color
                           padding: const EdgeInsets.symmetric(
                               horizontal: 40, vertical: 15),
                           shape: RoundedRectangleBorder(
@@ -237,10 +241,9 @@ class _ApplyLeaveState extends State<ApplyLeave> {
                         child: const Text(
                           'Submit',
                           style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold
-                          ),
+                              fontSize: 18,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
               ],

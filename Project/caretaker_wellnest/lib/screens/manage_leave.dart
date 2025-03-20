@@ -55,10 +55,14 @@ class _ManageLeaveState extends State<ManageLeave> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: Color.fromARGB(230, 255, 252, 197),
+    return Scaffold(
+        backgroundColor: Color.fromARGB(230, 255, 252, 197),
         appBar: AppBar(
-          title: const Text('Leave Manager',style: TextStyle(color: Colors.white),),
-          backgroundColor: Color.fromARGB(255, 0 , 36, 80),
+          title: const Text(
+            'Leave Manager',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Color.fromARGB(255, 0, 36, 80),
           elevation: 0,
         ),
         body: leaveData.isEmpty
@@ -69,7 +73,6 @@ class _ManageLeaveState extends State<ManageLeave> {
                 itemBuilder: (context, index) {
                   final leave = leaveData[index];
 
-                
                   final appliedDate = DateFormat('yyyy-MM-dd')
                       .format(DateTime.parse(leave['leave_date']));
 

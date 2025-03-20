@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ViewRoutine extends StatefulWidget {
-  String resident_id;
-   ViewRoutine({super.key, required  this.resident_id});
+  final String residentId;
+  const ViewRoutine({super.key, required this.residentId});
 
   @override
   State<ViewRoutine> createState() => _ViewRoutineState();
@@ -24,7 +24,11 @@ class _ViewRoutineState extends State<ViewRoutine> {
 
   Future<void> fetchAndScheduleRoutine() async {
     try {
-      final response = await supabase.from('tbl_routine').select().eq('resident_id', widget.resident_id).single();
+      final response = await supabase
+          .from('tbl_routine')
+          .select()
+          .eq('resident_id', widget.residentId)
+          .single();
       print("Fetched Routine Data: $response");
 
       {
@@ -38,7 +42,6 @@ class _ViewRoutineState extends State<ViewRoutine> {
           'routine_calltime': 'Call Time',
           'routine_dinnertime': 'Dinner Time',
           'routine_sleeptime': 'Sleep Time',
-          
         };
 
         response.forEach((key, value) {
@@ -73,10 +76,14 @@ class _ViewRoutineState extends State<ViewRoutine> {
     return Scaffold(
       backgroundColor: Color.fromARGB(230, 255, 252, 197),
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 0, 36, 94),
-        title: const Text('View Routine',
-        style: TextStyle(color: Color.fromARGB(255, 255, 255, 255),
-        fontSize: 23, fontWeight: FontWeight.bold),)),
+          backgroundColor: Color.fromARGB(255, 0, 36, 94),
+          title: const Text(
+            'View Routine',
+            style: TextStyle(
+                color: Color.fromARGB(255, 255, 255, 255),
+                fontSize: 23,
+                fontWeight: FontWeight.bold),
+          )),
       body: Column(
         children: [
           const SizedBox(height: 16),
@@ -105,26 +112,26 @@ class _ViewRoutineState extends State<ViewRoutine> {
           ),
           const SizedBox(height: 24),
           ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 0, 36, 94),
-                foregroundColor: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 14, horizontal: 28),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 0, 36, 94),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 28),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => UpdateRoutine(
-                  resident_id:widget.resident_id
-                )),
+                MaterialPageRoute(
+                    builder: (context) =>
+                        UpdateRoutine(residentId: widget.residentId)),
               );
             },
-            child: const Text('Update Routine',style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.bold
-            ),),
+            child: const Text(
+              'Update Routine',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
           ),
           const SizedBox(height: 16),
         ],

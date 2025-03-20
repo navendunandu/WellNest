@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ViewMedappointments extends StatefulWidget {
-  String profile;
-  ViewMedappointments({super.key, required this.profile});
+  final String profile;
+  const ViewMedappointments({super.key, required this.profile});
 
   @override
   State<ViewMedappointments> createState() => _ViewMedappointmentsState();

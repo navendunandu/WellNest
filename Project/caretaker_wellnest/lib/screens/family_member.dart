@@ -109,19 +109,18 @@ class _FamilyMemberState extends State<FamilyMember> {
                                   .toString()),
                           const SizedBox(height: 20),
                           ElevatedButton(
-                            
                             style: ElevatedButton.styleFrom(
                               shape: const CircleBorder(),
                               padding: const EdgeInsets.all(8),
-                              backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+                              backgroundColor:
+                                  const Color.fromARGB(255, 255, 255, 255),
                             ),
                             onPressed: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => Chat(
-                                    caretakerId:
-                                        supabase.auth.currentUser!.id,
+                                    caretakerId: supabase.auth.currentUser!.id,
                                     familyMemberId:
                                         familyMemberData!['familymember_id'],
                                   ),

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:intl/intl.dart';
 import 'update_medappointments.dart';
 import 'package:caretaker_wellnest/components/notification_service.dart';
 
 class ViewMedappointments extends StatefulWidget {
-  String resident_id;
-  ViewMedappointments({super.key, required this.resident_id});
+  final String residentId;
+  const ViewMedappointments({super.key, required this.residentId});
 
   @override
   State<ViewMedappointments> createState() => _ViewMedappointmentsState();
@@ -26,7 +25,7 @@ class _ViewMedappointmentsState extends State<ViewMedappointments> {
     final response = await supabase
         .from('tbl_appointment')
         .select()
-        .eq('resident_id', widget.resident_id);
+        .eq('resident_id', widget.residentId);
     setState(() {
       appointments = response;
     });
@@ -113,8 +112,8 @@ class _ViewMedappointmentsState extends State<ViewMedappointments> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => UpdateMedappointments(
-                          resident_id: widget.resident_id)),
+                      builder: (context) =>
+                          UpdateMedappointments(residentId: widget.residentId)),
                 );
               },
               child: const Text(

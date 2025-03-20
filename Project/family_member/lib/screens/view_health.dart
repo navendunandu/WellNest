@@ -3,8 +3,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
 
 class ViewHealth extends StatefulWidget {
-  String profile;
-  ViewHealth({super.key, required this.profile});
+  final String profile;
+  const ViewHealth({super.key, required this.profile});
 
   @override
   State<ViewHealth> createState() => _ViewHealthState();
@@ -15,6 +15,7 @@ class _ViewHealthState extends State<ViewHealth> {
   Map<String, dynamic>? healthData;
   bool isLoading = true;
 
+  @override
   void initState() {
     super.initState();
     fetchHealthData();

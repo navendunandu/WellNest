@@ -8,8 +8,8 @@ import 'view_medappointments.dart'; // Import ViewMedappointments
 import 'payment.dart'; // Import PaymentPage
 
 class HomePage extends StatefulWidget {
-  String profile;
-  HomePage({super.key, required this.profile});
+  final String profile;
+  const HomePage({super.key, required this.profile});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -28,8 +28,6 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> fetchResidentData() async {
     try {
-      
-
       final response = await supabase
           .from('tbl_resident')
           .select()
@@ -58,8 +56,8 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
+          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
               "Welcome!",

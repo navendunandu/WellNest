@@ -18,7 +18,8 @@ class NotificationService {
     await _notificationsPlugin.initialize(initSettings);
   }
 
-  static Future<void> scheduleNotification(int id, String title, DateTime dateTime) async {
+  static Future<void> scheduleNotification(
+      int id, String title, DateTime dateTime) async {
     await _notificationsPlugin.zonedSchedule(
       id,
       title,
@@ -26,13 +27,14 @@ class NotificationService {
       tz.TZDateTime.from(dateTime, tz.local),
       const NotificationDetails(
         android: AndroidNotificationDetails(
-          'routine_id', 
+          'routine_id',
           'Routine Notifications',
-          importance: Importance.max, 
+          importance: Importance.max,
           priority: Priority.high,
         ),
       ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle, // Required in latest version
+      androidScheduleMode:
+          AndroidScheduleMode.exactAllowWhileIdle, // Required in latest version
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,

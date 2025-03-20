@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Import the intl package for time formatting
 
 class UpdateRoutine extends StatefulWidget {
-  String resident_id;
-  UpdateRoutine({super.key, required this.resident_id});
+  final String residentId;
+  const UpdateRoutine({super.key, required this.residentId});
 
   @override
   State<UpdateRoutine> createState() => _UpdateRoutineState();
@@ -36,7 +36,7 @@ class _UpdateRoutineState extends State<UpdateRoutine> {
         'routine_dinnertime': _dinnertime.text,
         'routine_exercisetime': _exercisetime.text,
         'routine_calltime': _calltime.text,
-        'resident_id': widget.resident_id
+        'resident_id': widget.residentId
       });
 
       ScaffoldMessenger.of(context).showSnackBar(

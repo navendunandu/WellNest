@@ -7,8 +7,8 @@ import 'view_health.dart';
 import 'view_medappointments.dart';
 
 class ResidentProfile extends StatefulWidget {
-  String resident;
-  ResidentProfile({super.key, required this.resident});
+  final String resident;
+  const ResidentProfile({super.key, required this.resident});
 
   @override
   State<ResidentProfile> createState() => _ResidentProfileState();
@@ -108,7 +108,7 @@ class _ResidentProfileState extends State<ResidentProfile> {
               ),
             ),
             const SizedBox(height: 24),
-             _buildMenuButton(
+            _buildMenuButton(
               context,
               icon: Icons.schedule,
               label: 'View Family',
@@ -129,7 +129,7 @@ class _ResidentProfileState extends State<ResidentProfile> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ViewRoutine(resident_id: resident_id),
+                    builder: (context) => ViewRoutine(residentId: resident_id),
                   ),
                 );
               },
@@ -143,7 +143,7 @@ class _ResidentProfileState extends State<ResidentProfile> {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        ViewMedication(resident_id: resident_id),
+                        ViewMedication(residentId: resident_id),
                   ),
                 );
               },
@@ -156,7 +156,7 @@ class _ResidentProfileState extends State<ResidentProfile> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ViewHealth(resident_id: resident_id),
+                    builder: (context) => ViewHealth(residentId: resident_id),
                   ),
                 );
               },
@@ -170,7 +170,7 @@ class _ResidentProfileState extends State<ResidentProfile> {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        ViewMedappointments(resident_id: resident_id),
+                        ViewMedappointments(residentId: resident_id),
                   ),
                 );
               },

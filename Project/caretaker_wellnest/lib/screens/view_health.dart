@@ -3,8 +3,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'update_health.dart';
 
 class ViewHealth extends StatefulWidget {
-  String resident_id;
-  ViewHealth({super.key, required this.resident_id});
+  final String residentId;
+  const ViewHealth({super.key, required this.residentId});
 
   @override
   State<ViewHealth> createState() => _ViewHealthState();
@@ -26,7 +26,7 @@ class _ViewHealthState extends State<ViewHealth> {
       final response = await supabase
           .from('tbl_healthrecord')
           .select()
-          .eq('resident_id', widget.resident_id)
+          .eq('resident_id', widget.residentId)
           .order('health_date', ascending: false)
           .limit(1)
           .single();
@@ -62,7 +62,7 @@ class _ViewHealthState extends State<ViewHealth> {
           : healthData == null
               ? Center(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       "No health records found.",
@@ -83,7 +83,7 @@ class _ViewHealthState extends State<ViewHealth> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => UpdateHealth(
-                                    resident_id: widget.resident_id,
+                                    residentId: widget.residentId,
                                   )),
                         );
                       },
@@ -142,7 +142,7 @@ class _ViewHealthState extends State<ViewHealth> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => UpdateHealth(
-                                      resident_id: widget.resident_id)),
+                                      residentId: widget.residentId)),
                             );
                           },
                           child: const Text(

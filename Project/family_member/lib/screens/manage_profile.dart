@@ -158,7 +158,11 @@ class _ProfileGridState extends State<ProfileGrid> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => VisitBooking(),) );
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => VisitBooking(),
+              ));
         },
         label: const Text(
           'Book Visit',

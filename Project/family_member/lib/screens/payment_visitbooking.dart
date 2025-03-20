@@ -17,10 +17,10 @@ class _PaymentVisitbookingState extends State<PaymentVisitbooking> {
   late SupabaseClient supabase; // Add Supabase clien
   void initState() {
     super.initState();
-    
+
     // Initialize Supabase
     supabase = Supabase.instance.client;
-    
+
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
@@ -32,25 +32,25 @@ class _PaymentVisitbookingState extends State<PaymentVisitbooking> {
     _razorpay.clear();
     super.dispose();
   }
-   
+
   Future<void> _handlePaymentSuccess(PaymentSuccessResponse response) async {
     try {
       // Insert payment details into Supabase
       final paymentData = {
         'payment_rzid': response.paymentId,
         'payment_date': DateTime.now().toIso8601String(),
-        'payment_amount': widget.amt, 
+        'payment_amount': widget.amt,
         'familymember_id': supabase.auth.currentUser?.id,
       };
 
       await supabase.from('tbl_payment').insert(paymentData);
-      await supabase.from('tbl_visitbooking').update({'visitbooking_status': 1}).eq('visitbooking_id', widget.id);
+      await supabase
+          .from('tbl_visitbooking')
+          .update({'visitbooking_status': 1}).eq('visitbooking_id', widget.id);
       Fluttertoast.showToast(
         msg: "Payment Successful: ${response.paymentId}",
         toastLength: Toast.LENGTH_SHORT,
       );
-      
-
     } catch (e) {
       print('The recorded error is: $e');
       Fluttertoast.showToast(
@@ -105,11 +105,15 @@ class _PaymentVisitbookingState extends State<PaymentVisitbooking> {
   }
 
   Future<void> openCheckout() async {
-    final user = await supabase.from('tbl_familymember').select().eq('familymember_id', supabase.auth.currentUser!.id).single();
+    final user = await supabase
+        .from('tbl_familymember')
+        .select()
+        .eq('familymember_id', supabase.auth.currentUser!.id)
+        .single();
 
     var options = {
       'key': 'rzp_test_565dkZaITtTfYu',
-      'amount': widget.amt*100,
+      'amount': widget.amt * 100,
       'name': 'WellNest',
       'description': 'Payment',
       'prefill': {

@@ -15,14 +15,14 @@ class Landingpage extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(
-                height: 50,
+                height: 40,
               ),
               Lottie.asset('asset/elder.json',
                   fit: BoxFit.contain, height: 300),
               Image.asset(
                 'asset/logo.png',
                 fit: BoxFit.cover,
-                height: 300,
+                height: 200,
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0), // Adjust padding as needed
